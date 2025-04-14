@@ -49,10 +49,12 @@ export default function TailoringSection() {
           </h2>
 
           <p className="text-base font-mulish font-light text-[#5a5a56]/80 leading-relaxed">
-            Our exquisite linen, manufactured in the heart of Napoli, embodies generations of Italian textile mastery.
-            Each garment is meticulously crafted by our head tailor, who brings five years of prestigious Savile Row
-            experience to every stitch and seam. Experience the perfect harmony of Mediterranean materials and British
-            precision tailoring — available exclusively through our private appointment service.
+            Born from a new generation of founders, ETERNO connects timeless Neapolitan craftsmanship with today's
+            discerning man. Our linen is woven in the heart of Napoli, sourced through family-run mills that have served
+            the world's most prestigious fashion houses for generations. With direct access to artisans and ateliers
+            typically reserved for luxury insiders, we offer a new gateway to uncompromising quality. Every piece is a
+            product of precision — cut and tailored under the eye of our head tailor, whose Savile Row experience
+            ensures each detail speaks of refined excellence.
           </p>
         </div>
       </div>
