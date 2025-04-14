@@ -16,6 +16,7 @@ export default function StickyBanner({
   alwaysVisible = false,
 }: StickyBannerProps) {
   const [isVisible, setIsVisible] = useState(false)
+  const [isTransparent, setIsTransparent] = useState(false)
   const pathname = usePathname()
   const [isMobile, setIsMobile] = useState(false)
 
@@ -26,13 +27,22 @@ export default function StickyBanner({
     // If alwaysVisible is true or we're on the register page, always show the banner
     if (alwaysVisible || isRegisterPage) {
       setIsVisible(true)
+      setIsTransparent(false)
       return
     }
 
     const handleScroll = () => {
-      // Check if we've scrolled past the hero section (viewport height)
-      const scrolled = window.scrollY > window.innerHeight - threshold
-      setIsVisible(scrolled)
+      if (isMobile && pathname === "/") {
+        // Always show the banner on mobile home page
+        setIsVisible(true)
+        // But make it transparent only when at the top of the page
+        setIsTransparent(window.scrollY < window.innerHeight - 50)
+      } else {
+        // Desktop behavior remains unchanged
+        const scrolled = window.scrollY > window.innerHeight - threshold
+        setIsVisible(scrolled)
+        setIsTransparent(false)
+      }
     }
 
     // Add scroll event listener
@@ -45,7 +55,7 @@ export default function StickyBanner({
     return () => {
       window.removeEventListener("scroll", handleScroll)
     }
-  }, [threshold, alwaysVisible, isRegisterPage])
+  }, [threshold, alwaysVisible, isRegisterPage, isMobile, pathname])
 
   useEffect(() => {
     const checkMobile = () => {
@@ -68,7 +78,7 @@ export default function StickyBanner({
     <div
       className={`fixed top-0 left-0 right-0 z-50 h-[70px] transition-all duration-500 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
-      } ${pathname === "/" && isMobile ? "bg-transparent" : "bg-eterno-sand shadow-md"}`}
+      } ${isTransparent ? "bg-transparent" : "bg-eterno-sand shadow-md"}`}
     >
       <div className="h-full flex items-center justify-center px-6">
         <EternoLogo width={logoWidth} inverted={true} className="hover:opacity-80 transition-opacity duration-300" />

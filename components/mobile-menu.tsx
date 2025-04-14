@@ -48,8 +48,8 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
     }
 
     const handleScroll = () => {
-      // Make header solid after scrolling down
-      setIsTransparent(window.scrollY < 50)
+      // Make header solid after scrolling past hero section
+      setIsTransparent(window.scrollY < window.innerHeight - 50)
     }
 
     // Add scroll listener
@@ -106,28 +106,28 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Home
+              HOME
             </a>
             <a
               href="#tailoring"
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Tailoring
+              ABOUT
             </a>
             <a
               href="#collection"
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Collection
+              COLLECTION
             </a>
             <a
               href="#process"
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              Process
+              PROCESS
             </a>
           </nav>
 
