@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import EternoLogo from "@/components/eterno-logo"
-import MainMenu from "@/components/main-menu"
+import MobileMenu from "@/components/main-menu"
 import StickyBanner from "@/components/sticky-banner"
 
 export default function ConfirmationPage() {
@@ -30,8 +30,8 @@ export default function ConfirmationPage() {
       {/* Sticky Banner */}
       <StickyBanner logoWidth={LOGO_SIZE} />
 
-      {/* Main Menu */}
-      <MainMenu />
+      {/* Mobile Menu */}
+      <MobileMenu />
 
       {/* Background video - simplified implementation */}
       <div className="absolute inset-0 z-0">
@@ -61,7 +61,7 @@ export default function ConfirmationPage() {
             showMessage ? "opacity-100 transform-none" : "opacity-0 translate-y-8"
           }`}
         >
-          EXCLUSIVELY YOURS
+          EXCLUSIVELY YOUR
         </p>
       </div>
     </main>

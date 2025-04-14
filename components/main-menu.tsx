@@ -5,7 +5,8 @@ import { useRouter, usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import SlidingButton from "./sliding-button"
 
-export default function MainMenu() {
+// Rename the component back to MobileMenu
+export default function MobileMenu() {
   const pathname = usePathname()
   const [isTransparent, setIsTransparent] = useState(pathname === "/")
   const [isOpen, setIsOpen] = useState(false)
@@ -70,9 +71,9 @@ export default function MainMenu() {
 
   return (
     <>
-      {/* Menu Button - Now visible on all devices */}
+      {/* Menu Button - Now visible ONLY on mobile */}
       <div
-        className={`fixed top-0 right-0 z-50 h-[70px] flex items-center justify-end px-4 transition-all duration-300 pointer-events-none`}
+        className={`md:hidden fixed top-0 right-0 z-50 h-[70px] flex items-center justify-end px-4 transition-all duration-300 pointer-events-none`}
       >
         <button
           onClick={toggleMenu}
@@ -83,9 +84,9 @@ export default function MainMenu() {
         </button>
       </div>
 
-      {/* Menu Overlay - Now for all devices */}
+      {/* Menu Overlay - Now ONLY for mobile */}
       <div
-        className={`fixed inset-0 bg-eterno-sand z-40 transition-transform duration-300 ease-in-out ${
+        className={`md:hidden fixed inset-0 bg-eterno-sand z-40 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } pt-[70px]`}
       >

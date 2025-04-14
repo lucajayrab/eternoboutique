@@ -7,7 +7,8 @@ import StickyBanner from "@/components/sticky-banner"
 import TailoringSection from "@/components/tailoring-section"
 import ImageCarouselSection from "@/components/image-carousel-section"
 import ProcessSteps from "@/components/process-steps"
-import MainMenu from "@/components/main-menu"
+import MobileMenu from "@/components/main-menu"
+import MainMenu from "@/components/main-menu" //Importing MainMenu
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -126,6 +127,9 @@ export default function Home() {
     <div className="relative">
       {/* Sticky Banner (visible on all devices) */}
       <StickyBanner logoWidth={LOGO_SIZE} />
+
+      {/* Mobile Menu (only visible on mobile) */}
+      <MobileMenu />
 
       {/* Main Menu (visible on all devices) */}
       <MainMenu />
