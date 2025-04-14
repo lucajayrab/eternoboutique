@@ -39,7 +39,7 @@ export default function ConfirmationAltPage() {
             showMessage ? "opacity-100 transform-none" : "opacity-0 translate-y-8"
           }`}
         >
-          We'll be in touch when the time is right.
+          EXCLUSIVELY YOURS
         </p>
       </div>
     </main>
