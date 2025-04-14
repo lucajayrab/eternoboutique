@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import EternoLogo from "./eterno-logo"
 import SlidingButton from "./sliding-button"
@@ -11,6 +11,8 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
+  const pathname = usePathname()
+  const [isTransparent, setIsTransparent] = useState(pathname === "/")
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
 
@@ -38,6 +40,30 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
     }
   }, [isOpen])
 
+  useEffect(() => {
+    // Only apply transparency effect on home page
+    if (pathname !== "/") {
+      setIsTransparent(false)
+      return
+    }
+
+    const handleScroll = () => {
+      // Make header solid after scrolling down
+      setIsTransparent(window.scrollY < 50)
+    }
+
+    // Add scroll listener
+    window.addEventListener("scroll", handleScroll)
+
+    // Initial check
+    handleScroll()
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [pathname])
+
   const toggleMenu = () => {
     setIsOpen(!isOpen)
   }
@@ -50,7 +76,11 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
   return (
     <>
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 h-[70px] bg-eterno-sand shadow-md flex items-center justify-between px-4">
+      <div
+        className={`md:hidden fixed top-0 left-0 right-0 z-50 h-[70px] flex items-center justify-between px-4 transition-all duration-300 ${
+          isTransparent ? "bg-transparent" : "bg-eterno-sand shadow-md"
+        }`}
+      >
         <div className="flex-1">
           <EternoLogo width={logoWidth} inverted={true} />
         </div>

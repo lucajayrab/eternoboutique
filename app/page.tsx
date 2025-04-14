@@ -126,10 +126,10 @@ export default function Home() {
 
   return (
     <div className="relative">
-      {/* Sticky Banner (desktop only) */}
+      {/* Sticky Banner (visible on all devices) */}
       <StickyBanner logoWidth={LOGO_SIZE} />
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu (only controls, banner is handled separately) */}
       <MobileMenu logoWidth={MOBILE_LOGO_SIZE} />
 
       {/* CURRENT LANDING STRUCTURE - Keep as-is at top of homepage */}

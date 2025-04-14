@@ -17,6 +17,7 @@ export default function StickyBanner({
 }: StickyBannerProps) {
   const [isVisible, setIsVisible] = useState(false)
   const pathname = usePathname()
+  const [isMobile, setIsMobile] = useState(false)
 
   // Check if we're on the register page
   const isRegisterPage = pathname === "/register"
@@ -46,11 +47,28 @@ export default function StickyBanner({
     }
   }, [threshold, alwaysVisible, isRegisterPage])
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile)
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
+
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 h-[70px] bg-eterno-sand shadow-md transition-all duration-500 hidden md:block ${
+      className={`fixed top-0 left-0 right-0 z-50 h-[70px] transition-all duration-500 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
-      }`}
+      } ${pathname === "/" && isMobile ? "bg-transparent" : "bg-eterno-sand shadow-md"}`}
     >
       <div className="h-full flex items-center justify-center px-6">
         <EternoLogo width={logoWidth} inverted={true} className="hover:opacity-80 transition-opacity duration-300" />
