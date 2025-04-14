@@ -1,14 +1,19 @@
 import { NextResponse } from "next/server"
+import type { RegistrationFormData } from "@/lib/form-schemas"
 
 // HubSpot credentials
 const PORTAL_ID = "145973953"
 const FORM_ID = "87c8ab28-e698-4394-bc1f-c1da5b434622"
 const HUBSPOT_API_URL = `https://api.hsforms.com/submissions/v3/integration/submit/${PORTAL_ID}/${FORM_ID}`
 
+interface RegistrationRequest extends RegistrationFormData {
+  hutk?: string
+}
+
 export async function POST(request: Request) {
   try {
     // Parse the request body
-    const body = await request.json()
+    const body: RegistrationRequest = await request.json()
 
     // Log the incoming data
     console.log("Form submission received:", JSON.stringify(body, null, 2))

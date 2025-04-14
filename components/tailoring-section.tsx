@@ -39,13 +39,13 @@ export default function TailoringSection() {
 
   return (
     <section ref={sectionRef} className="w-full flex flex-col md:flex-row bg-[#f5f4f1]">
-      {/* Left side - Text content (unchanged) */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16 lg:p-24">
+      {/* Text content - now first on mobile for better UX */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16 lg:p-24 order-2 md:order-1">
         <div className="max-w-xl space-y-6">
           <p className="text-xs uppercase tracking-[0.2em] text-[#5a5a56] font-light">Exclusively Yours</p>
 
-          <h2 className="font-mulish text-2xl md:text-3xl lg:text-4xl font-light tracking-widest uppercase text-[#5a5a56]">
-            FROM THE YARN
+          <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
+            From The Yarn
           </h2>
 
           <p className="text-base font-mulish font-light text-[#5a5a56]/80 leading-relaxed">
@@ -57,8 +57,8 @@ export default function TailoringSection() {
         </div>
       </div>
 
-      {/* Right side - Scroll-triggered video */}
-      <div className="w-full md:w-1/2 h-[60vh] md:h-[700px] relative overflow-hidden p-4 md:p-6">
+      {/* Video - now second on mobile */}
+      <div className="w-full md:w-1/2 h-[50vh] md:h-[700px] relative overflow-hidden p-4 md:p-6 order-1 md:order-2">
         <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100">
           <video
             ref={videoRef}

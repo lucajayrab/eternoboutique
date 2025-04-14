@@ -8,9 +8,11 @@ import StickyBanner from "@/components/sticky-banner"
 import TailoringSection from "@/components/tailoring-section"
 import ImageCarouselSection from "@/components/image-carousel-section"
 import ProcessSteps from "@/components/process-steps"
+import MobileMenu from "@/components/mobile-menu"
 
 // Define a consistent smaller logo size to use in both places
 const LOGO_SIZE = "45mm"
+const MOBILE_LOGO_SIZE = "40mm"
 
 export default function Home() {
   const router = useRouter()
@@ -21,9 +23,24 @@ export default function Home() {
   const heroSectionRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
   const tailoringSectionRef = useRef<HTMLDivElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
 
   // State for button visibility
   const [isButtonVisible, setIsButtonVisible] = useState(false)
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
 
   // Get the video URL from environment variable
   useEffect(() => {
@@ -37,8 +54,13 @@ export default function Home() {
     }
   }, [])
 
-  // Mouse tracking for button visibility
+  // Mouse tracking for button visibility (desktop only)
   useEffect(() => {
+    if (isMobile) {
+      setIsButtonVisible(true) // Always show button on mobile
+      return
+    }
+
     const heroSection = heroSectionRef.current
     const buttonElement = buttonRef.current
 
@@ -79,7 +101,7 @@ export default function Home() {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove)
     }
-  }, [])
+  }, [isMobile])
 
   const handleRegisterClick = () => {
     router.push("/register")
@@ -104,11 +126,18 @@ export default function Home() {
 
   return (
     <div className="relative">
-      {/* Sticky Banner with smaller logo */}
+      {/* Sticky Banner (desktop only) */}
       <StickyBanner logoWidth={LOGO_SIZE} />
 
+      {/* Mobile Menu */}
+      <MobileMenu logoWidth={MOBILE_LOGO_SIZE} />
+
       {/* CURRENT LANDING STRUCTURE - Keep as-is at top of homepage */}
-      <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black">
+      <section
+        ref={heroSectionRef}
+        className="relative h-screen w-screen overflow-hidden bg-black pt-[70px] md:pt-0"
+        id="home"
+      >
         {/* Fallback background while video loads or if video fails */}
         {(!videoLoaded || isVideoError) && (
           <div className="absolute inset-0 z-0 bg-black flex items-center justify-center">
@@ -134,19 +163,24 @@ export default function Home() {
           </video>
         )}
 
-        {/* ETERNO Logo - now smaller */}
-        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10">
+        {/* ETERNO Logo - now smaller and hidden on mobile (shown in mobile menu) */}
+        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10 hidden md:block">
           <EternoLogo width={LOGO_SIZE} inverted={true} />
         </div>
 
-        {/* Register Button - now with conditional visibility */}
+        {/* Register Button - now with conditional visibility on desktop, always visible on mobile */}
         <div
           ref={buttonRef}
           className={`absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-500 ${
-            isButtonVisible ? "opacity-100" : "opacity-0"
+            isButtonVisible || isMobile ? "opacity-100" : "opacity-0"
           }`}
         >
-          <SlidingButton onClick={handleRegisterClick} duration={1000} variant="light">
+          <SlidingButton
+            onClick={handleRegisterClick}
+            duration={1000}
+            variant="light"
+            className="min-w-[200px] py-4 text-base"
+          >
             REGISTER INTEREST
           </SlidingButton>
         </div>
@@ -173,15 +207,19 @@ export default function Home() {
       </section>
 
       {/* TAILORING SECTION */}
-      <div ref={tailoringSectionRef}>
+      <div ref={tailoringSectionRef} id="tailoring">
         <TailoringSection />
       </div>
 
       {/* IMAGE CAROUSEL SECTION */}
-      <ImageCarouselSection />
+      <div id="collection">
+        <ImageCarouselSection />
+      </div>
 
       {/* PROCESS STEPS SECTION */}
-      <ProcessSteps />
+      <div id="process">
+        <ProcessSteps />
+      </div>
 
       {/* FINAL CTA SECTION - updated background color */}
       <div ref={contentRef}>
@@ -193,7 +231,12 @@ export default function Home() {
               style={{ animationDelay: "0.3s" }}
             >
               <div>
-                <SlidingButton onClick={handleRegisterClick} variant="dark" duration={1000}>
+                <SlidingButton
+                  onClick={handleRegisterClick}
+                  variant="dark"
+                  duration={1000}
+                  className="min-w-[200px] py-4 text-base"
+                >
                   REGISTER INTEREST
                 </SlidingButton>
               </div>

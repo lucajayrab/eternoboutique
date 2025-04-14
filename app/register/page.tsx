@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react"
 import SectionedRegistrationForm from "@/components/sectioned-registration-form"
 import StickyBanner from "@/components/sticky-banner"
+import MobileMenu from "@/components/mobile-menu"
 
 // Define a consistent logo size to match the home page
 const LOGO_SIZE = "45mm"
+const MOBILE_LOGO_SIZE = "40mm"
 
 export default function RegisterPage() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -24,10 +26,13 @@ export default function RegisterPage() {
 
   return (
     <>
-      {/* Add the StickyBanner component */}
-      <StickyBanner logoWidth={LOGO_SIZE} />
+      {/* Desktop Sticky Banner */}
+      <StickyBanner logoWidth={LOGO_SIZE} alwaysVisible={true} />
 
-      <main className="flex min-h-screen flex-col items-center justify-start pt-16 p-4 bg-[#f5f4f1]">
+      {/* Mobile Menu */}
+      <MobileMenu logoWidth={MOBILE_LOGO_SIZE} />
+
+      <main className="flex min-h-screen flex-col items-center justify-start pt-24 md:pt-16 p-4 bg-[#f5f4f1]">
         <div
           className={`w-full max-w-xl transition-all duration-1000 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}
         >

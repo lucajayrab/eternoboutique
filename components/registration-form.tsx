@@ -4,56 +4,30 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
 import { Loader2 } from "lucide-react"
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import SlidingButton from "@/components/sliding-button"
-
-const formSchema = z.object({
-  firstName: z.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastName: z.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-  age: z.coerce.number().int().min(18, {
-    message: "You must be at least 18 years old.",
-  }),
-  country: z.string().min(2, {
-    message: "Country must be at least 2 characters.",
-  }),
-  city: z.string().min(2, {
-    message: "City must be at least 2 characters.",
-  }),
-  phone: z.string().min(10, {
-    message: "Please enter a valid phone number.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  industry: z.string().min(2, {
-    message: "Industry must be at least 2 characters.",
-  }),
-})
+import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schemas"
 
 export default function RegistrationForm() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<RegistrationFormData>({
+    resolver: zodResolver(registrationFormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      age: 18,
-      country: "",
+      firstname: "",
+      lastname: "",
+      age: undefined,
+      countrylocation: "",
       city: "",
-      phone: "",
+      phonecontact: "",
       email: "",
-      industry: "",
+      industrysector: "",
+      private_fitting_interest: false,
     },
   })
 
@@ -66,7 +40,7 @@ export default function RegistrationForm() {
     return ""
   }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: RegistrationFormData) {
     setIsSubmitting(true)
     setSubmitError("")
 
@@ -111,7 +85,7 @@ export default function RegistrationForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-10">
           <FormField
             control={form.control}
-            name="firstName"
+            name="firstname"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -123,7 +97,7 @@ export default function RegistrationForm() {
           />
           <FormField
             control={form.control}
-            name="lastName"
+            name="lastname"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -144,9 +118,9 @@ export default function RegistrationForm() {
                     min="0"
                     placeholder="Age"
                     {...field}
-                    value={field.value || ""}
+                    value={field.value === undefined ? "" : field.value}
                     onChange={(e) => {
-                      const value = e.target.value === "" ? "" : Number.parseInt(e.target.value, 10)
+                      const value = e.target.value === "" ? undefined : Number.parseInt(e.target.value, 10)
                       field.onChange(value)
                     }}
                     className="font-light text-sm w-full"
@@ -158,7 +132,7 @@ export default function RegistrationForm() {
           />
           <FormField
             control={form.control}
-            name="country"
+            name="countrylocation"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -182,7 +156,7 @@ export default function RegistrationForm() {
           />
           <FormField
             control={form.control}
-            name="phone"
+            name="phonecontact"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -206,7 +180,7 @@ export default function RegistrationForm() {
           />
           <FormField
             control={form.control}
-            name="industry"
+            name="industrysector"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
@@ -216,7 +190,7 @@ export default function RegistrationForm() {
               </FormItem>
             )}
           />
-          {submitError && <div className="text-eterno-accent text-sm font-light">{submitError}</div>}
+          {submitError && <div className="text-red-500 text-sm font-light">{submitError}</div>}
           <div className="flex justify-center mt-10">
             {isSubmitting ? (
               <button

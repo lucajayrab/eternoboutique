@@ -4,53 +4,21 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import * as z from "zod"
 import { Loader2 } from "lucide-react"
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import SlidingButton from "@/components/sliding-button"
-
-// Form validation schema
-const formSchema = z.object({
-  // Personal Info
-  firstname: z.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
-  lastname: z.string().min(2, {
-    message: "Last name must be at least 2 characters.",
-  }),
-  age: z.coerce.number().int().optional(),
-
-  // Contact Details
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  phonecontact: z.string().regex(/^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/, {
-    message: "Please enter a valid phone number.",
-  }),
-  countrylocation: z.string().min(2, {
-    message: "Country must be at least 2 characters.",
-  }),
-  city: z.string().min(2, {
-    message: "City must be at least 2 characters.",
-  }),
-
-  // Preferences
-  industrysector: z.string().min(2, {
-    message: "Industry must be at least 2 characters.",
-  }),
-  private_fitting_interest: z.boolean().default(false),
-})
+import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schemas"
 
 export default function SectionedRegistrationForm() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<RegistrationFormData>({
+    resolver: zodResolver(registrationFormSchema),
     defaultValues: {
       firstname: "",
       lastname: "",
@@ -73,7 +41,7 @@ export default function SectionedRegistrationForm() {
     return ""
   }
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: RegistrationFormData) {
     setIsSubmitting(true)
     setSubmitError("")
 
@@ -114,7 +82,7 @@ export default function SectionedRegistrationForm() {
 
   // Section header component for consistency
   const SectionHeader = ({ title }: { title: string }) => (
-    <h3 className="text-lg font-medium tracking-wide uppercase text-eterno-gray mb-6 mt-10 first:mt-0">{title}</h3>
+    <h3 className="text-lg font-medium tracking-wide uppercase text-[#5a5a56] mb-6 mt-10 first:mt-0">{title}</h3>
   )
 
   return (
@@ -130,7 +98,7 @@ export default function SectionedRegistrationForm() {
                 name="firstname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">First Name</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">First Name</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
@@ -143,7 +111,7 @@ export default function SectionedRegistrationForm() {
                 name="lastname"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">Last Name</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">Last Name</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
@@ -156,16 +124,16 @@ export default function SectionedRegistrationForm() {
                 name="age"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">Age</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">Age</FormLabel>
                     <FormControl>
                       <Input
                         type="number"
                         min="0"
                         placeholder=""
                         {...field}
-                        value={field.value || ""}
+                        value={field.value === undefined ? "" : field.value}
                         onChange={(e) => {
-                          const value = e.target.value === "" ? "" : Number.parseInt(e.target.value, 10)
+                          const value = e.target.value === "" ? undefined : Number.parseInt(e.target.value, 10)
                           field.onChange(value)
                         }}
                         className="font-light text-sm w-full"
@@ -187,7 +155,7 @@ export default function SectionedRegistrationForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">Email</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">Email</FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
@@ -200,7 +168,7 @@ export default function SectionedRegistrationForm() {
                 name="phonecontact"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">Phone</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">Phone</FormLabel>
                     <FormControl>
                       <Input type="tel" placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
@@ -213,7 +181,7 @@ export default function SectionedRegistrationForm() {
                 name="countrylocation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">Country</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">Country</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
@@ -226,7 +194,7 @@ export default function SectionedRegistrationForm() {
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">City</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">City</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
@@ -246,7 +214,7 @@ export default function SectionedRegistrationForm() {
                 name="industrysector"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-eterno-gray font-light">Industry</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">Industry</FormLabel>
                     <FormControl>
                       <Input placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
@@ -263,7 +231,7 @@ export default function SectionedRegistrationForm() {
                       <Checkbox
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-eterno-text data-[state=checked]:border-eterno-text"
+                        className="data-[state=checked]:bg-[#5a5a56] data-[state=checked]:border-[#5a5a56]"
                       />
                     </FormControl>
                     <div className="space-y-1 leading-none">
@@ -275,7 +243,7 @@ export default function SectionedRegistrationForm() {
             </div>
           </div>
 
-          {submitError && <div className="text-eterno-accent text-sm font-light mt-4">{submitError}</div>}
+          {submitError && <div className="text-red-500 text-sm font-light mt-4">{submitError}</div>}
 
           <div className="flex justify-center mt-10">
             {isSubmitting ? (

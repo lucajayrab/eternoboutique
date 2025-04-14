@@ -48,7 +48,7 @@ export default function StickyBanner({
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 h-[70px] bg-eterno-sand shadow-md transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 h-[70px] bg-eterno-sand shadow-md transition-all duration-500 hidden md:block ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
       }`}
     >

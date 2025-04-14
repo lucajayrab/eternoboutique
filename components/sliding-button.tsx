@@ -23,10 +23,10 @@ export default function SlidingButton({
   const transitionDuration = `${duration}ms`
 
   // Define styles based on variant
-  const borderColor = variant === "light" ? "border-white" : "border-eterno-text"
-  const textColor = variant === "light" ? "text-white" : "text-eterno-text"
+  const borderColor = variant === "light" ? "border-white" : "border-[#5a5a56]"
+  const textColor = variant === "light" ? "text-white" : "text-[#5a5a56]"
   const hoverTextColor = variant === "light" ? "group-hover:text-[#111]" : "group-hover:text-white"
-  const bgColor = variant === "light" ? "bg-white" : "bg-eterno-text"
+  const bgColor = variant === "light" ? "bg-white" : "bg-[#5a5a56]"
 
   return (
     <button
@@ -42,6 +42,9 @@ export default function SlidingButton({
         tracking-widest
         text-sm
         font-normal
+        touch-manipulation
+        active:scale-95
+        transition-transform
         ${className}
       `}
     >

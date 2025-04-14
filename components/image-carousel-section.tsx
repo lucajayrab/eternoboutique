@@ -62,8 +62,8 @@ export default function ImageCarouselSection() {
 
   return (
     <section ref={sectionRef} className="w-full flex flex-col md:flex-row bg-[#eae8e3]">
-      {/* Left side - Image Carousel */}
-      <div className="w-full md:w-1/2 h-[60vh] md:h-[700px] relative overflow-hidden p-4 md:p-6">
+      {/* Image Carousel - now first on mobile */}
+      <div className="w-full md:w-1/2 h-[50vh] md:h-[700px] relative overflow-hidden p-4 md:p-6 order-1">
         <div className="w-full h-full rounded-lg overflow-hidden bg-gray-100 relative">
           {/* Carousel images */}
           <div className="w-full h-full relative">
@@ -85,14 +85,14 @@ export default function ImageCarouselSection() {
             ))}
           </div>
 
-          {/* Carousel indicators */}
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+          {/* Carousel indicators - larger touch targets for mobile */}
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-3">
             {images.map((_, index) => (
               <button
                 key={index}
                 onClick={() => goToSlide(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex ? "bg-white w-4" : "bg-white/50"
+                className={`w-3 h-3 rounded-full transition-all ${
+                  index === currentIndex ? "bg-white w-5" : "bg-white/50"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />
@@ -101,13 +101,13 @@ export default function ImageCarouselSection() {
         </div>
       </div>
 
-      {/* Right side - Text content */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16 lg:p-24">
+      {/* Text content */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16 lg:p-24 order-2">
         <div className="max-w-xl space-y-6">
           <p className="text-xs uppercase tracking-[0.2em] text-[#5a5a56] font-light">Our Collection</p>
 
-          <h2 className="font-mulish text-2xl md:text-3xl lg:text-4xl font-light tracking-widest uppercase text-[#5a5a56]">
-            BOUTIQUE LINEN TAILORING
+          <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
+            Boutique Linen Tailoring
           </h2>
 
           <p className="text-base font-mulish font-light text-[#5a5a56]/80 leading-relaxed">
