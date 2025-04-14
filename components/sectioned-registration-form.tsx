@@ -10,27 +10,26 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import SlidingButton from "@/components/sliding-button"
-import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schemas"
+import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schema"
 
 export default function SectionedRegistrationForm() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
 
-  // Explicitly define the form with the correct type
+  // Use the shared schema and type
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationFormSchema),
     defaultValues: {
       firstname: "",
       lastname: "",
-      age: undefined,
       email: "",
       phonecontact: "",
       countrylocation: "",
       city: "",
       industrysector: "",
-      // Explicitly set this as a boolean, not optional
-      private_fitting_interest: false,
+      age: undefined,
+      private_fitting_interest: false, // ✅ Must be defined
     },
   })
 

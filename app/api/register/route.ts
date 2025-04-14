@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import type { RegistrationFormData } from "@/lib/form-schemas"
+import type { RegistrationFormData } from "@/lib/form-schema"
 
 // HubSpot credentials
 const PORTAL_ID = "145973953"

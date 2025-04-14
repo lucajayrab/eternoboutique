@@ -9,27 +9,26 @@ import { Loader2 } from "lucide-react"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import SlidingButton from "@/components/sliding-button"
-import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schemas"
+import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schema"
 
 export default function RegistrationForm() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
 
-  // Explicitly define the form with the correct type
+  // Use the shared schema and type
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationFormSchema),
     defaultValues: {
       firstname: "",
       lastname: "",
-      age: undefined,
+      email: "",
+      phonecontact: "",
       countrylocation: "",
       city: "",
-      phonecontact: "",
-      email: "",
       industrysector: "",
-      // Explicitly set this as a boolean, not optional
-      private_fitting_interest: false,
+      age: undefined,
+      private_fitting_interest: false, // ✅ Must be defined
     },
   })
 
