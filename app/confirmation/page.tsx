@@ -2,10 +2,13 @@
 
 import { useState, useEffect } from "react"
 import EternoLogo from "@/components/eterno-logo"
+import MainMenu from "@/components/main-menu"
+import StickyBanner from "@/components/sticky-banner"
 
 export default function ConfirmationPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
+  const LOGO_SIZE = "45mm"
 
   // Properly formatted video URL - ensuring there are no typos or extra spaces
   const videoUrl =
@@ -24,6 +27,12 @@ export default function ConfirmationPage() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-4 bg-black text-white overflow-hidden">
+      {/* Sticky Banner */}
+      <StickyBanner logoWidth={LOGO_SIZE} />
+
+      {/* Main Menu */}
+      <MainMenu />
+
       {/* Background video - simplified implementation */}
       <div className="absolute inset-0 z-0">
         <video

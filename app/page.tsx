@@ -7,7 +7,7 @@ import StickyBanner from "@/components/sticky-banner"
 import TailoringSection from "@/components/tailoring-section"
 import ImageCarouselSection from "@/components/image-carousel-section"
 import ProcessSteps from "@/components/process-steps"
-import MobileMenu from "@/components/mobile-menu"
+import MainMenu from "@/components/main-menu"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -127,8 +127,8 @@ export default function Home() {
       {/* Sticky Banner (visible on all devices) */}
       <StickyBanner logoWidth={LOGO_SIZE} />
 
-      {/* Mobile Menu (only visible on mobile) */}
-      <MobileMenu />
+      {/* Main Menu (visible on all devices) */}
+      <MainMenu />
 
       {/* CURRENT LANDING STRUCTURE - Keep as-is at top of homepage */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">
