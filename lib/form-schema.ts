@@ -9,7 +9,6 @@ export const registrationFormSchema = z.object({
   city: z.string(),
   industrysector: z.string(),
   age: z.number().optional(),
-  private_fitting_interest: z.boolean().default(false), // ✅ required on output
 })
 
 export type RegistrationFormData = z.infer<typeof registrationFormSchema>

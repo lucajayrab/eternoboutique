@@ -8,7 +8,6 @@ import { Loader2 } from "lucide-react"
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
 import SlidingButton from "@/components/sliding-button"
 import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schema"
 
@@ -29,7 +28,6 @@ export default function SectionedRegistrationForm() {
       city: "",
       industrysector: "",
       age: undefined,
-      private_fitting_interest: false, // ✅ Must be defined
     },
   })
 
@@ -223,24 +221,7 @@ export default function SectionedRegistrationForm() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="private_fitting_interest"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-4">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-[#5a5a56] data-[state=checked]:border-[#5a5a56]"
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel className="text-sm font-light">I am interested in private fittings</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              />
+              {/* ❌ Removed: private_fitting_interest checkbox field */}
             </div>
           </div>
 

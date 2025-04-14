@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
         // Preferences
         { name: "industrysector", value: "Test Industry" },
-        { name: "private_fitting_interest", value: "Yes" },
+        // Remove the private_fitting_interest field
       ],
       context: {
         pageUri: "https://eternotailoring.com/diagnostic",

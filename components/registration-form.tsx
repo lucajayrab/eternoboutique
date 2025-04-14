@@ -28,7 +28,6 @@ export default function RegistrationForm() {
       city: "",
       industrysector: "",
       age: undefined,
-      private_fitting_interest: false, // ✅ Must be defined
     },
   })
 

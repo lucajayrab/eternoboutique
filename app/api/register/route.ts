@@ -6,7 +6,7 @@ const PORTAL_ID = "145973953"
 const FORM_ID = "87c8ab28-e698-4394-bc1f-c1da5b434622"
 const HUBSPOT_API_URL = `https://api.hsforms.com/submissions/v3/integration/submit/${PORTAL_ID}/${FORM_ID}`
 
-// Extend the RegistrationFormData type to include the hutk field
+// Make sure the RegistrationRequest interface extends the updated RegistrationFormData
 interface RegistrationRequest extends RegistrationFormData {
   hutk?: string
 }
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
 
         // Preferences
         { name: "industrysector", value: body.industrysector || "" },
-        { name: "private_fitting_interest", value: body.private_fitting_interest ? "Yes" : "No" },
+        // ❌ Removed: private_fitting_interest field
       ],
       context: {
         pageUri: "https://eternotailoring.com",
