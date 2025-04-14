@@ -15,16 +15,15 @@ export default function StickyBanner({
   logoWidth = "45mm",
   alwaysVisible = false,
 }: StickyBannerProps) {
-  const [isVisible, setIsVisible] = useState(false)
+  const [isVisible, setIsVisible] = useState(true) // Always visible by default now
   const [isTransparent, setIsTransparent] = useState(false)
   const pathname = usePathname()
-  const [isMobile, setIsMobile] = useState(false)
 
   // Check if we're on the register page
   const isRegisterPage = pathname === "/register"
 
   useEffect(() => {
-    // If alwaysVisible is true or we're on the register page, always show the banner
+    // If alwaysVisible is true or we're on the register page, always show the banner with background
     if (alwaysVisible || isRegisterPage) {
       setIsVisible(true)
       setIsTransparent(false)
@@ -32,15 +31,13 @@ export default function StickyBanner({
     }
 
     const handleScroll = () => {
-      if (isMobile && pathname === "/") {
-        // Always show the banner on mobile home page
-        setIsVisible(true)
-        // But make it transparent only when at the top of the page
+      // Always show the banner
+      setIsVisible(true)
+
+      // Only on homepage, make it transparent when at the top
+      if (pathname === "/") {
         setIsTransparent(window.scrollY < window.innerHeight - 50)
       } else {
-        // Desktop behavior remains unchanged
-        const scrolled = window.scrollY > window.innerHeight - threshold
-        setIsVisible(scrolled)
         setIsTransparent(false)
       }
     }
@@ -55,24 +52,7 @@ export default function StickyBanner({
     return () => {
       window.removeEventListener("scroll", handleScroll)
     }
-  }, [threshold, alwaysVisible, isRegisterPage, isMobile, pathname])
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    // Initial check
-    checkMobile()
-
-    // Add resize listener
-    window.addEventListener("resize", checkMobile)
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("resize", checkMobile)
-    }
-  }, [])
+  }, [threshold, alwaysVisible, isRegisterPage, pathname])
 
   return (
     <div

@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
-import EternoLogo from "@/components/eterno-logo"
 import SlidingButton from "@/components/sliding-button"
 import StickyBanner from "@/components/sticky-banner"
 import TailoringSection from "@/components/tailoring-section"
@@ -129,15 +128,11 @@ export default function Home() {
       {/* Sticky Banner (visible on all devices) */}
       <StickyBanner logoWidth={LOGO_SIZE} />
 
-      {/* Mobile Menu (only controls, banner is handled separately) */}
+      {/* Mobile Menu (only visible on mobile) */}
       <MobileMenu logoWidth={MOBILE_LOGO_SIZE} />
 
       {/* CURRENT LANDING STRUCTURE - Keep as-is at top of homepage */}
-      <section
-        ref={heroSectionRef}
-        className="relative h-screen w-screen overflow-hidden bg-black pt-[70px] md:pt-0"
-        id="home"
-      >
+      <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">
         {/* Fallback background while video loads or if video fails */}
         {(!videoLoaded || isVideoError) && (
           <div className="absolute inset-0 z-0 bg-black flex items-center justify-center">
@@ -162,11 +157,6 @@ export default function Home() {
             Your browser does not support the video tag.
           </video>
         )}
-
-        {/* ETERNO Logo - now smaller and hidden on mobile (shown in mobile menu) */}
-        <div className="absolute top-6 left-1/2 transform -translate-x-1/2 z-10 hidden md:block">
-          <EternoLogo width={LOGO_SIZE} inverted={true} />
-        </div>
 
         {/* Register Button - now with conditional visibility on desktop, always visible on mobile */}
         <div
