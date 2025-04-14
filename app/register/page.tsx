@@ -5,9 +5,8 @@ import SectionedRegistrationForm from "@/components/sectioned-registration-form"
 import StickyBanner from "@/components/sticky-banner"
 import MobileMenu from "@/components/mobile-menu"
 
-// Define a consistent logo size to match the home page
+// Define a consistent logo size
 const LOGO_SIZE = "45mm"
-const MOBILE_LOGO_SIZE = "40mm"
 
 export default function RegisterPage() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -30,7 +29,7 @@ export default function RegisterPage() {
       <StickyBanner logoWidth={LOGO_SIZE} alwaysVisible={true} />
 
       {/* Mobile Menu - only visible on mobile */}
-      <MobileMenu logoWidth={MOBILE_LOGO_SIZE} />
+      <MobileMenu />
 
       <main className="flex min-h-screen flex-col items-center justify-start pt-24 p-4 bg-[#f5f4f1]">
         <div

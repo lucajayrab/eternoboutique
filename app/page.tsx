@@ -9,9 +9,8 @@ import ImageCarouselSection from "@/components/image-carousel-section"
 import ProcessSteps from "@/components/process-steps"
 import MobileMenu from "@/components/mobile-menu"
 
-// Define a consistent smaller logo size to use in both places
+// Define a consistent logo size
 const LOGO_SIZE = "45mm"
-const MOBILE_LOGO_SIZE = "40mm"
 
 export default function Home() {
   const router = useRouter()
@@ -129,7 +128,7 @@ export default function Home() {
       <StickyBanner logoWidth={LOGO_SIZE} />
 
       {/* Mobile Menu (only visible on mobile) */}
-      <MobileMenu logoWidth={MOBILE_LOGO_SIZE} />
+      <MobileMenu />
 
       {/* CURRENT LANDING STRUCTURE - Keep as-is at top of homepage */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
-import EternoLogo from "./eterno-logo"
 import SlidingButton from "./sliding-button"
 
 interface MobileMenuProps {
@@ -75,18 +74,13 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
 
   return (
     <>
-      {/* Mobile Header */}
+      {/* Mobile Header - Now just contains the menu button */}
       <div
-        className={`md:hidden fixed top-0 left-0 right-0 z-50 h-[70px] flex items-center justify-between px-4 transition-all duration-300 ${
-          isTransparent ? "bg-transparent" : "bg-eterno-sand shadow-md"
-        }`}
+        className={`md:hidden fixed top-0 right-0 z-50 h-[70px] flex items-center justify-end px-4 transition-all duration-300 pointer-events-none`}
       >
-        <div className="flex-1">
-          <EternoLogo width={logoWidth} inverted={true} />
-        </div>
         <button
           onClick={toggleMenu}
-          className="p-2 rounded-full hover:bg-white/10 transition-colors"
+          className={`p-2 rounded-full hover:bg-white/10 transition-colors pointer-events-auto`}
           aria-label={isOpen ? "Close menu" : "Open menu"}
         >
           {isOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
