@@ -29,6 +29,7 @@ export const registrationFormSchema = z.object({
   industrysector: z.string().min(2, {
     message: "Industry must be at least 2 characters.",
   }),
+  // Make this explicitly required (not optional) with a default value
   private_fitting_interest: z.boolean().default(false),
 })
 

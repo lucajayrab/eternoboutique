@@ -16,6 +16,7 @@ export default function RegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
 
+  // Explicitly define the form with the correct type
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationFormSchema),
     defaultValues: {
@@ -27,6 +28,7 @@ export default function RegistrationForm() {
       phonecontact: "",
       email: "",
       industrysector: "",
+      // Explicitly set this as a boolean, not optional
       private_fitting_interest: false,
     },
   })

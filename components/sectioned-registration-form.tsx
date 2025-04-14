@@ -17,6 +17,7 @@ export default function SectionedRegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
 
+  // Explicitly define the form with the correct type
   const form = useForm<RegistrationFormData>({
     resolver: zodResolver(registrationFormSchema),
     defaultValues: {
@@ -28,6 +29,7 @@ export default function SectionedRegistrationForm() {
       countrylocation: "",
       city: "",
       industrysector: "",
+      // Explicitly set this as a boolean, not optional
       private_fitting_interest: false,
     },
   })

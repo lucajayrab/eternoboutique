@@ -6,6 +6,7 @@ const PORTAL_ID = "145973953"
 const FORM_ID = "87c8ab28-e698-4394-bc1f-c1da5b434622"
 const HUBSPOT_API_URL = `https://api.hsforms.com/submissions/v3/integration/submit/${PORTAL_ID}/${FORM_ID}`
 
+// Extend the RegistrationFormData type to include the hutk field
 interface RegistrationRequest extends RegistrationFormData {
   hutk?: string
 }
