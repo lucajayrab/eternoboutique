@@ -5,10 +5,10 @@ import { useState, useEffect, useRef } from "react"
 import SlidingButton from "@/components/sliding-button"
 import StickyBanner from "@/components/sticky-banner"
 import TailoringSection from "@/components/tailoring-section"
+import LifestyleVideoSection from "@/components/lifestyle-video-section"
 import ImageCarouselSection from "@/components/image-carousel-section"
 import ProcessSteps from "@/components/process-steps"
 import MobileMenu from "@/components/main-menu"
-import MainMenu from "@/components/main-menu" //Importing MainMenu
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -131,9 +131,6 @@ export default function Home() {
       {/* Mobile Menu (only visible on mobile) */}
       <MobileMenu />
 
-      {/* Main Menu (visible on all devices) */}
-      <MainMenu />
-
       {/* CURRENT LANDING STRUCTURE - Keep as-is at top of homepage */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">
         {/* Fallback background while video loads or if video fails */}
@@ -204,10 +201,13 @@ export default function Home() {
         <TailoringSection />
       </div>
 
-      {/* IMAGE CAROUSEL SECTION */}
+      {/* IMAGE CAROUSEL SECTION (Boutique Linen Tailoring) */}
       <div id="collection">
         <ImageCarouselSection />
       </div>
+
+      {/* LIFESTYLE VIDEO SECTION - Now positioned after the Boutique Linen Tailoring section */}
+      <LifestyleVideoSection />
 
       {/* PROCESS STEPS SECTION */}
       <div id="process">
