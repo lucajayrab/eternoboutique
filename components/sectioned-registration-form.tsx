@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import SlidingButton from "@/components/sliding-button"
 import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schema"
+import EnhancedPhoneInput from "@/components/enhanced-phone-input"
 
 export default function SectionedRegistrationForm() {
   const router = useRouter()
@@ -95,12 +96,9 @@ export default function SectionedRegistrationForm() {
       if (data.success) {
         // Clear backup on success
         localStorage.removeItem("form_backup")
-        setSubmitSuccess(true)
 
-        // Navigate to confirmation page after a short delay
-        setTimeout(() => {
-          router.push("/confirmation")
-        }, 1500)
+        // Navigate to confirmation page immediately
+        router.push("/confirmation")
       } else {
         // Show error message
         setSubmitError(data.message || "Failed to submit registration. Please try again.")
@@ -138,10 +136,6 @@ export default function SectionedRegistrationForm() {
 
   return (
     <div className="w-full max-w-xl mx-auto bg-[#f5f4f1] p-8 rounded-lg shadow-sm">
-      <h2 id="form-title" className="text-xl font-medium mb-6">
-        Registration Form
-      </h2>
-
       {formBackupRestored && (
         <div className="mb-6 p-3 bg-blue-50 text-blue-700 rounded flex items-center" role="status">
           <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -243,13 +237,12 @@ export default function SectionedRegistrationForm() {
                   <FormItem>
                     <FormLabel className="text-sm text-[#5a5a56] font-light">Phone</FormLabel>
                     <FormControl>
-                      <Input
-                        type="tel"
-                        inputMode="tel"
+                      <EnhancedPhoneInput
+                        control={form.control}
+                        name="phonecontact"
                         placeholder="+44 1234567890"
-                        {...field}
+                        error={fieldState.error?.message}
                         className="font-light text-sm w-full"
-                        autoComplete="tel"
                       />
                     </FormControl>
                     <FormMessage className="font-light" />
@@ -326,16 +319,6 @@ export default function SectionedRegistrationForm() {
             <div className="text-red-500 text-sm font-light mt-4 p-3 bg-red-50 rounded" role="alert">
               {submitError}
               <p className="mt-2">However, your information may have been received. Redirecting shortly...</p>
-            </div>
-          )}
-
-          {submitSuccess && (
-            <div
-              className="text-green-600 text-sm font-light mt-4 p-3 bg-green-50 rounded flex items-center"
-              role="status"
-            >
-              <CheckCircle2 className="mr-2 h-4 w-4" />
-              <span>Thank you for registering your interest. Redirecting to confirmation page...</span>
             </div>
           )}
 

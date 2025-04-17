@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import EternoLogo from "@/components/eterno-logo"
 import MobileMenu from "@/components/main-menu"
-import StickyBanner from "@/components/sticky-banner"
 
 export default function ConfirmationPage() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -27,9 +26,6 @@ export default function ConfirmationPage() {
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-4 bg-black text-white overflow-hidden">
-      {/* Sticky Banner */}
-      <StickyBanner logoWidth={LOGO_SIZE} />
-
       {/* Mobile Menu */}
       <MobileMenu />
 
@@ -61,7 +57,7 @@ export default function ConfirmationPage() {
             showMessage ? "opacity-100 transform-none" : "opacity-0 translate-y-8"
           }`}
         >
-          EXCLUSIVELY YOUR
+          We'll be in touch when the time is right
         </p>
       </div>
     </main>
