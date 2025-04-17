@@ -13,29 +13,23 @@ export async function GET(request: Request) {
     // Get IP address from request headers
     const ipAddress = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "127.0.0.1"
 
-    // Create test data with fields in the specified order
+    // Create test data with the correct field identifiers
     const testData = {
+      submittedAt: Date.now(),
       fields: [
-        // Personal Info
-        { name: "firstname", value: "Test" },
-        { name: "lastname", value: "User" },
-        { name: "age", value: "30" }, // Include age for testing purposes
-
-        // Contact Details (in the requested order)
         { name: "email", value: testEmail },
-        { name: "phonecontact", value: "1234567890" },
+        { name: "firstname", value: "Test" },
+        { name: "0-2/phone", value: "+44 1234567890" }, // Using the exact field identifier
+        { name: "lastname", value: "User" },
         { name: "countrylocation", value: "Test Country" },
         { name: "city", value: "Test City" },
-
-        // Preferences
         { name: "industrysector", value: "Test Industry" },
-        // Remove the private_fitting_interest field
+        { name: "dob", value: "2000-01-01" },
       ],
       context: {
         pageUri: "https://eternotailoring.com/diagnostic",
         pageName: "ETERNŌ Diagnostic Test",
-        hutk: "test-cookie-value", // Test hutk value
-        ipAddress: ipAddress, // Include IP address
+        ipAddress: ipAddress,
       },
       legalConsentOptions: {
         consent: {

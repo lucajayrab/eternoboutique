@@ -69,12 +69,20 @@ export default function EnhancedPhoneInput({
           // Split the current value into country code and national number
           const { countryCode, nationalNumber } = splitPhoneNumber(value || "")
 
+          // Update the handlePhoneChange function to ensure proper formatting
+
           // Function to combine country code and number
           const handlePhoneChange = (newCountryCode: string, newNationalNumber: string) => {
             // Remove any non-digit characters from the national number
-            const cleanNumber = newNationalNumber.replace(/\D/g, "")
-            // Combine country code and cleaned national number
-            onChange(`${newCountryCode}${cleanNumber ? " " + cleanNumber : ""}`)
+            const cleanNumber = newNationalNumber.replace(/[^\d]/g, "")
+
+            // Ensure we have a clean country code (just in case)
+            const cleanCountryCode = newCountryCode.startsWith("+")
+              ? newCountryCode
+              : `+${newCountryCode.replace(/[^\d]/g, "")}`
+
+            // Combine country code and cleaned national number - ensure proper formatting for HubSpot
+            onChange(`${cleanCountryCode}${cleanNumber ? " " + cleanNumber : ""}`)
           }
 
           return (
