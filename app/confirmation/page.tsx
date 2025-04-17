@@ -7,6 +7,8 @@ import MobileMenu from "@/components/main-menu"
 export default function ConfirmationPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
+
+  // Define logo size to match sticky banner
   const LOGO_SIZE = "45mm"
 
   // Properly formatted video URL - ensuring there are no typos or extra spaces
@@ -49,7 +51,7 @@ export default function ConfirmationPage() {
       {/* Content */}
       <div className="relative z-20 w-full max-w-md text-center">
         <div className={`transition-all duration-1000 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-          <EternoLogo width="60mm" inverted={true} className="mx-auto mb-8" />
+          <EternoLogo width={LOGO_SIZE} inverted={true} className="mx-auto mb-8" />
         </div>
 
         <p

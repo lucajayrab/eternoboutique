@@ -18,6 +18,9 @@ export default function RegisterPage() {
     // Slight delay before showing the form
     const formTimer = setTimeout(() => setShowForm(true), 300)
 
+    // Ensure the page starts at the top
+    window.scrollTo(0, 0)
+
     return () => {
       clearTimeout(formTimer)
     }
@@ -31,7 +34,7 @@ export default function RegisterPage() {
       {/* Mobile Menu - only visible on mobile */}
       <MobileMenu />
 
-      <main className="flex min-h-screen flex-col items-center justify-start pt-24 p-4 bg-[#f5f4f1]">
+      <main className="flex min-h-screen flex-col items-center justify-start pt-28 md:pt-32 p-4 bg-[#f5f4f1]">
         <div
           className={`w-full max-w-xl transition-all duration-1000 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}
         >

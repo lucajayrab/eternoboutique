@@ -194,7 +194,7 @@ export default function Home() {
       </section>
 
       {/* NEW SIMPLIFIED ABOUT SECTION */}
-      <div ref={aboutSectionRef} id="about" className="w-full bg-[#f5f4f1] py-16 md:py-24">
+      <div ref={aboutSectionRef} id="about" className="w-full bg-[#f5f4f1] py-16 md:py-24 pt-28 md:pt-32">
         <div className="container mx-auto px-6 md:px-8 max-w-4xl">
           <div className="text-center mb-10">
             <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
