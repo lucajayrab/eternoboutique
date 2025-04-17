@@ -4,9 +4,6 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import SlidingButton from "@/components/sliding-button"
 import StickyBanner from "@/components/sticky-banner"
-import TailoringSection from "@/components/tailoring-section"
-import LifestyleVideoSection from "@/components/lifestyle-video-section"
-import ImageCarouselSection from "@/components/image-carousel-section"
 import ProcessSteps from "@/components/process-steps"
 import MobileMenu from "@/components/main-menu"
 
@@ -21,7 +18,7 @@ export default function Home() {
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
-  const tailoringSectionRef = useRef<HTMLDivElement>(null)
+  const aboutSectionRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
 
   // State for button visibility
@@ -107,8 +104,8 @@ export default function Home() {
   }
 
   const handleScrollDown = () => {
-    if (tailoringSectionRef.current) {
-      tailoringSectionRef.current.scrollIntoView({ behavior: "smooth" })
+    if (aboutSectionRef.current) {
+      aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
     }
   }
 
@@ -196,25 +193,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TAILORING SECTION */}
-      <div ref={tailoringSectionRef} id="tailoring">
-        <TailoringSection />
-      </div>
+      {/* NEW SIMPLIFIED ABOUT SECTION */}
+      <div ref={aboutSectionRef} id="about" className="w-full bg-[#f5f4f1] py-16 md:py-24">
+        <div className="container mx-auto px-6 md:px-8 max-w-4xl">
+          <div className="text-center mb-10">
+            <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
+              Boutique Linen Tailoring, Made in Italy
+            </h2>
+          </div>
 
-      {/* IMAGE CAROUSEL SECTION (Boutique Linen Tailoring) */}
-      <div id="collection">
-        <ImageCarouselSection />
-      </div>
+          <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed space-y-6 text-center md:text-left">
+            <p>
+              ETERNO represents Mediterranean sophistication through timeless tailoring. We currently have a presence in
+              London with a unique tailoring room based in the heart of Mayfair.
+            </p>
 
-      {/* LIFESTYLE VIDEO SECTION - Now positioned after the Boutique Linen Tailoring section */}
-      <LifestyleVideoSection />
+            <p>
+              Our current service offers bespoke linen tailoring, where items will be manufactured from the best
+              artisans of Napoli who support global fashion houses.
+            </p>
+
+            <p>
+              We invite clients to view our capsule collection featuring six distinctive shirt colours and four trouser
+              colours, each meticulously crafted from premium Italian linen.
+            </p>
+
+            <p>
+              While our capsule collection provides an excellent starting point, orders can be expanded to meet the
+              client's specific wishes. We further offer fully customisable features.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* PROCESS STEPS SECTION */}
       <div id="process">
         <ProcessSteps />
       </div>
 
-      {/* FINAL CTA SECTION - updated background color */}
+      {/* FINAL CTA SECTION */}
       <div ref={contentRef}>
         {/* Slimmer Register Interest CTA */}
         <section className="py-12 md:py-16 bg-[#eae8e3]">
