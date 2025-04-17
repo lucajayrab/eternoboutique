@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Loader2 } from "lucide-react"
-
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import SlidingButton from "@/components/sliding-button"
+import EnhancedPhoneInput from "@/components/enhanced-phone-input"
 import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schema"
 
 export default function RegistrationForm() {
@@ -157,10 +157,16 @@ export default function RegistrationForm() {
           <FormField
             control={form.control}
             name="phonecontact"
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <FormItem>
                 <FormControl>
-                  <Input type="tel" placeholder="Phone" {...field} className="font-light text-sm w-full" />
+                  <EnhancedPhoneInput
+                    control={form.control}
+                    name="phonecontact"
+                    placeholder="Phone"
+                    error={fieldState.error?.message}
+                    className="font-light text-sm w-full"
+                  />
                 </FormControl>
                 <FormMessage className="font-light" />
               </FormItem>

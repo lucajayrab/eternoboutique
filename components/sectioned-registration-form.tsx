@@ -1,20 +1,22 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { Loader2 } from "lucide-react"
-
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import SlidingButton from "@/components/sliding-button"
+import EnhancedPhoneInput from "@/components/enhanced-phone-input"
 import { registrationFormSchema, type RegistrationFormData } from "@/lib/form-schema"
 
 export default function SectionedRegistrationForm() {
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
+  const [isPhoneInputAvailable, setIsPhoneInputAvailable] = useState(false)
+  const [PhoneInputField, setPhoneInputField] = useState<any>(null)
 
   // Use the shared schema and type
   const form = useForm<RegistrationFormData>({
@@ -30,6 +32,22 @@ export default function SectionedRegistrationForm() {
       age: undefined,
     },
   })
+
+  // Try to load the advanced phone input component, but don't rely on it
+  useEffect(() => {
+    const loadPhoneInput = async () => {
+      try {
+        const module = await import("@/components/phone-input")
+        setPhoneInputField(() => module.default)
+        setIsPhoneInputAvailable(true)
+      } catch (error) {
+        console.error("Failed to load phone input component:", error)
+        setIsPhoneInputAvailable(false)
+      }
+    }
+
+    loadPhoneInput()
+  }, [])
 
   // Function to extract the HubSpot tracking cookie
   const getHutk = () => {
@@ -165,11 +183,17 @@ export default function SectionedRegistrationForm() {
               <FormField
                 control={form.control}
                 name="phonecontact"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className="text-sm text-[#5a5a56] font-light">Phone</FormLabel>
                     <FormControl>
-                      <Input type="tel" placeholder="" {...field} className="font-light text-sm w-full" />
+                      {/* Always use our enhanced phone input in the preview environment */}
+                      <EnhancedPhoneInput
+                        control={form.control}
+                        name="phonecontact"
+                        error={fieldState.error?.message}
+                        className="font-light text-sm w-full"
+                      />
                     </FormControl>
                     <FormMessage className="font-light" />
                   </FormItem>
@@ -221,7 +245,6 @@ export default function SectionedRegistrationForm() {
                   </FormItem>
                 )}
               />
-              {/* ❌ Removed: private_fitting_interest checkbox field */}
             </div>
           </div>
 

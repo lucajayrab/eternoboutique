@@ -33,13 +33,13 @@ export async function POST(request: Request) {
 
         // Contact Details (in the requested order)
         { name: "email", value: body.email || "" },
+        // Ensure phone number is in international format (it should already be from the component)
         { name: "phonecontact", value: body.phonecontact || "" },
         { name: "countrylocation", value: body.countrylocation || "" },
         { name: "city", value: body.city || "" },
 
         // Preferences
         { name: "industrysector", value: body.industrysector || "" },
-        // ❌ Removed: private_fitting_interest field
       ],
       context: {
         pageUri: "https://eternotailoring.com",
