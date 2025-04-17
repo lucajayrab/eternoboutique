@@ -100,18 +100,11 @@ export default function MobileMenu() {
               HOME
             </a>
             <a
-              href="#tailoring"
+              href="#about"
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
-              ABOUT
-            </a>
-            <a
-              href="#collection"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              COLLECTION
+              ABOUT US
             </a>
             <a
               href="#process"

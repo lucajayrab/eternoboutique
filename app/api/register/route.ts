@@ -33,8 +33,8 @@ export async function POST(request: Request) {
 
         // Contact Details (in the requested order)
         { name: "email", value: body.email || "" },
-        // Ensure phone number is in international format (it should already be from the component)
-        { name: "phonecontact", value: body.phonecontact || "" },
+        // Format phone number: remove spaces to ensure consistent format
+        { name: "phone", value: body.phonecontact ? body.phonecontact.replace(/\s+/g, "") : "" },
         { name: "countrylocation", value: body.countrylocation || "" },
         { name: "city", value: body.city || "" },
 

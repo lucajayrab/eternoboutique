@@ -198,29 +198,31 @@ export default function Home() {
         <div className="container mx-auto px-6 md:px-8 max-w-4xl">
           <div className="text-center mb-10">
             <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
-              Boutique Linen Tailoring, Made in Italy
+              ROOTED IN ITALY, REFINED FOR YOU
             </h2>
           </div>
 
           <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed space-y-6 text-center md:text-left">
             <p>
-              ETERNO represents Mediterranean sophistication through timeless tailoring. We currently have a presence in
-              London with a unique tailoring room based in the heart of Mayfair.
+              ETERNO represents Mediterranean sophistication through bespoke tailoring and the craftsmanship of our
+              Neapolitan artisans. We currently offer boutique appointments at our unit in the heart of Mayfair, or
+              private fittings arranged to suit the client's preferred location.
             </p>
 
             <p>
-              Our current service offers bespoke linen tailoring, where items will be manufactured from the best
-              artisans of Napoli who support global fashion houses.
+              Our current service is centred around bespoke linen tailoring, with plans to expand our offering in the
+              near future.
             </p>
 
             <p>
-              We invite clients to view our capsule collection featuring six distinctive shirt colours and four trouser
-              colours, each meticulously crafted from premium Italian linen.
+              We are now opening our doors to a select group of clients to experience our capsule collection, which
+              features six distinctive shirt colours and four trouser colours, each meticulously crafted from premium
+              Italian linen.
             </p>
 
             <p>
-              While our capsule collection provides an excellent starting point, orders can be expanded to meet the
-              client's specific wishes. We further offer fully customisable features.
+              While the capsule collection provides a refined starting point, orders can be tailored to suit the
+              client's individual preferences, with the option of full customisation.
             </p>
           </div>
         </div>

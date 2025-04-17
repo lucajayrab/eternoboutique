@@ -258,3 +258,40 @@ video {
   text-transform: uppercase;
   color: #6d6d6d;
 }
+
+/* Custom select styling to match input fields */
+select.border-eterno-text\/20 {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+  background-position: right 0.25rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2rem;
+}
+
+/* Remove browser default styling for number inputs */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* Ensure phone input fields align properly */
+.phone-input-container {
+  display: flex;
+  align-items: center;
+}
+
+.phone-input-container select {
+  flex: 0 0 auto;
+  width: 40%;
+  margin-right: 0.5rem;
+}
+
+.phone-input-container input {
+  flex: 1 1 auto;
+}
