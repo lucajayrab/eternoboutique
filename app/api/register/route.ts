@@ -28,8 +28,8 @@ export async function POST(request: Request) {
         // Personal Info
         { name: "firstname", value: body.firstname || "" },
         { name: "lastname", value: body.lastname || "" },
-        // Only include age if it's provided
-        ...(body.age !== undefined ? [{ name: "age", value: body.age.toString() }] : []),
+        // Use dob instead of age
+        ...(body.dob ? [{ name: "dob", value: body.dob }] : []),
 
         // Contact Details (in the requested order)
         { name: "email", value: body.email || "" },

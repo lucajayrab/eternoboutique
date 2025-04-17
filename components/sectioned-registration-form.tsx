@@ -29,7 +29,7 @@ export default function SectionedRegistrationForm() {
       countrylocation: "",
       city: "",
       industrysector: "",
-      age: undefined,
+      dob: "", // Changed from age to dob
     },
   })
 
@@ -138,23 +138,12 @@ export default function SectionedRegistrationForm() {
               />
               <FormField
                 control={form.control}
-                name="age"
+                name="dob"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm text-[#5a5a56] font-light">Age</FormLabel>
+                    <FormLabel className="text-sm text-[#5a5a56] font-light">Date of Birth</FormLabel>
                     <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        placeholder=""
-                        {...field}
-                        value={field.value === undefined ? "" : field.value}
-                        onChange={(e) => {
-                          const value = e.target.value === "" ? undefined : Number.parseInt(e.target.value, 10)
-                          field.onChange(value)
-                        }}
-                        className="font-light text-sm w-full"
-                      />
+                      <Input type="date" placeholder="" {...field} className="font-light text-sm w-full" />
                     </FormControl>
                     <FormMessage className="font-light" />
                   </FormItem>

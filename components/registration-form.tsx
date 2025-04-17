@@ -27,7 +27,7 @@ export default function RegistrationForm() {
       countrylocation: "",
       city: "",
       industrysector: "",
-      age: undefined,
+      dob: "", // Changed from age to dob
     },
   })
 
@@ -109,22 +109,11 @@ export default function RegistrationForm() {
           />
           <FormField
             control={form.control}
-            name="age"
+            name="dob"
             render={({ field }) => (
               <FormItem>
                 <FormControl>
-                  <Input
-                    type="number"
-                    min="0"
-                    placeholder="Age"
-                    {...field}
-                    value={field.value === undefined ? "" : field.value}
-                    onChange={(e) => {
-                      const value = e.target.value === "" ? undefined : Number.parseInt(e.target.value, 10)
-                      field.onChange(value)
-                    }}
-                    className="font-light text-sm w-full"
-                  />
+                  <Input type="date" placeholder="Date of Birth" {...field} className="font-light text-sm w-full" />
                 </FormControl>
                 <FormMessage className="font-light" />
               </FormItem>

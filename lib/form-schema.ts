@@ -13,7 +13,7 @@ export const registrationFormSchema = z.object({
   countrylocation: z.string().min(1, "Country is required"),
   city: z.string().min(1, "City is required"),
   industrysector: z.string().min(1, "Industry is required"),
-  age: z.number().optional(),
+  dob: z.string().optional(), // Changed from age (number) to dob (string)
 })
 
 export type RegistrationFormData = z.infer<typeof registrationFormSchema>
