@@ -7,23 +7,35 @@ import { useCookieConsent } from "@/contexts/cookie-consent-context"
 export default function CookieConsentBanner() {
   const { cookiesAccepted, acceptCookies } = useCookieConsent()
   const [isVisible, setIsVisible] = useState(false)
+  const [isRendered, setIsRendered] = useState(false)
 
   useEffect(() => {
-    // Short delay before showing the banner for better UX
+    // First check if cookies are already accepted
+    if (cookiesAccepted) {
+      return
+    }
+
+    // Delay before showing the banner - increased to 2.5 seconds
     const timer = setTimeout(() => {
-      setIsVisible(!cookiesAccepted)
-    }, 1000)
+      setIsRendered(true)
+      // Add a small additional delay for the animation to work properly
+      setTimeout(() => {
+        setIsVisible(true)
+      }, 50)
+    }, 2500)
 
     return () => clearTimeout(timer)
   }, [cookiesAccepted])
 
-  if (!isVisible) return null
+  // If cookies are accepted or banner shouldn't be rendered yet, don't render anything
+  if (cookiesAccepted || !isRendered) return null
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 transition-transform duration-500 ease-in-out"
+      className="fixed bottom-0 left-0 right-0 z-50 transition-all duration-700 ease-in-out"
       style={{
         transform: isVisible ? "translateY(0)" : "translateY(100%)",
+        opacity: isVisible ? 1 : 0,
       }}
     >
       <div className="bg-[#f5f4f1] border-t border-[#e0ddd2] shadow-lg">
@@ -31,7 +43,7 @@ export default function CookieConsentBanner() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex-1 pr-4">
               <p className="font-mulish text-sm text-[#5a5a56] leading-relaxed">
-                ETERNO uses cookies to enhance your browsing experience and analyze site traffic. By clicking "Accept",
+                ETERNO uses cookies to enhance your browsing experience and analyse site traffic. By clicking "Accept",
                 you consent to our use of cookies as described in our{" "}
                 <Link href="/cookie-policy" className="underline hover:text-eterno-accent transition-colors">
                   Cookie Policy

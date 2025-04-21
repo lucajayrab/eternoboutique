@@ -1,8 +1,21 @@
-import Link from "next/link"
+"use client"
+
+import { useRouter } from "next/navigation"
+import SlidingButton from "@/components/sliding-button"
+import StickyBanner from "@/components/sticky-banner"
 
 export default function CookiePolicyPage() {
+  const router = useRouter()
+
+  const handleHomeClick = () => {
+    router.push("/")
+  }
+
   return (
     <div className="bg-[#f5f4f1] min-h-screen pt-28 pb-20">
+      {/* Add StickyBanner with alwaysVisible prop */}
+      <StickyBanner alwaysVisible={true} />
+
       <div className="container mx-auto px-6 md:px-8 max-w-4xl">
         <h1 className="font-mulish text-2xl md:text-3xl font-light tracking-widest uppercase text-[#5a5a56] text-center mb-12">
           Cookie Policy
@@ -28,7 +41,7 @@ export default function CookiePolicyPage() {
               How We Use Cookies
             </h2>
             <p>
-              At ETERNO, we use cookies to enhance your experience on our website, analyze how our site is used, and
+              At ETERNO, we use cookies to enhance your experience on our website, analyse how our site is used, and
               assist in our marketing efforts. Our commitment to craftsmanship and quality extends to how we handle your
               data—with precision and respect.
             </p>
@@ -149,8 +162,8 @@ export default function CookiePolicyPage() {
             </h2>
             <p>
               If you have any questions about our use of cookies, please contact us at{" "}
-              <a href="mailto:privacy@eternotailoring.com" className="text-eterno-accent hover:underline">
-                privacy@eternotailoring.com
+              <a href="mailto:enquiries@eternotailoring.com" className="text-eterno-accent hover:underline">
+                enquiries@eternotailoring.com
               </a>
               .
             </p>
@@ -164,12 +177,9 @@ export default function CookiePolicyPage() {
         </div>
 
         <div className="mt-8 text-center">
-          <Link
-            href="/"
-            className="inline-block px-8 py-3 border border-[#5a5a56] text-[#5a5a56] hover:bg-[#5a5a56] hover:text-white transition-colors duration-300 font-mulish tracking-widest text-sm"
-          >
+          <SlidingButton onClick={handleHomeClick} variant="dark" duration={1000} className="min-w-[200px] py-3">
             RETURN TO HOME
-          </Link>
+          </SlidingButton>
         </div>
       </div>
     </div>
