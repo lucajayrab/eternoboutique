@@ -41,12 +41,18 @@ export default function Home() {
   // Get the video URL from environment variable
   useEffect(() => {
     // Access the environment variable after component mounts (client-side)
-    const url = process.env.NEXT_PUBLIC_VIDEO_URL
-    if (url) {
-      setVideoUrl(url)
+    const envUrl = process.env.NEXT_PUBLIC_VIDEO_URL
+
+    // Fallback URL if environment variable is not set
+    const fallbackUrl =
+      "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
+
+    if (envUrl) {
+      setVideoUrl(envUrl)
+      console.log("Using environment variable for video URL")
     } else {
-      console.error("NEXT_PUBLIC_VIDEO_URL environment variable is not set")
-      setIsVideoError(true)
+      console.log("NEXT_PUBLIC_VIDEO_URL not set, using fallback URL")
+      setVideoUrl(fallbackUrl)
     }
   }, [])
 
@@ -148,7 +154,10 @@ export default function Home() {
               videoLoaded ? "opacity-100" : "opacity-0"
             }`}
             onLoadedData={handleVideoLoaded}
-            onError={handleVideoError}
+            onError={(e) => {
+              console.error("Video failed to load:", e)
+              setIsVideoError(true)
+            }}
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.

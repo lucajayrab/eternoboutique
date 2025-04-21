@@ -4,6 +4,8 @@ import { Mulish } from "next/font/google"
 import "./globals.css"
 import PageTransition from "@/components/page-transition"
 import Script from "next/script"
+import { CookieConsentProvider } from "@/contexts/cookie-consent-context"
+import CookieConsentBanner from "@/components/cookie-consent-banner"
 
 const mulish = Mulish({
   subsets: ["latin"],
@@ -37,16 +39,19 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
       </head>
       <body className={`${mulish.variable}`}>
-        <PageTransition>{children}</PageTransition>
+        <CookieConsentProvider>
+          <PageTransition>{children}</PageTransition>
+          <CookieConsentBanner />
 
-        {/* HubSpot tracking script */}
-        <Script
-          id="hs-script-loader"
-          src="//js-eu1.hs-scripts.com/145973953.js"
-          strategy="afterInteractive"
-          data-hs-cookie-categories="analytics,advertisement"
-          data-hs-privacy="true"
-        />
+          {/* HubSpot tracking script - Note: As requested, we're not deferring script loading based on consent */}
+          <Script
+            id="hs-script-loader"
+            src="//js-eu1.hs-scripts.com/145973953.js"
+            strategy="afterInteractive"
+            data-hs-cookie-categories="analytics,advertisement"
+            data-hs-privacy="true"
+          />
+        </CookieConsentProvider>
       </body>
     </html>
   )
