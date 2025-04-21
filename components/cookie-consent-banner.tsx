@@ -7,28 +7,32 @@ import { useCookieConsent } from "@/contexts/cookie-consent-context"
 export default function CookieConsentBanner() {
   const { cookiesAccepted, acceptCookies } = useCookieConsent()
   const [isVisible, setIsVisible] = useState(false)
-  const [isRendered, setIsRendered] = useState(false)
 
   useEffect(() => {
-    // First check if cookies are already accepted
+    // Log for debugging
+    console.log("CookieConsentBanner mounted, cookiesAccepted:", cookiesAccepted)
+
+    // If cookies are already accepted, don't show the banner
     if (cookiesAccepted) {
+      console.log("Cookies already accepted, not showing banner")
       return
     }
 
-    // Delay before showing the banner - increased to 2.5 seconds
+    // Set a timeout to show the banner after 2.5 seconds
     const timer = setTimeout(() => {
-      setIsRendered(true)
-      // Add a small additional delay for the animation to work properly
-      setTimeout(() => {
-        setIsVisible(true)
-      }, 50)
+      console.log("Setting banner to visible")
+      setIsVisible(true)
     }, 2500)
 
-    return () => clearTimeout(timer)
+    return () => {
+      clearTimeout(timer)
+    }
   }, [cookiesAccepted])
 
-  // If cookies are accepted or banner shouldn't be rendered yet, don't render anything
-  if (cookiesAccepted || !isRendered) return null
+  // If cookies are accepted, don't render anything
+  if (cookiesAccepted) {
+    return null
+  }
 
   return (
     <div
@@ -53,7 +57,10 @@ export default function CookieConsentBanner() {
             </div>
             <div className="flex-shrink-0">
               <button
-                onClick={acceptCookies}
+                onClick={() => {
+                  console.log("Accept button clicked")
+                  acceptCookies()
+                }}
                 className="w-full md:w-auto px-8 py-3 bg-[#5a5a56] text-white hover:bg-[#4a4a46] transition-colors font-mulish tracking-widest text-xs uppercase"
                 aria-label="Accept cookies"
               >

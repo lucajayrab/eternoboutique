@@ -5,6 +5,7 @@ import { createContext, useContext, useState, useEffect, type ReactNode } from "
 type CookieConsentContextType = {
   cookiesAccepted: boolean
   acceptCookies: () => void
+  resetCookieConsent: () => void // Add a function to reset consent (for testing)
 }
 
 const CookieConsentContext = createContext<CookieConsentContextType | undefined>(undefined)
@@ -15,20 +16,44 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check if consent has been given previously
-    const storedConsent = localStorage.getItem("eterno_cookie_consent")
-    if (storedConsent === "accepted") {
-      setCookiesAccepted(true)
+    try {
+      const storedConsent = localStorage.getItem("eterno_cookie_consent")
+      console.log("Cookie consent from localStorage:", storedConsent)
+      if (storedConsent === "accepted") {
+        setCookiesAccepted(true)
+      }
+    } catch (error) {
+      console.error("Error accessing localStorage:", error)
+      // If localStorage is not available, we'll show the banner
     }
     setIsLoaded(true)
   }, [])
 
   const acceptCookies = () => {
-    localStorage.setItem("eterno_cookie_consent", "accepted")
+    try {
+      localStorage.setItem("eterno_cookie_consent", "accepted")
+      console.log("Cookie consent saved to localStorage")
+    } catch (error) {
+      console.error("Error saving to localStorage:", error)
+    }
     setCookiesAccepted(true)
   }
 
+  // Function to reset cookie consent (for testing)
+  const resetCookieConsent = () => {
+    try {
+      localStorage.removeItem("eterno_cookie_consent")
+      console.log("Cookie consent reset")
+    } catch (error) {
+      console.error("Error removing from localStorage:", error)
+    }
+    setCookiesAccepted(false)
+  }
+
   return (
-    <CookieConsentContext.Provider value={{ cookiesAccepted, acceptCookies }}>{children}</CookieConsentContext.Provider>
+    <CookieConsentContext.Provider value={{ cookiesAccepted, acceptCookies, resetCookieConsent }}>
+      {children}
+    </CookieConsentContext.Provider>
   )
 }
 
