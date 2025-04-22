@@ -19,7 +19,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Klaviyo API key is not available" }, { status: 500 })
     }
 
-    // Step 1: Create or update profile using new API format
+    // Verify list ID
+    const listId = "SsLL3C"
+    console.log("Using Klaviyo list ID:", listId)
+
+    // Step 1: Create or update profile with consent
     const profileData = {
       data: {
         type: "profile",
@@ -33,6 +37,10 @@ export async function POST(request: Request) {
             country: countrylocation || "",
             sector: industrysector || "",
             fitting_preference: fittingPreference || "Not specified",
+            source: "Klaviyo Test Form",
+            consent_method: "Signup Form",
+            consent_timestamp: new Date().toISOString(),
+            has_email_consent: true,
           },
         },
       },
@@ -40,6 +48,7 @@ export async function POST(request: Request) {
 
     console.log("Klaviyo profile payload:", JSON.stringify(profileData, null, 2))
 
+    // Create or update profile
     const profileResponse = await fetch("https://a.klaviyo.com/api/profiles", {
       method: "POST",
       headers: {
@@ -54,7 +63,6 @@ export async function POST(request: Request) {
     const profileStatus = profileResponse.status
     const profileResponseText = await profileResponse.text()
     let profileId = ""
-    let duplicateProfileFound = false
 
     // Handle successful profile creation
     if (profileResponse.ok) {
@@ -75,7 +83,6 @@ export async function POST(request: Request) {
           errorData.errors[0].meta.duplicate_profile_id
         ) {
           profileId = errorData.errors[0].meta.duplicate_profile_id
-          duplicateProfileFound = true
           console.log("Found existing Klaviyo profile. Using profile ID:", profileId)
         } else {
           console.error("Unexpected format in duplicate profile error:", profileResponseText)
@@ -102,9 +109,6 @@ export async function POST(request: Request) {
     }
 
     // Step 2: Add profile to list
-    const listId = "SsLL3C"
-
-    // UPDATED: Using the correct endpoint for adding profiles to lists
     const subscribeEndpoint = `https://a.klaviyo.com/api/lists/${listId}/relationships/profiles`
 
     const listSubscriptionData = {
@@ -141,9 +145,10 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        message: duplicateProfileFound
-          ? "User already exists and was added to the list"
-          : "User successfully subscribed to Klaviyo",
+        message:
+          profileStatus === 409
+            ? "User already exists and was added to the list"
+            : "User successfully subscribed to Klaviyo",
       },
       { status: 200 },
     )

@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     const keyType = apiKey.startsWith("pk_") ? "Public Key" : "Private Key"
     console.log(`API Key found (${keyType}), first 5 chars:`, apiKey.substring(0, 5))
 
-    // 2. Prepare test data for Klaviyo using new API format
+    // 2. Prepare test data for Klaviyo using current API format
     const profileDataPayload = {
       data: {
         type: "profile",
@@ -50,6 +50,9 @@ export async function GET(request: Request) {
             city: "Test City",
             country: "Test Country",
             source: "Debug API",
+            consent_method: "Signup Form",
+            consent_timestamp: new Date().toISOString(),
+            has_email_consent: true,
           },
         },
       },
@@ -57,7 +60,7 @@ export async function GET(request: Request) {
 
     console.log("Sending test data to Klaviyo:", JSON.stringify(profileDataPayload, null, 2))
 
-    // 3. Create or update profile using new API
+    // 3. Create or update profile
     const profileResponse = await fetch("https://a.klaviyo.com/api/profiles", {
       method: "POST",
       headers: {
@@ -70,18 +73,14 @@ export async function GET(request: Request) {
     })
 
     const profileStatus = profileResponse.status
-    const profileText = await profileResponse.text()
-
-    console.log("Klaviyo profile response status:", profileStatus)
-    console.log("Klaviyo profile response body:", profileText)
-
-    // Parse profile response
-    let profileData
+    const profileResponseText = await profileResponse.text()
     let profileId = ""
     let duplicateProfileFound = false
 
+    // Parse profile response
+    let profileData
     try {
-      profileData = JSON.parse(profileText)
+      profileData = JSON.parse(profileResponseText)
 
       // Handle successful profile creation
       if (profileResponse.ok) {
@@ -103,7 +102,7 @@ export async function GET(request: Request) {
         }
       }
     } catch (e) {
-      profileData = { text: profileText }
+      profileData = { text: profileResponseText }
     }
 
     // If profile creation failed and it's not a duplicate profile, return error
@@ -116,7 +115,7 @@ export async function GET(request: Request) {
         apiKeyPrefix: apiKey.substring(0, 5),
         requestPayload: profileDataPayload,
         response: profileData,
-        rawResponse: profileText,
+        rawResponse: profileResponseText,
         error: "Failed to create/update profile",
         nextSteps: "Check the error response and make necessary adjustments",
       })
@@ -133,7 +132,7 @@ export async function GET(request: Request) {
       const listId = "SsLL3C"
       console.log("Using Klaviyo list ID:", listId)
 
-      // UPDATED: Using the correct endpoint for adding profiles to lists
+      // Using the correct endpoint for adding profiles to lists
       const subscribeEndpoint = `https://a.klaviyo.com/api/lists/${listId}/relationships/profiles`
 
       const listSubscriptionData = {

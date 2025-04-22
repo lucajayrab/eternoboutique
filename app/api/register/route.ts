@@ -83,24 +83,23 @@ export async function POST(request: Request) {
       responseData = { error: "Invalid JSON response", rawResponse: responseText }
     }
 
-    // KLAVIYO INTEGRATION - Send the same data to Klaviyo with improved error handling
+    // KLAVIYO INTEGRATION - Using current API with consent
     try {
       // Get API key from environment or use the provided one
       const apiKey = process.env.KLAVIYO_API_KEY || "pk_8175d440292244baacd6fa6f30d05e68d2"
 
       if (apiKey) {
-        console.log("Sending data to Klaviyo...")
+        console.log("Sending data to Klaviyo using current API...")
 
         // Determine key type
         const keyType = apiKey.startsWith("pk_") ? "Public Key" : "Private Key"
         console.log(`Using ${keyType} for Klaviyo API`)
 
-        // Verify list ID - UPDATED LIST ID
+        // Verify list ID
         const listId = "SsLL3C"
         console.log("Using Klaviyo list ID:", listId)
 
-        // NEW API FORMAT for Klaviyo
-        // Step 1: Create a profile
+        // Step 1: Create or update profile with consent
         const profileData = {
           data: {
             type: "profile",
@@ -115,6 +114,9 @@ export async function POST(request: Request) {
                 sector: body.industrysector || "",
                 dob: body.dob || "",
                 source: "Registration Form",
+                consent_method: "Signup Form",
+                consent_timestamp: new Date().toISOString(),
+                has_email_consent: true,
               },
             },
           },
@@ -171,7 +173,7 @@ export async function POST(request: Request) {
 
         // Step 2: Add profile to list (only if we have a profile ID)
         if (profileId) {
-          // UPDATED: Using the correct endpoint for adding profiles to lists
+          // Using the correct endpoint for adding profiles to lists
           const subscribeEndpoint = `https://a.klaviyo.com/api/lists/${listId}/relationships/profiles`
 
           const listSubscriptionData = {
