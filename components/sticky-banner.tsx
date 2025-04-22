@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
+import Link from "next/link"
 import EternoLogo from "./eterno-logo"
 
 interface StickyBannerProps {
@@ -61,7 +62,13 @@ export default function StickyBanner({
       } ${isTransparent ? "bg-transparent" : "bg-eterno-sand shadow-md"}`}
     >
       <div className="h-full flex items-center justify-center px-6">
-        <EternoLogo width={logoWidth} inverted={true} className="hover:opacity-80 transition-opacity duration-300" />
+        <Link href="/">
+          <EternoLogo
+            width={logoWidth}
+            inverted={true}
+            className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+          />
+        </Link>
       </div>
     </div>
   )
