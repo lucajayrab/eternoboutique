@@ -207,7 +207,7 @@ export default function Home() {
         <div className="container mx-auto px-6 md:px-8 max-w-4xl">
           <div className="text-center mb-10">
             <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
-              ROOTED IN ITALY, REFINED FOR YOU
+              BOUTIQUE LINEN TAILORING
             </h2>
           </div>
 

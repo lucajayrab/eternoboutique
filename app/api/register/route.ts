@@ -118,6 +118,7 @@ export async function POST(request: Request) {
                 consent_timestamp: new Date().toISOString(),
                 has_email_consent: true,
               },
+              consent: ["email"], // Add explicit consent for email marketing
             },
           },
         }

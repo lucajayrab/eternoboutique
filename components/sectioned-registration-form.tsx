@@ -326,6 +326,11 @@ export default function SectionedRegistrationForm() {
             </div>
           )}
 
+          {/* Add consent text here */}
+          <div className="text-xs text-[#5a5a56]/70 text-center mt-6 mb-4">
+            By submitting this form, you agree to receive marketing emails from ETERNO. You can unsubscribe at any time.
+          </div>
+
           <div className="flex justify-center mt-10">
             {isSubmitting ? (
               <button

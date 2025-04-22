@@ -54,6 +54,7 @@ export async function GET(request: Request) {
             consent_timestamp: new Date().toISOString(),
             has_email_consent: true,
           },
+          consent: ["email"], // Add explicit consent for email marketing
         },
       },
     }
