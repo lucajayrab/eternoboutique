@@ -38,6 +38,7 @@ export async function GET(request: Request) {
     console.log(`API Key found (${keyType}), first 5 chars:`, apiKey.substring(0, 5))
 
     // 2. Prepare test data for Klaviyo using current API format
+    // IMPORTANT: Klaviyo no longer accepts 'consent' directly in attributes
     const profileDataPayload = {
       data: {
         type: "profile",
@@ -46,6 +47,10 @@ export async function GET(request: Request) {
           first_name: "Debug",
           last_name: "Test",
           phone_number: "+44 7700900000",
+          location: {
+            city: "Test City",
+            country: "Test Country",
+          },
           properties: {
             city: "Test City",
             country: "Test Country",
@@ -53,8 +58,9 @@ export async function GET(request: Request) {
             consent_method: "Signup Form",
             consent_timestamp: new Date().toISOString(),
             has_email_consent: true,
+            email_consent: true,
+            marketing_consent: true,
           },
-          consent: ["email"], // Add explicit consent for email marketing
         },
       },
     }
@@ -67,7 +73,7 @@ export async function GET(request: Request) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Revision: "2023-02-22",
+        Revision: "2023-09-15", // Updated to latest API revision
         Authorization: `Klaviyo-API-Key ${apiKey}`,
       },
       body: JSON.stringify(profileDataPayload),
@@ -75,6 +81,9 @@ export async function GET(request: Request) {
 
     const profileStatus = profileResponse.status
     const profileResponseText = await profileResponse.text()
+    console.log("Klaviyo profile response status:", profileStatus)
+    console.log("Klaviyo profile raw response:", profileResponseText)
+
     let profileId = ""
     let duplicateProfileFound = false
 
@@ -104,6 +113,7 @@ export async function GET(request: Request) {
       }
     } catch (e) {
       profileData = { text: profileResponseText }
+      console.error("Error parsing profile response:", e)
     }
 
     // If profile creation failed and it's not a duplicate profile, return error
@@ -153,7 +163,7 @@ export async function GET(request: Request) {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Revision: "2023-02-22",
+          Revision: "2023-09-15", // Updated to latest API revision
           Authorization: `Klaviyo-API-Key ${apiKey}`,
         },
         body: JSON.stringify(listSubscriptionData),
@@ -169,6 +179,7 @@ export async function GET(request: Request) {
         listData = JSON.parse(listText)
       } catch (e) {
         listData = { text: listText }
+        console.error("Error parsing list response:", e)
       }
     }
 

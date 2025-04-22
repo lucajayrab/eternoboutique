@@ -100,6 +100,7 @@ export async function POST(request: Request) {
         console.log("Using Klaviyo list ID:", listId)
 
         // Step 1: Create or update profile with consent
+        // IMPORTANT: Klaviyo no longer accepts 'consent' directly in attributes
         const profileData = {
           data: {
             type: "profile",
@@ -108,6 +109,10 @@ export async function POST(request: Request) {
               first_name: body.firstname || "",
               last_name: body.lastname || "",
               phone_number: phoneValue,
+              location: {
+                city: body.city || "",
+                country: body.countrylocation || "",
+              },
               properties: {
                 city: body.city || "",
                 country: body.countrylocation || "",
@@ -117,8 +122,9 @@ export async function POST(request: Request) {
                 consent_method: "Signup Form",
                 consent_timestamp: new Date().toISOString(),
                 has_email_consent: true,
+                email_consent: true,
+                marketing_consent: true,
               },
-              consent: ["email"], // Add explicit consent for email marketing
             },
           },
         }
@@ -131,7 +137,7 @@ export async function POST(request: Request) {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
-            Revision: "2023-02-22",
+            Revision: "2023-09-15", // Updated to latest API revision
             Authorization: `Klaviyo-API-Key ${apiKey}`,
           },
           body: JSON.stringify(profileData),
@@ -139,13 +145,23 @@ export async function POST(request: Request) {
 
         const profileStatus = profileResponse.status
         const profileResponseText = await profileResponse.text()
+
+        console.log("Klaviyo profile response status:", profileStatus)
+        console.log("Klaviyo profile raw response:", profileResponseText)
+
         let profileId = ""
+        let profileResult = null
 
         // Handle successful profile creation
         if (profileResponse.ok) {
-          const profileResult = JSON.parse(profileResponseText)
-          profileId = profileResult.data?.id
-          console.log("Klaviyo profile created successfully. Profile ID:", profileId)
+          try {
+            profileResult = JSON.parse(profileResponseText)
+            profileId = profileResult.data?.id
+            console.log("Klaviyo profile created successfully. Profile ID:", profileId)
+          } catch (parseError) {
+            console.error("Error parsing successful profile response:", parseError)
+            console.error("Raw successful response:", profileResponseText)
+          }
         }
         // Handle duplicate profile error (409 Conflict)
         else if (profileStatus === 409) {
@@ -170,6 +186,14 @@ export async function POST(request: Request) {
           }
         } else {
           console.error(`Klaviyo profile error (${profileStatus}):`, profileResponseText)
+
+          // Try to parse the error response
+          try {
+            const errorData = JSON.parse(profileResponseText)
+            console.error("Klaviyo error details:", JSON.stringify(errorData, null, 2))
+          } catch (parseError) {
+            console.error("Could not parse error response")
+          }
         }
 
         // Step 2: Add profile to list (only if we have a profile ID)
@@ -194,7 +218,7 @@ export async function POST(request: Request) {
             headers: {
               "Content-Type": "application/json",
               Accept: "application/json",
-              Revision: "2023-02-22",
+              Revision: "2023-09-15", // Updated to latest API revision
               Authorization: `Klaviyo-API-Key ${apiKey}`,
             },
             body: JSON.stringify(listSubscriptionData),
@@ -208,6 +232,14 @@ export async function POST(request: Request) {
 
           if (!listResponse.ok) {
             console.error(`Klaviyo list subscription error (${listStatus}):`, listText)
+
+            // Try to parse the error response
+            try {
+              const errorData = JSON.parse(listText)
+              console.error("Klaviyo list error details:", JSON.stringify(errorData, null, 2))
+            } catch (parseError) {
+              console.error("Could not parse list error response")
+            }
           } else {
             console.log("Klaviyo list subscription successful")
           }

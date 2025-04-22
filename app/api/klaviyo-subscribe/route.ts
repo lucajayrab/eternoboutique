@@ -24,6 +24,7 @@ export async function POST(request: Request) {
     console.log("Using Klaviyo list ID:", listId)
 
     // Step 1: Create or update profile with consent
+    // IMPORTANT: Klaviyo no longer accepts 'consent' directly in attributes
     const profileData = {
       data: {
         type: "profile",
@@ -32,6 +33,10 @@ export async function POST(request: Request) {
           first_name: firstName || "",
           last_name: lastName || "",
           phone_number: phonecontact || "",
+          location: {
+            city: city || "",
+            country: countrylocation || "",
+          },
           properties: {
             city: city || "",
             country: countrylocation || "",
@@ -41,8 +46,9 @@ export async function POST(request: Request) {
             consent_method: "Signup Form",
             consent_timestamp: new Date().toISOString(),
             has_email_consent: true,
+            email_consent: true,
+            marketing_consent: true,
           },
-          consent: ["email"], // Add explicit consent for email marketing
         },
       },
     }
@@ -55,7 +61,7 @@ export async function POST(request: Request) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Revision: "2023-02-22",
+        Revision: "2023-09-15", // Updated to latest API revision
         Authorization: `Klaviyo-API-Key ${apiKey}`,
       },
       body: JSON.stringify(profileData),
@@ -63,6 +69,7 @@ export async function POST(request: Request) {
 
     const profileStatus = profileResponse.status
     const profileResponseText = await profileResponse.text()
+
     let profileId = ""
 
     // Handle successful profile creation
@@ -129,7 +136,7 @@ export async function POST(request: Request) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Revision: "2023-02-22",
+        Revision: "2023-09-15", // Updated to latest API revision
         Authorization: `Klaviyo-API-Key ${apiKey}`,
       },
       body: JSON.stringify(listSubscriptionData),
