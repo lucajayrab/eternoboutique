@@ -83,6 +83,50 @@ export async function POST(request: Request) {
       responseData = { error: "Invalid JSON response", rawResponse: responseText }
     }
 
+    // KLAVIYO INTEGRATION - Send the same data to Klaviyo
+    try {
+      if (process.env.KLAVIYO_API_KEY) {
+        console.log("Sending data to Klaviyo...")
+
+        // Prepare data for Klaviyo
+        const klaviyoData = {
+          profiles: [
+            {
+              email: body.email,
+              first_name: body.firstname || "",
+              last_name: body.lastname || "",
+              phone_number: phoneValue,
+              custom_properties: {
+                city: body.city || "",
+                country: body.countrylocation || "",
+                sector: body.industrysector || "",
+                dob: body.dob || "",
+              },
+            },
+          ],
+        }
+
+        // Send to Klaviyo
+        const klaviyoResponse = await fetch(`https://a.klaviyo.com/api/v2/list/YOUR_LIST_ID/members`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.KLAVIYO_API_KEY}`,
+          },
+          body: JSON.stringify(klaviyoData),
+        })
+
+        if (!klaviyoResponse.ok) {
+          console.error("Klaviyo Error:", await klaviyoResponse.text())
+        } else {
+          console.log("Klaviyo subscription successful")
+        }
+      }
+    } catch (klaviyoError) {
+      console.error("Error sending to Klaviyo:", klaviyoError)
+      // Don't fail the whole request if Klaviyo fails
+    }
+
     // Check if the submission was successful
     if (!response.ok) {
       // Log specific validation errors if present
