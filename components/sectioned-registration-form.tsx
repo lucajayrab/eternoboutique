@@ -61,6 +61,8 @@ export default function SectionedRegistrationForm() {
     return ""
   }
 
+  // Update the onSubmit function to handle Klaviyo errors better
+
   async function onSubmit(values: RegistrationFormData) {
     setIsSubmitting(true)
     setSubmitError("")
@@ -110,15 +112,17 @@ export default function SectionedRegistrationForm() {
           setSubmitError(`${submitError} ${data.details.map((d: any) => d.message).join(", ")}`)
         }
 
-        // Even if there's an error, we'll redirect after a delay
-        // since the data might have been submitted successfully
+        // Even if there's an error with HubSpot, we'll still redirect after a delay
+        // since the data might have been submitted successfully to one of the systems
         setTimeout(() => {
           router.push("/confirmation")
         }, 3000)
       }
     } catch (error) {
       console.error("Error:", error)
-      setSubmitError("An unexpected error occurred. Please try again later.")
+      setSubmitError(
+        "An unexpected error occurred, but your information may have been received. Redirecting shortly...",
+      )
 
       // Even if there's an error, we'll redirect after a delay
       setTimeout(() => {

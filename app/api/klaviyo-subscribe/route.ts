@@ -12,44 +12,141 @@ export async function POST(request: Request) {
 
     console.log("Attempting to subscribe to Klaviyo:", email)
 
-    // Prepare data for Klaviyo
-    const klaviyoData = {
-      profiles: [
-        {
-          email,
+    // Get API key from environment or use the provided one
+    const apiKey = process.env.KLAVIYO_API_KEY || "pk_8175d440292244baacd6fa6f30d05e68d2"
+
+    if (!apiKey) {
+      return NextResponse.json({ message: "Klaviyo API key is not available" }, { status: 500 })
+    }
+
+    // Step 1: Create or update profile using new API format
+    const profileData = {
+      data: {
+        type: "profile",
+        attributes: {
+          email: email,
           first_name: firstName || "",
           last_name: lastName || "",
           phone_number: phonecontact || "",
-          custom_properties: {
+          properties: {
             city: city || "",
             country: countrylocation || "",
             sector: industrysector || "",
             fitting_preference: fittingPreference || "Not specified",
           },
         },
-      ],
+      },
     }
 
-    // Send to Klaviyo
-    const klaviyoResponse = await fetch(`https://a.klaviyo.com/api/v2/list/TetS7r/members`, {
+    console.log("Klaviyo profile payload:", JSON.stringify(profileData, null, 2))
+
+    const profileResponse = await fetch("https://a.klaviyo.com/api/profiles", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.KLAVIYO_API_KEY}`,
+        Accept: "application/json",
+        Revision: "2023-02-22",
+        Authorization: `Klaviyo-API-Key ${apiKey}`,
       },
-      body: JSON.stringify(klaviyoData),
+      body: JSON.stringify(profileData),
     })
 
-    if (!klaviyoResponse.ok) {
-      const error = await klaviyoResponse.text()
-      console.error("Klaviyo Error:", error)
-      return NextResponse.json({ message: "Failed to subscribe user", error }, { status: 500 })
+    const profileStatus = profileResponse.status
+    const profileResponseText = await profileResponse.text()
+    let profileId = ""
+    let duplicateProfileFound = false
+
+    // Handle successful profile creation
+    if (profileResponse.ok) {
+      const profileResult = JSON.parse(profileResponseText)
+      profileId = profileResult.data?.id
+      console.log("Klaviyo profile created successfully. Profile ID:", profileId)
+    }
+    // Handle duplicate profile error (409 Conflict)
+    else if (profileStatus === 409) {
+      try {
+        const errorData = JSON.parse(profileResponseText)
+        // Extract the duplicate profile ID from the error response
+        if (
+          errorData.errors &&
+          errorData.errors[0] &&
+          errorData.errors[0].code === "duplicate_profile" &&
+          errorData.errors[0].meta &&
+          errorData.errors[0].meta.duplicate_profile_id
+        ) {
+          profileId = errorData.errors[0].meta.duplicate_profile_id
+          duplicateProfileFound = true
+          console.log("Found existing Klaviyo profile. Using profile ID:", profileId)
+        } else {
+          console.error("Unexpected format in duplicate profile error:", profileResponseText)
+          return NextResponse.json(
+            { message: "Failed to process duplicate profile", error: profileResponseText },
+            { status: 500 },
+          )
+        }
+      } catch (parseError) {
+        console.error("Error parsing duplicate profile response:", parseError)
+        console.error("Raw response:", profileResponseText)
+        return NextResponse.json(
+          { message: "Failed to parse profile response", error: profileResponseText },
+          { status: 500 },
+        )
+      }
+    } else {
+      console.error(`Klaviyo profile error (${profileStatus}):`, profileResponseText)
+      return NextResponse.json({ message: "Failed to create profile", error: profileResponseText }, { status: 500 })
     }
 
-    const responseData = await klaviyoResponse.json()
-    console.log("Klaviyo subscription successful:", responseData)
+    if (!profileId) {
+      return NextResponse.json({ message: "Failed to get profile ID from response" }, { status: 500 })
+    }
 
-    return NextResponse.json({ message: "User successfully subscribed to Klaviyo" }, { status: 200 })
+    // Step 2: Add profile to list
+    const listId = "SsLL3C"
+
+    // UPDATED: Using the correct endpoint for adding profiles to lists
+    const subscribeEndpoint = `https://a.klaviyo.com/api/lists/${listId}/relationships/profiles`
+
+    const listSubscriptionData = {
+      data: [
+        {
+          type: "profile",
+          id: profileId,
+        },
+      ],
+    }
+
+    console.log("Klaviyo list subscription payload:", JSON.stringify(listSubscriptionData, null, 2))
+    console.log("Using subscription endpoint:", subscribeEndpoint)
+
+    const listResponse = await fetch(subscribeEndpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Revision: "2023-02-22",
+        Authorization: `Klaviyo-API-Key ${apiKey}`,
+      },
+      body: JSON.stringify(listSubscriptionData),
+    })
+
+    if (!listResponse.ok) {
+      const error = await listResponse.text()
+      console.error("Klaviyo List Subscription Error:", error)
+      return NextResponse.json({ message: "Profile created but list subscription failed", error }, { status: 500 })
+    }
+
+    const listResult = await listResponse.json()
+    console.log("Klaviyo subscription successful:", listResult)
+
+    return NextResponse.json(
+      {
+        message: duplicateProfileFound
+          ? "User already exists and was added to the list"
+          : "User successfully subscribed to Klaviyo",
+      },
+      { status: 200 },
+    )
   } catch (err) {
     console.error("Unexpected error:", err)
     return NextResponse.json({ message: "Server error" }, { status: 500 })

@@ -83,47 +83,140 @@ export async function POST(request: Request) {
       responseData = { error: "Invalid JSON response", rawResponse: responseText }
     }
 
-    // KLAVIYO INTEGRATION - Send the same data to Klaviyo
+    // KLAVIYO INTEGRATION - Send the same data to Klaviyo with improved error handling
     try {
-      if (process.env.KLAVIYO_API_KEY) {
+      // Get API key from environment or use the provided one
+      const apiKey = process.env.KLAVIYO_API_KEY || "pk_8175d440292244baacd6fa6f30d05e68d2"
+
+      if (apiKey) {
         console.log("Sending data to Klaviyo...")
 
-        // Prepare data for Klaviyo
-        const klaviyoData = {
-          profiles: [
-            {
+        // Determine key type
+        const keyType = apiKey.startsWith("pk_") ? "Public Key" : "Private Key"
+        console.log(`Using ${keyType} for Klaviyo API`)
+
+        // Verify list ID - UPDATED LIST ID
+        const listId = "SsLL3C"
+        console.log("Using Klaviyo list ID:", listId)
+
+        // NEW API FORMAT for Klaviyo
+        // Step 1: Create a profile
+        const profileData = {
+          data: {
+            type: "profile",
+            attributes: {
               email: body.email,
               first_name: body.firstname || "",
               last_name: body.lastname || "",
               phone_number: phoneValue,
-              custom_properties: {
+              properties: {
                 city: body.city || "",
                 country: body.countrylocation || "",
                 sector: body.industrysector || "",
                 dob: body.dob || "",
+                source: "Registration Form",
               },
             },
-          ],
+          },
         }
 
-        // Send to Klaviyo
-        const klaviyoResponse = await fetch(`https://a.klaviyo.com/api/v2/list/TetS7r/members`, {
+        console.log("Klaviyo profile payload:", JSON.stringify(profileData, null, 2))
+
+        // Create or update profile
+        const profileResponse = await fetch("https://a.klaviyo.com/api/profiles", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${process.env.KLAVIYO_API_KEY}`,
+            Accept: "application/json",
+            Revision: "2023-02-22",
+            Authorization: `Klaviyo-API-Key ${apiKey}`,
           },
-          body: JSON.stringify(klaviyoData),
+          body: JSON.stringify(profileData),
         })
 
-        if (!klaviyoResponse.ok) {
-          console.error("Klaviyo Error:", await klaviyoResponse.text())
-        } else {
-          console.log("Klaviyo subscription successful")
+        const profileStatus = profileResponse.status
+        const profileResponseText = await profileResponse.text()
+        let profileId = ""
+
+        // Handle successful profile creation
+        if (profileResponse.ok) {
+          const profileResult = JSON.parse(profileResponseText)
+          profileId = profileResult.data?.id
+          console.log("Klaviyo profile created successfully. Profile ID:", profileId)
         }
+        // Handle duplicate profile error (409 Conflict)
+        else if (profileStatus === 409) {
+          try {
+            const errorData = JSON.parse(profileResponseText)
+            // Extract the duplicate profile ID from the error response
+            if (
+              errorData.errors &&
+              errorData.errors[0] &&
+              errorData.errors[0].code === "duplicate_profile" &&
+              errorData.errors[0].meta &&
+              errorData.errors[0].meta.duplicate_profile_id
+            ) {
+              profileId = errorData.errors[0].meta.duplicate_profile_id
+              console.log("Found existing Klaviyo profile. Using profile ID:", profileId)
+            } else {
+              console.error("Unexpected format in duplicate profile error:", profileResponseText)
+            }
+          } catch (parseError) {
+            console.error("Error parsing duplicate profile response:", parseError)
+            console.error("Raw response:", profileResponseText)
+          }
+        } else {
+          console.error(`Klaviyo profile error (${profileStatus}):`, profileResponseText)
+        }
+
+        // Step 2: Add profile to list (only if we have a profile ID)
+        if (profileId) {
+          // UPDATED: Using the correct endpoint for adding profiles to lists
+          const subscribeEndpoint = `https://a.klaviyo.com/api/lists/${listId}/relationships/profiles`
+
+          const listSubscriptionData = {
+            data: [
+              {
+                type: "profile",
+                id: profileId,
+              },
+            ],
+          }
+
+          console.log("Klaviyo list subscription payload:", JSON.stringify(listSubscriptionData, null, 2))
+          console.log("Using subscription endpoint:", subscribeEndpoint)
+
+          const listResponse = await fetch(subscribeEndpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+              Revision: "2023-02-22",
+              Authorization: `Klaviyo-API-Key ${apiKey}`,
+            },
+            body: JSON.stringify(listSubscriptionData),
+          })
+
+          const listStatus = listResponse.status
+          const listText = await listResponse.text()
+
+          console.log("Klaviyo list subscription status:", listStatus)
+          console.log("Klaviyo list subscription response:", listText)
+
+          if (!listResponse.ok) {
+            console.error(`Klaviyo list subscription error (${listStatus}):`, listText)
+          } else {
+            console.log("Klaviyo list subscription successful")
+          }
+        } else {
+          console.error("No profile ID available for Klaviyo list subscription")
+        }
+      } else {
+        console.warn("No Klaviyo API key available - skipping Klaviyo integration")
       }
     } catch (klaviyoError) {
       console.error("Error sending to Klaviyo:", klaviyoError)
+      console.error("Klaviyo error stack:", klaviyoError instanceof Error ? klaviyoError.stack : "No stack trace")
       // Don't fail the whole request if Klaviyo fails
     }
 
