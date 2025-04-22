@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     // Send to Klaviyo
-    const klaviyoResponse = await fetch(`https://a.klaviyo.com/api/v2/list/YOUR_LIST_ID/members`, {
+    const klaviyoResponse = await fetch(`https://a.klaviyo.com/api/v2/list/TetS7r/members`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
