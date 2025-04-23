@@ -12,6 +12,7 @@ export async function GET(request: Request) {
       fields: [
         { name: "email", value: `test-${Date.now()}@example.com` },
         { name: "firstname", value: "Test" },
+        // HubSpot UI label is 'phone' but the API requires field name "0-2/phone"
         { name: "0-2/phone", value: "+44 1234567890" }, // Using the exact field identifier from the error message
         { name: "lastname", value: "User" },
         { name: "countrylocation", value: "Test Country" },

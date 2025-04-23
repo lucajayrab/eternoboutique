@@ -31,7 +31,8 @@ export async function POST(request: Request) {
       fields: [
         { name: "email", value: body.email || "" },
         { name: "firstname", value: body.firstname || "" },
-        { name: "0-2/phone", value: phoneValue }, // Using the exact field identifier from the error message
+        // HubSpot UI label is 'phone' but the API requires field name "0-2/phone"
+        { name: "0-2/phone", value: phoneValue },
         { name: "lastname", value: body.lastname || "" },
         { name: "countrylocation", value: body.countrylocation || "" },
         { name: "city", value: body.city || "" },

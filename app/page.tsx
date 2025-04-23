@@ -213,25 +213,26 @@ export default function Home() {
 
           <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed space-y-6 text-center md:text-left">
             <p>
-              ETERNO represents Mediterranean sophistication through bespoke tailoring and the craftsmanship of our
-              Neapolitan artisans. We currently offer boutique appointments at our unit in the heart of Mayfair, or
-              private fittings arranged to suit the client's preferred location.
+              ETERNO embodies Mediterranean sophistication, quietly expressed through bespoke tailoring and the
+              meticulous craft of our Neapolitan artisans. We warmly invite you to experience our boutique fittings at
+              our atelier in the heart of Mayfair, or at a private location of your choosing.
             </p>
 
             <p>
-              Our current service is centred around bespoke linen tailoring, with plans to expand our offering in the
-              near future.
+              Our signature offering is centred around impeccably tailored linen—capturing the effortless elegance of
+              Mediterranean living. While this marks the start of our journey, we envision thoughtfully expanding our
+              collection to further embody our philosophy of careful luxury.
             </p>
 
             <p>
-              We are now opening our doors to a select group of clients to experience our capsule collection, which
-              features six distinctive shirt colours and four trouser colours, each meticulously crafted from premium
-              Italian linen.
+              Currently, we offer an exclusive capsule collection showcasing six distinctive shirt shades and four
+              refined trouser tones, each piece carefully handcrafted from the finest Italian linen.
             </p>
 
             <p>
-              While the capsule collection provides a refined starting point, orders can be tailored to suit the
-              client's individual preferences, with the option of full customisation.
+              While our capsule serves as an elegant introduction, we delight in tailoring each garment precisely to
+              your taste, offering the possibility of complete customisation to ensure each piece genuinely reflects
+              your individual story.
             </p>
           </div>
         </div>

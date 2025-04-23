@@ -7,51 +7,93 @@ const HUBSPOT_API_URL = `https://api.hsforms.com/submissions/v3/integration/subm
 
 export async function GET(request: Request) {
   try {
-    // Create a test submission with minimal fields
-    const testData = {
-      fields: [
-        { name: "firstname", value: "Test" },
-        { name: "lastname", value: "User" },
-        { name: "email", value: `test-${Date.now()}@example.com` },
-        { name: "phone", value: "+44 1234567890" },
+    // Generate a unique test email
+    const testEmail = `test-${Date.now()}@example.com`
+    const testPhone = "+44 7700900000"
+
+    // Create test submissions with different phone field names
+    const testFields = [
+      // Test multiple phone field variations
+      [
+        { name: "email", value: `${testEmail}-1` },
+        { name: "firstname", value: "Test1" },
+        { name: "phone", value: testPhone },
       ],
-      context: {
-        pageUri: "https://eternotailoring.com/test",
-        pageName: "Field Test",
-      },
+      [
+        { name: "email", value: `${testEmail}-2` },
+        { name: "firstname", value: "Test2" },
+        { name: "mobilephone", value: testPhone },
+      ],
+      [
+        { name: "email", value: `${testEmail}-3` },
+        { name: "firstname", value: "Test3" },
+        { name: "phonecontact", value: testPhone },
+      ],
+      [
+        { name: "email", value: `${testEmail}-4` },
+        { name: "firstname", value: "Test4" },
+        { name: "phone_number", value: testPhone },
+      ],
+    ]
+
+    const results = []
+
+    // Send each test submission
+    for (const fields of testFields) {
+      const testData = {
+        submittedAt: Date.now(),
+        fields,
+        context: {
+          pageUri: "https://eternotailoring.com/test",
+          pageName: "Field Test",
+        },
+      }
+
+      console.log(`Testing field name: ${fields[2].name}`)
+      console.log("Sending test data to HubSpot:", JSON.stringify(testData, null, 2))
+
+      try {
+        const response = await fetch(HUBSPOT_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(testData),
+        })
+
+        const status = response.status
+        const responseText = await response.text()
+
+        let responseData
+        try {
+          responseData = JSON.parse(responseText)
+        } catch (e) {
+          responseData = { text: responseText }
+        }
+
+        results.push({
+          fieldName: fields[2].name,
+          status,
+          success: response.ok,
+          response: responseData,
+        })
+
+        console.log(`Result for ${fields[2].name}: ${status} ${response.ok ? "Success" : "Failed"}`)
+      } catch (error) {
+        results.push({
+          fieldName: fields[2].name,
+          error: error instanceof Error ? error.message : "Unknown error",
+        })
+        console.error(`Error testing ${fields[2].name}:`, error)
+      }
     }
 
-    console.log("Sending test data to HubSpot:", JSON.stringify(testData, null, 2))
-
-    // Submit test data to HubSpot
-    const response = await fetch(HUBSPOT_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(testData),
-    })
-
-    // Get response as text
-    const responseText = await response.text()
-    console.log("HubSpot test response status:", response.status)
-    console.log("HubSpot test raw response:", responseText)
-
-    // Try to parse as JSON
-    let responseData
-    try {
-      responseData = JSON.parse(responseText)
-    } catch (error) {
-      responseData = { error: "Invalid JSON response", text: responseText }
-    }
-
-    // Return test results
+    // Return all test results
     return NextResponse.json({
-      success: response.ok,
-      status: response.status,
-      testData: testData,
-      response: responseData,
-      rawResponse: responseText,
+      success: true,
+      message: "Phone field tests completed",
+      results,
+      nextSteps: "Check your HubSpot contacts to see which field name worked correctly",
     })
   } catch (error) {
     console.error("Test error:", error)
