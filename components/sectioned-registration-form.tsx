@@ -61,8 +61,6 @@ export default function SectionedRegistrationForm() {
     return ""
   }
 
-  // Update the onSubmit function to handle Klaviyo errors better
-
   async function onSubmit(values: RegistrationFormData) {
     setIsSubmitting(true)
     setSubmitError("")
