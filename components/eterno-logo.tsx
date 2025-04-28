@@ -76,7 +76,7 @@ export default function EternoLogo({
   const widthInPx = Number.parseInt(actualWidth) * 3.779527559
 
   return (
-    <div className={`flex items-center justify-center w-full ${className}`}>
+    <div className={`flex items-center justify-center w-full h-full overflow-visible ${className}`}>
       {!useFallbackLogo ? (
         // Primary SVG logo - now using the new URL
         <img
@@ -90,7 +90,7 @@ export default function EternoLogo({
           style={{
             width: actualWidth,
           }}
-          className="mx-auto"
+          className="mx-auto max-h-full"
           onError={handleLogoError}
           onLoad={handleLogoLoaded}
         />
@@ -101,7 +101,7 @@ export default function EternoLogo({
           height={widthInPx * 0.09}
           viewBox="0 0 203.4 18.4"
           xmlns="http://www.w3.org/2000/svg"
-          className="mx-auto"
+          className="mx-auto max-h-full"
           style={{ width: actualWidth }}
         >
           <g fill={inverted ? "#FFFFFF" : "#231f20"} stroke={inverted ? "#FFFFFF" : "#231f20"} strokeWidth="0.3">

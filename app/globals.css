@@ -415,3 +415,18 @@ input[type="number"] {
     margin-right: auto;
   }
 }
+
+/* Fix for logo getting cut off in sticky banner */
+.fixed.top-0.left-0.right-0.z-50 {
+  contain: layout;
+}
+
+/* Ensure logo is properly contained */
+@media (max-width: 767px) {
+  .fixed.top-0.left-0.right-0.z-50 img,
+  .fixed.top-0.left-0.right-0.z-50 svg {
+    max-height: 90%;
+    width: auto;
+    object-fit: contain;
+  }
+}
