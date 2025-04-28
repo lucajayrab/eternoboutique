@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server"
 import type { RegistrationFormData } from "@/lib/form-schema"
+// Import the email utility functions at the top of the file
+import { sendWelcomeEmail, sendRegistrationNotification } from "@/lib/email"
 
 // HubSpot credentials
 const PORTAL_ID = "145973953"
@@ -289,6 +291,16 @@ export async function POST(request: Request) {
         },
         { status: 200 },
       )
+    }
+
+    // Send welcome email to the user and notification to the team
+    try {
+      await sendWelcomeEmail(body.email, body.firstname || "Customer")
+      await sendRegistrationNotification(body)
+      console.log("Registration emails sent successfully")
+    } catch (emailError) {
+      console.error("Failed to send registration emails:", emailError)
+      // Don't fail the request if emails fail to send
     }
 
     // Return a success response
