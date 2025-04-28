@@ -75,7 +75,7 @@ export default function StickyBanner({
 
   // Calculate proportional logo size for mobile
   // Desktop is 45mm, for mobile we'll use a proportional size based on screen width ratio
-  const mobileLogoWidth = "30mm" // Fixed size for mobile that's proportional to desktop
+  const mobileLogoWidth = "38mm" // Increased size for mobile that's more visible
 
   return (
     <div
