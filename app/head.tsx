@@ -3,7 +3,7 @@ export default function Head() {
     <>
       <title>ETERNO | Luxury Menswear</title>
       <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="description" content="ETERNO - Tailored by Tradition. Worn with Presence." />
+      <meta name="description" content="ETERNO" />
       <link rel="icon" href="/favicon.ico" />
 
       {/* Preload video for faster initial display */}

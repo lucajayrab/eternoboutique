@@ -181,15 +181,21 @@ export default function Home() {
           </SlidingButton>
         </div>
 
-        {/* Scroll down indicator */}
+        {/* Scroll down indicator - Improved for mobile visibility */}
         <div
-          className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 cursor-pointer animate-bounce"
+          className="fixed md:absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer animate-bounce"
           onClick={handleScrollDown}
+          style={{
+            padding: "12px", // Larger touch target
+            background: "rgba(0,0,0,0.3)",
+            borderRadius: "50%",
+            boxShadow: "0 0 10px rgba(255,255,255,0.2)",
+          }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="28"
+            height="28"
             viewBox="0 0 24 24"
             fill="none"
             stroke="white"
