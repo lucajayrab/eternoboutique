@@ -73,6 +73,10 @@ export default function StickyBanner({
     }
   }, [threshold, alwaysVisible, isRegisterPage, pathname])
 
+  // Calculate proportional logo size for mobile
+  // Desktop is 45mm, for mobile we'll use a proportional size based on screen width ratio
+  const mobileLogoWidth = "30mm" // Fixed size for mobile that's proportional to desktop
+
   return (
     <div
       className={`fixed top-0 left-0 right-0 z-50 h-[70px] flex items-center justify-center transition-all duration-500 ${
@@ -83,10 +87,10 @@ export default function StickyBanner({
         <Link href="/" className="flex items-center justify-center w-full">
           <div className="flex justify-center items-center w-full">
             <EternoLogo
-              width={logoWidth}
-              mobileWidth={isMobile ? "35mm" : undefined}
+              width={isMobile ? mobileLogoWidth : logoWidth}
               inverted={true}
               className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+              fixedSize={true} // New prop to ensure size doesn't change
             />
           </div>
         </Link>

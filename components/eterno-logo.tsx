@@ -7,6 +7,7 @@ interface EternoLogoProps {
   inverted?: boolean
   className?: string
   mobileWidth?: string // Add mobile width prop
+  fixedSize?: boolean // New prop to ensure size doesn't change
 }
 
 export default function EternoLogo({
@@ -14,10 +15,12 @@ export default function EternoLogo({
   inverted = true,
   className = "",
   mobileWidth, // Optional mobile-specific width
+  fixedSize = false, // Default to false for backward compatibility
 }: EternoLogoProps) {
   const [logoLoaded, setLogoLoaded] = useState(false)
   const [useFallbackLogo, setUseFallbackLogo] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [initialWidth, setInitialWidth] = useState(width)
 
   // Handle logo error and switch to fallback
   const handleLogoError = () => {
@@ -47,6 +50,13 @@ export default function EternoLogo({
     }
   }, [])
 
+  // Set initial width on first render
+  useEffect(() => {
+    if (fixedSize) {
+      setInitialWidth(width)
+    }
+  }, [fixedSize, width])
+
   // Set a timeout to switch to fallback if logo doesn't load quickly
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,8 +68,9 @@ export default function EternoLogo({
     return () => clearTimeout(timer)
   }, [logoLoaded])
 
-  // Determine the actual width to use (mobile or default)
-  const actualWidth = isMobile && mobileWidth ? mobileWidth : width
+  // Determine the actual width to use
+  // If fixedSize is true, always use the initialWidth
+  const actualWidth = fixedSize ? initialWidth : isMobile && mobileWidth ? mobileWidth : width
 
   // Convert mm to pixels (approximate)
   const widthInPx = Number.parseInt(actualWidth) * 3.779527559

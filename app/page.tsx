@@ -20,6 +20,7 @@ export default function Home() {
   const buttonRef = useRef<HTMLDivElement>(null)
   const aboutSectionRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState(false)
+  const [isArrowClicked, setIsArrowClicked] = useState(false)
 
   // State for button visibility
   const [isButtonVisible, setIsButtonVisible] = useState(false)
@@ -110,6 +111,14 @@ export default function Home() {
   }
 
   const handleScrollDown = () => {
+    // Set arrow clicked state to true
+    setIsArrowClicked(true)
+
+    // Reset the state after animation completes
+    setTimeout(() => {
+      setIsArrowClicked(false)
+    }, 300)
+
     if (aboutSectionRef.current) {
       aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
     }
@@ -181,16 +190,10 @@ export default function Home() {
           </SlidingButton>
         </div>
 
-        {/* Scroll down indicator - Improved for mobile visibility */}
+        {/* Scroll down indicator - Simple arrow with hover and click animations */}
         <div
-          className="fixed md:absolute bottom-4 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer animate-bounce"
+          className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
           onClick={handleScrollDown}
-          style={{
-            padding: "12px", // Larger touch target
-            background: "rgba(0,0,0,0.3)",
-            borderRadius: "50%",
-            boxShadow: "0 0 10px rgba(255,255,255,0.2)",
-          }}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -202,6 +205,7 @@ export default function Home() {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
+            className="arrow-icon"
           >
             <path d="M12 5v14M5 12l7 7 7-7" />
           </svg>
