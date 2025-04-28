@@ -71,45 +71,49 @@ export default function MobileMenu() {
 
   return (
     <>
-      {/* Menu Button - Now visible ONLY on mobile */}
+      {/* Menu Button - Now visible ONLY on mobile with improved touch target */}
       <div
         className={`md:hidden fixed top-0 right-0 z-50 h-[70px] flex items-center justify-end px-4 transition-all duration-300 pointer-events-none`}
       >
         <button
           onClick={toggleMenu}
-          className={`p-2 rounded-full hover:bg-white/10 transition-colors pointer-events-auto`}
+          className={`p-3 rounded-full hover:bg-white/10 transition-colors pointer-events-auto touch-manipulation`}
           aria-label={isOpen ? "Close menu" : "Open menu"}
+          style={{ touchAction: "manipulation" }}
         >
-          {isOpen ? <X size={24} className="text-white" /> : <Menu size={24} className="text-white" />}
+          {isOpen ? <X size={28} className="text-white" /> : <Menu size={28} className="text-white" />}
         </button>
       </div>
 
-      {/* Menu Overlay - Now ONLY for mobile */}
+      {/* Menu Overlay - Now ONLY for mobile with improved touch interactions */}
       <div
         className={`md:hidden fixed inset-0 bg-eterno-sand z-40 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } pt-[70px]`}
       >
         <div className="flex flex-col items-center justify-center h-full p-8 space-y-8">
-          <nav className="flex flex-col items-center space-y-6 mb-8">
+          <nav className="flex flex-col items-center space-y-8 mb-8 w-full">
             <a
               href="/"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2 w-full text-center"
               onClick={() => setIsOpen(false)}
+              style={{ touchAction: "manipulation" }}
             >
               HOME
             </a>
             <a
               href="#about"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2 w-full text-center"
               onClick={() => setIsOpen(false)}
+              style={{ touchAction: "manipulation" }}
             >
               ABOUT US
             </a>
             <a
               href="#process"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2 w-full text-center"
               onClick={() => setIsOpen(false)}
+              style={{ touchAction: "manipulation" }}
             >
               PROCESS
             </a>

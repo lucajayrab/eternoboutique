@@ -14,7 +14,7 @@ export default function Logo() {
   return (
     <div className="flex flex-col items-center mb-10 mt-10">
       <Image
-        src="/eterno-logo.svg"
+        src="https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/ETERNO%20Website%20Logo-i1zsaaao2lf5Zfk5uUfw31YkKv3QjC.svg"
         alt="ETERNO"
         width={260}
         height={39}

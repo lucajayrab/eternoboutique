@@ -6,11 +6,18 @@ interface EternoLogoProps {
   width?: string
   inverted?: boolean
   className?: string
+  mobileWidth?: string // Add mobile width prop
 }
 
-export default function EternoLogo({ width = "60mm", inverted = true, className = "" }: EternoLogoProps) {
+export default function EternoLogo({
+  width = "60mm",
+  inverted = true,
+  className = "",
+  mobileWidth, // Optional mobile-specific width
+}: EternoLogoProps) {
   const [logoLoaded, setLogoLoaded] = useState(false)
   const [useFallbackLogo, setUseFallbackLogo] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   // Handle logo error and switch to fallback
   const handleLogoError = () => {
@@ -23,6 +30,23 @@ export default function EternoLogo({ width = "60mm", inverted = true, className 
     setLogoLoaded(true)
   }
 
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
+
   // Set a timeout to switch to fallback if logo doesn't load quickly
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -34,19 +58,26 @@ export default function EternoLogo({ width = "60mm", inverted = true, className 
     return () => clearTimeout(timer)
   }, [logoLoaded])
 
+  // Determine the actual width to use (mobile or default)
+  const actualWidth = isMobile && mobileWidth ? mobileWidth : width
+
   // Convert mm to pixels (approximate)
-  const widthInPx = Number.parseInt(width) * 3.779527559
+  const widthInPx = Number.parseInt(actualWidth) * 3.779527559
 
   return (
     <div className={`relative ${className}`}>
       {!useFallbackLogo ? (
-        // Primary SVG logo - now using the bold version for better visibility
+        // Primary SVG logo - now using the new URL
         <img
-          src={inverted ? "/eterno-logo-bold.svg" : "/eterno-logo.svg"}
+          src={
+            inverted
+              ? "/eterno-logo-bold.svg"
+              : "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/ETERNO%20Website%20Logo-i1zsaaao2lf5Zfk5uUfw31YkKv3QjC.svg"
+          }
           alt="ETERNO"
           width={widthInPx}
           style={{
-            width: width,
+            width: actualWidth,
           }}
           className="mx-auto"
           onError={handleLogoError}
@@ -60,7 +91,7 @@ export default function EternoLogo({ width = "60mm", inverted = true, className 
           viewBox="0 0 203.4 18.4"
           xmlns="http://www.w3.org/2000/svg"
           className="mx-auto"
-          style={{ width: width }}
+          style={{ width: actualWidth }}
         >
           <g fill={inverted ? "#FFFFFF" : "#231f20"} stroke={inverted ? "#FFFFFF" : "#231f20"} strokeWidth="0.3">
             <path d="M13.6,14.6l-.2,3.8H0v-.4c.9-.3,1.1-1.1,1.1-3V3.3C1.1,1.4.9.6,0,.3V0h12.6l.3,3.7h-.4C11.6,1.1,9.9.4,7,.4h-3.1v7.9h2.5c3.2,0,4.1-.7,4.6-2h.4v4.5h-.4c-.4-1.4-1.4-2-4.6-2h-2.5v7.9c0,.9.5,1.3,1.3,1.3h2.5c2.7,0,4.5-.8,5.5-3.5h.4Z" />

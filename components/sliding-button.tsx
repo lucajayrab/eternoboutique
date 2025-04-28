@@ -47,10 +47,11 @@ export default function SlidingButton({
         transition-transform
         ${className}
       `}
+      style={{ touchAction: "manipulation" }}
     >
       {/* Sliding background that animates from left to right on hover */}
       <span
-        className={`absolute inset-0 w-0 ${bgColor} group-hover:w-full`}
+        className={`absolute inset-0 w-0 ${bgColor} group-hover:w-full group-active:w-full`}
         style={{
           left: 0,
           right: "auto",

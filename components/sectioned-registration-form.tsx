@@ -17,6 +17,24 @@ export default function SectionedRegistrationForm() {
   const [submitError, setSubmitError] = useState("")
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [formBackupRestored, setFormBackupRestored] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
 
   // Use the shared schema and type
   const form = useForm<RegistrationFormData>({
@@ -137,7 +155,7 @@ export default function SectionedRegistrationForm() {
   )
 
   return (
-    <div className="w-full max-w-xl mx-auto bg-[#f5f4f1] p-8 rounded-lg shadow-sm">
+    <div className="w-full max-w-xl mx-auto bg-[#f5f4f1] p-4 sm:p-6 md:p-8 rounded-lg shadow-sm">
       {formBackupRestored && (
         <div className="mb-6 p-3 bg-blue-50 text-blue-700 rounded flex items-center" role="status">
           <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -226,6 +244,7 @@ export default function SectionedRegistrationForm() {
                         {...field}
                         className="font-light text-sm w-full"
                         autoComplete="email"
+                        inputMode="email"
                       />
                     </FormControl>
                     <FormMessage className="font-light" />
@@ -333,14 +352,20 @@ export default function SectionedRegistrationForm() {
             {isSubmitting ? (
               <button
                 disabled
-                className="w-64 h-12 font-light border border-black rounded-none bg-black text-white flex items-center justify-center"
+                className="w-full sm:w-64 h-12 font-light border border-black rounded-none bg-black text-white flex items-center justify-center"
                 aria-busy="true"
               >
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 <span>Processing...</span>
               </button>
             ) : (
-              <SlidingButton type="submit" onClick={() => {}} variant="dark" duration={1000} className="w-64 h-12">
+              <SlidingButton
+                type="submit"
+                onClick={() => {}}
+                variant="dark"
+                duration={1000}
+                className="w-full sm:w-64 h-12"
+              >
                 ENQUIRE
               </SlidingButton>
             )}

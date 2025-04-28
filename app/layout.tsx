@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     description: "Tailored by Tradition. Worn with Presence.",
     images: ["/og-image.jpg"],
   },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 5,
+    userScalable: true,
+  },
     generator: 'v0.dev'
 }
 
@@ -33,12 +39,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <head>
-        {/* Improved viewport settings for better mobile experience */}
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-      </head>
-      <body className={`${mulish.variable}`}>
+    <html lang="en" className="scroll-smooth">
+      <body className={`${mulish.variable} antialiased`}>
         <CookieConsentProvider>
           <PageTransition>{children}</PageTransition>
           <CookieConsentBanner />

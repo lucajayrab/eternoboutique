@@ -69,8 +69,6 @@ export default function EnhancedPhoneInput({
           // Split the current value into country code and national number
           const { countryCode, nationalNumber } = splitPhoneNumber(value || "")
 
-          // Update the handlePhoneChange function to ensure proper formatting
-
           // Function to combine country code and number
           const handlePhoneChange = (newCountryCode: string, newNationalNumber: string) => {
             // Remove any non-digit characters from the national number
@@ -93,6 +91,7 @@ export default function EnhancedPhoneInput({
                 value={countryCode}
                 onChange={(e) => handlePhoneChange(e.target.value, nationalNumber)}
                 {...rest}
+                style={{ touchAction: "manipulation" }}
               >
                 {COUNTRY_CODES.map((country) => (
                   <option key={country.code} value={country.code}>

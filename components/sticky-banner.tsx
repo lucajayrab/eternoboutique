@@ -19,9 +19,27 @@ export default function StickyBanner({
   const [isVisible, setIsVisible] = useState(true) // Always visible by default now
   const [isTransparent, setIsTransparent] = useState(false)
   const pathname = usePathname()
+  const [isMobile, setIsMobile] = useState(false)
 
   // Check if we're on the register page
   const isRegisterPage = pathname === "/register"
+
+  // Check if we're on mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
 
   useEffect(() => {
     // If alwaysVisible is true or we're on the register page, always show the banner with background
@@ -61,10 +79,11 @@ export default function StickyBanner({
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
       } ${isTransparent ? "bg-transparent" : "bg-eterno-sand shadow-md"}`}
     >
-      <div className="h-full flex items-center justify-center px-6">
+      <div className="h-full flex items-center justify-center px-4 md:px-6">
         <Link href="/">
           <EternoLogo
             width={logoWidth}
+            mobileWidth={isMobile ? "35mm" : undefined} // Smaller logo on mobile
             inverted={true}
             className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
           />
