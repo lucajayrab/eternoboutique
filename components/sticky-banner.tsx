@@ -75,18 +75,20 @@ export default function StickyBanner({
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 h-[70px] transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 h-[70px] flex items-center justify-center transition-all duration-500 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
       } ${isTransparent ? "bg-transparent" : "bg-eterno-sand shadow-md"}`}
     >
-      <div className="h-full flex items-center justify-center px-4 md:px-6">
-        <Link href="/">
-          <EternoLogo
-            width={logoWidth}
-            mobileWidth={isMobile ? "35mm" : undefined} // Smaller logo on mobile
-            inverted={true}
-            className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
-          />
+      <div className="w-full h-full flex items-center justify-center">
+        <Link href="/" className="flex items-center justify-center w-full">
+          <div className="flex justify-center items-center w-full">
+            <EternoLogo
+              width={logoWidth}
+              mobileWidth={isMobile ? "35mm" : undefined}
+              inverted={true}
+              className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+            />
+          </div>
         </Link>
       </div>
     </div>

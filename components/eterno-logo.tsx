@@ -65,7 +65,7 @@ export default function EternoLogo({
   const widthInPx = Number.parseInt(actualWidth) * 3.779527559
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`flex items-center justify-center w-full ${className}`}>
       {!useFallbackLogo ? (
         // Primary SVG logo - now using the new URL
         <img
