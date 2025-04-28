@@ -59,7 +59,6 @@
     "vaul": "^0.9.6",
     "zod": "latest",
     "@vercel/blob": "latest",
-    "react-phone-input-2": "latest",
     "resend": "latest"
   },
   "devDependencies": {
