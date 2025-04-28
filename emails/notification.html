@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>New Registration Notification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <style>
+    body, p, td, th, div, li, span {
+      font-family: Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #666666;
+      line-height: 1.5;
+      font-weight: 300;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100% !important;
+      background-color: #f6f6f6;
+    }
+    table {
+      border-collapse: collapse !important;
+    }
+    .customer-details {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .customer-details th {
+      text-align: left;
+      padding: 8px;
+      background-color: #e8e4d9;
+      border: 1px solid #d8d3c2;
+    }
+    .customer-details td {
+      padding: 8px;
+      border: 1px solid #d8d3c2;
+    }
+  </style>
+</head>
+<body>
+  <center>
+    <table width="100%" style="max-width: 600px; background-color: #d8d3c2;">
+      <!-- Header -->
+      <tr>
+        <td align="center" style="padding: 30px 20px;">
+          <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/ETERNO%20White-AF62wGAOVzROwdbuwQ5kVs6MyzfbUD.png" alt="ETERNO" width="150" style="display: block; border: 0;">
+        </td>
+      </tr>
+
+      <!-- Email Content -->
+      <tr>
+        <td align="center" style="padding: 30px; background-color: #f2f0e9;">
+          <table width="100%" class="content-table">
+            <tr>
+              <td align="center" style="padding-bottom: 20px;">
+                <h1 style="margin: 0; color: #5a5a56; font-size: 24px; font-weight: 300;">New Registration</h1>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding-bottom: 20px;">
+                <p style="margin: 0; color: #666666;">
+                  A new customer has registered interest with ETERNO. Please find their details below:
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <table class="customer-details">
+                  <tr>
+                    <th>Field</th>
+                    <th>Information</th>
+                  </tr>
+                  <tr>
+                    <td>Name</td>
+                    <td>{{firstName}} {{lastName}}</td>
+                  </tr>
+                  <tr>
+                    <td>Email</td>
+                    <td>{{email}}</td>
+                  </tr>
+                  <tr>
+                    <td>Phone</td>
+                    <td>{{phone}}</td>
+                  </tr>
+                  <tr>
+                    <td>Country</td>
+                    <td>{{country}}</td>
+                  </tr>
+                  <tr>
+                    <td>City</td>
+                    <td>{{city}}</td>
+                  </tr>
+                  <tr>
+                    <td>Industry</td>
+                    <td>{{industry}}</td>
+                  </tr>
+                  <tr>
+                    <td>Date of Birth</td>
+                    <td>{{dob}}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td style="padding-top: 20px;">
+                <p style="margin: 0; color: #666666;">
+                  Please follow up with this customer at your earliest convenience.
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- Footer -->
+      <tr>
+        <td align="center" style="padding: 20px; font-size: 12px; background-color: #d8d3c2;">
+          <p style="margin: 0;">&copy; 2024 ETERNO. All Rights Reserved.</p>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html>

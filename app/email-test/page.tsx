@@ -5,12 +5,10 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { sendEmail } from "@/lib/email"
 
 export default function EmailTestPage() {
   const [to, setTo] = useState("")
-  const [subject, setSubject] = useState("Test Email from ETERNO")
-  const [message, setMessage] = useState("<p>This is a test email from the ETERNO website.</p>")
+  const [firstName, setFirstName] = useState("")
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle")
   const [result, setResult] = useState<any>(null)
 
@@ -20,14 +18,20 @@ export default function EmailTestPage() {
     setResult(null)
 
     try {
-      const response = await sendEmail({
-        to,
-        subject,
-        html: message,
+      const response = await fetch("/api/test-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to,
+          firstName,
+        }),
       })
 
-      setStatus("success")
-      setResult(response)
+      const data = await response.json()
+      setStatus(data.success ? "success" : "error")
+      setResult(data)
     } catch (error) {
       setStatus("error")
       setResult(error instanceof Error ? { message: error.message } : { message: "Unknown error" })
@@ -36,7 +40,7 @@ export default function EmailTestPage() {
 
   return (
     <div className="container mx-auto p-8 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Resend Email Test</h1>
+      <h1 className="text-2xl font-bold mb-6">Email Test Page</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -54,28 +58,15 @@ export default function EmailTestPage() {
         </div>
 
         <div>
-          <label htmlFor="subject" className="block text-sm font-medium mb-1">
-            Subject
+          <label htmlFor="firstName" className="block text-sm font-medium mb-1">
+            First Name
           </label>
           <Input
-            id="subject"
+            id="firstName"
             type="text"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-            placeholder="Email subject"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="message" className="block text-sm font-medium mb-1">
-            HTML Message
-          </label>
-          <textarea
-            id="message"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="w-full h-40 p-2 border rounded"
-            placeholder="<p>Your HTML message here</p>"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="John"
           />
         </div>
 
