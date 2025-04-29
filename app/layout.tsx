@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   keywords: "ETERNO, luxury menswear, Mediterranean fashion, tailored clothing, men's fashion",
   openGraph: {
     title: "ETERNO | Mediterranean Luxury Menswear",
-    description: "Tailored by Tradition. Worn with Presence.",
+    description: "Mediterranean Luxury Menswear",
     images: ["/og-image.jpg"],
   },
   viewport: {
