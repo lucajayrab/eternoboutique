@@ -244,6 +244,8 @@ export default function Home() {
               your taste, offering the possibility of complete customisation to ensure each piece genuinely reflects
               your individual story.
             </p>
+
+            <p className="text-center italic font-light text-[#5a5a56]/80 mb-12">Clifford St, London, W1S 4JY</p>
           </div>
         </div>
       </div>
