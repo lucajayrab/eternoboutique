@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import EternoLogo from "@/components/eterno-logo"
 import MobileMenu from "@/components/main-menu"
 
 export default function ConfirmationPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   // Define logo size to match sticky banner
   const LOGO_SIZE = "45mm"
@@ -16,10 +17,35 @@ export default function ConfirmationPage() {
     "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
 
   useEffect(() => {
+    // Preload the video
+    if (videoRef.current) {
+      videoRef.current.load()
+
+      // Set preload attribute to auto
+      videoRef.current.preload = "auto"
+
+      // Lower quality for faster loading if needed
+      videoRef.current.playbackRate = 1.0
+
+      // Force play as soon as possible
+      const playVideo = () => {
+        if (videoRef.current) {
+          videoRef.current.play().catch((e) => {
+            console.log("Auto-play prevented by browser", e)
+          })
+        }
+      }
+
+      playVideo()
+
+      // Backup play attempt after a short delay
+      setTimeout(playVideo, 100)
+    }
+
     setIsLoaded(true)
 
     // Staggered animation for text
-    const messageTimer = setTimeout(() => setShowMessage(true), 1500)
+    const messageTimer = setTimeout(() => setShowMessage(true), 500) // Reduced from 1500ms to 500ms
 
     return () => {
       clearTimeout(messageTimer)
@@ -31,15 +57,19 @@ export default function ConfirmationPage() {
       {/* Mobile Menu */}
       <MobileMenu />
 
-      {/* Background video - simplified implementation */}
-      <div className="absolute inset-0 z-0">
+      {/* Background video - optimized implementation */}
+      <div className="absolute inset-0 z-0 bg-black">
+        {" "}
+        {/* Added bg-black as fallback */}
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
           className="w-full h-full object-cover opacity-50"
           poster="/video-poster.jpg" // Fallback image while video loads
+          preload="auto"
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
@@ -50,12 +80,12 @@ export default function ConfirmationPage() {
 
       {/* Content */}
       <div className="relative z-20 w-full max-w-md text-center">
-        <div className={`transition-all duration-1000 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}>
+        <div className={`transition-all duration-500 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}>
           <EternoLogo width={LOGO_SIZE} inverted={true} className="mx-auto mb-8" />
         </div>
 
         <p
-          className={`font-mulish text-white text-base font-light leading-relaxed tracking-wide transition-all duration-1000 ease-out ${
+          className={`font-mulish text-white text-base font-light leading-relaxed tracking-wide transition-all duration-500 ease-out ${
             showMessage ? "opacity-100 transform-none" : "opacity-0 translate-y-8"
           }`}
         >
