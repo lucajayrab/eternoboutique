@@ -25,6 +25,7 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false)
   const [isArrowClicked, setIsArrowClicked] = useState(false)
   const [isButtonVisible, setIsButtonVisible] = useState(false)
+  const [hasTouched, setHasTouched] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -98,7 +99,7 @@ export default function Home() {
     return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [isMobile])
 
-  // Force video play on mobile devices
+  // Force video play on mobile devices and track touch for button visibility
   useEffect(() => {
     if (!isMobile) return
 
@@ -126,11 +127,10 @@ export default function Home() {
       }
     }
 
-    // Play on user interaction
+    // Play on user interaction and show button
     const playOnInteraction = () => {
       attemptPlay()
-      document.removeEventListener("touchstart", playOnInteraction)
-      document.removeEventListener("touchend", playOnInteraction)
+      setHasTouched(true) // Set touch state to true when user interacts
     }
 
     document.addEventListener("visibilitychange", handleVisibilityChange)
@@ -223,7 +223,7 @@ export default function Home() {
         <div
           ref={buttonRef}
           className={`absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-500 ${
-            isButtonVisible || isMobile ? "opacity-100" : "opacity-0"
+            (isButtonVisible && !isMobile) || (isMobile && hasTouched && videoLoaded) ? "opacity-100" : "opacity-0"
           }`}
         >
           <SlidingButton
