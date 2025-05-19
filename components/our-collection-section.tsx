@@ -41,7 +41,7 @@ export default function OurCollectionSection() {
 
             {/* Text Section - Right (taking about 50% width to match video container) */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16 items-start">
-              <div className={`space-y-1 ${isMobile ? "text-center w-full mt-10" : "text-left"}`}>
+              <div className={`space-y-1 ${isMobile ? "text-center w-full mt-4" : "text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">SHIRT</h3>
               </div>
@@ -101,7 +101,7 @@ export default function OurCollectionSection() {
 
             {/* Text Section - Left (taking about 50% width to match video container) */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16">
-              <div className={`space-y-1 ${isMobile ? "text-center w-full mt-10" : "text-center md:text-left"}`}>
+              <div className={`space-y-1 ${isMobile ? "text-center w-full mt-4" : "text-center md:text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">TROUSER</h3>
               </div>
