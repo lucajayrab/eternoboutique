@@ -128,23 +128,23 @@ export default function EternoWorldCarousel() {
 
   return (
     <section className="w-full bg-[#f9f8f5] overflow-hidden">
-      <div className="container mx-auto">
-        <div className="relative h-[500px]">
+      <div className="container mx-auto px-2 sm:px-4 md:px-8">
+        <div className="relative h-[300px] sm:h-[400px] md:h-[500px]">
           {/* Carousel Navigation */}
           <button
             onClick={prevSlide}
-            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
+            className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-1 sm:p-2 transition-all"
             aria-label="Previous slide"
           >
-            <ChevronLeft className="text-[#5a5a56]" />
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#5a5a56]" />
           </button>
 
           <button
             onClick={nextSlide}
-            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
+            className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-1 sm:p-2 transition-all"
             aria-label="Next slide"
           >
-            <ChevronRight className="text-[#5a5a56]" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#5a5a56]" />
           </button>
 
           {/* Carousel Container */}
@@ -181,8 +181,8 @@ export default function EternoWorldCarousel() {
             </div>
           </div>
 
-          {/* Carousel Indicators */}
-          <div className="flex justify-center mt-4 space-x-2 absolute bottom-2 left-0 right-0">
+          {/* Carousel Indicators - Simplified for mobile */}
+          <div className="flex justify-center mt-2 sm:mt-4 space-x-1 sm:space-x-2 absolute bottom-1 sm:bottom-2 left-0 right-0">
             {Array.from({ length: indicatorCount }).map((_, index) => (
               <button
                 key={index}
@@ -192,8 +192,8 @@ export default function EternoWorldCarousel() {
                   setCurrentIndex(index)
                   setTimeout(() => setIsAnimating(false), 500)
                 }}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === currentIndex ? "bg-[#5a5a56] w-4" : "bg-[#5a5a56]/30"
+                className={`w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full transition-all ${
+                  index === currentIndex ? "bg-[#5a5a56] w-3 sm:w-4" : "bg-[#5a5a56]/30"
                 }`}
                 aria-label={`Go to slide ${index + 1}`}
               />

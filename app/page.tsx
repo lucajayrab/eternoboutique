@@ -8,7 +8,6 @@ import MobileMenu from "@/components/main-menu"
 import FromTheYarnSection from "@/components/from-the-yarn-section"
 import BoutiqueTailoringSection from "@/components/boutique-tailoring-section"
 import EternoManifestoSection from "@/components/eterno-manifesto-section"
-import EternoWorldCarousel from "@/components/eterno-world-carousel"
 import OurCollectionSection from "@/components/our-collection-section"
 
 // Define a consistent logo size
@@ -188,7 +187,7 @@ export default function Home() {
             onClick={handleRegisterClick}
             duration={1000}
             variant="light"
-            className="min-w-[200px] py-4 text-base"
+            className="min-w-[160px] sm:min-w-[180px] md:min-w-[200px] py-3 md:py-4 text-sm md:text-base"
           >
             REGISTER INTEREST
           </SlidingButton>
@@ -196,13 +195,13 @@ export default function Home() {
 
         {/* Scroll down indicator - Simple arrow with hover and click animations */}
         <div
-          className={`absolute bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
+          className={`absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
           onClick={handleScrollDown}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="28"
-            height="28"
+            width="24"
+            height="24"
             viewBox="0 0 24 24"
             fill="none"
             stroke="white"
@@ -230,16 +229,13 @@ export default function Home() {
       {/* ROW 4: ETERNO MANIFESTO */}
       <EternoManifestoSection />
 
-      {/* ROW 5: ETERNO WORLD CAROUSEL - Now without title */}
-      <EternoWorldCarousel />
-
       {/* FINAL CTA SECTION - Updated with smaller text and narrower width */}
       <div ref={contentRef}>
         {/* Slimmer Register Interest CTA */}
-        <section className="py-8 md:py-12 bg-eterno-sand">
-          <div className="container mx-auto px-4 text-center">
+        <section className="w-full py-6 sm:py-8 md:py-12 bg-eterno-sand">
+          <div className="w-full px-4 sm:px-6 md:px-8 text-center">
             <div
-              className="max-w-md mx-auto space-y-3 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"
+              className="max-w-xs sm:max-w-sm md:max-w-md mx-auto space-y-2 sm:space-y-3 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"
               style={{ animationDelay: "0.3s" }}
             >
               <div>
@@ -247,12 +243,12 @@ export default function Home() {
                   onClick={handleRegisterClick}
                   variant="dark"
                   duration={1000}
-                  className="min-w-[180px] py-3 text-sm"
+                  className="min-w-[140px] sm:min-w-[160px] md:min-w-[180px] py-2 sm:py-3 text-xs sm:text-sm"
                 >
                   REGISTER INTEREST
                 </SlidingButton>
               </div>
-              <p className="text-xs font-mulish text-[#5a5a56]/60 mt-2">
+              <p className="text-[10px] sm:text-xs font-mulish text-[#5a5a56]/60 mt-1 sm:mt-2">
                 Be the first to access our bespoke pieces, private fittings, and upcoming events.
               </p>
             </div>
