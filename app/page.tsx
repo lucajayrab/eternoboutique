@@ -6,6 +6,11 @@ import SlidingButton from "@/components/sliding-button"
 import StickyBanner from "@/components/sticky-banner"
 import ProcessSteps from "@/components/process-steps"
 import MobileMenu from "@/components/main-menu"
+import FromTheYarnSection from "@/components/from-the-yarn-section"
+import BoutiqueTailoringSection from "@/components/boutique-tailoring-section"
+import EternoManifestoSection from "@/components/eterno-manifesto-section"
+import EternoWorldCarousel from "@/components/eterno-world-carousel"
+import OurCollectionSection from "@/components/our-collection-section"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -143,7 +148,7 @@ export default function Home() {
       {/* Mobile Menu (only visible on mobile) */}
       <MobileMenu />
 
-      {/* CURRENT LANDING STRUCTURE - Keep as-is at top of homepage */}
+      {/* HERO SECTION - Video Background */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">
         {/* Fallback background while video loads or if video fails */}
         {(!videoLoaded || isVideoError) && (
@@ -212,43 +217,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEW SIMPLIFIED ABOUT SECTION - with equal vertical padding */}
-      <div ref={aboutSectionRef} id="about" className="w-full bg-[#f5f4f1] pt-28 pb-28 md:pt-32 md:pb-32">
-        <div className="container mx-auto px-6 md:px-8 max-w-4xl">
-          <div className="text-center mb-10">
-            <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
-              BOUTIQUE LINEN TAILORING
-            </h2>
-          </div>
-
-          <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed space-y-6 text-center md:text-left">
-            <p>
-              ETERNO embodies Mediterranean sophistication, quietly expressed through bespoke tailoring and the
-              meticulous craft of our Neapolitan artisans. We warmly invite you to experience our boutique fittings at
-              our atelier in the heart of Mayfair, or at a private location of your choosing.
-            </p>
-
-            <p>
-              Our signature offering is centred around impeccably tailored linen—capturing the effortless elegance of
-              Mediterranean living. While this marks the start of our journey, we envision thoughtfully expanding our
-              collection to further embody our philosophy of careful luxury.
-            </p>
-
-            <p>
-              Currently, we offer an exclusive capsule collection showcasing six distinctive shirt shades and four
-              refined trouser tones, each piece carefully handcrafted from the finest Italian linen.
-            </p>
-
-            <p>
-              While our capsule serves as an elegant introduction, we delight in tailoring each garment precisely to
-              your taste, offering the possibility of complete customisation to ensure each piece genuinely reflects
-              your individual story.
-            </p>
-
-            <p className="text-center italic font-light text-[#5a5a56]/80 mb-12">Clifford St, London, W1S 4JY</p>
-          </div>
-        </div>
+      {/* ROW 1: FROM THE YARN SECTION */}
+      <div ref={aboutSectionRef}>
+        <FromTheYarnSection />
       </div>
+
+      {/* ROW 2: OUR COLLECTION SECTION (NEW) */}
+      <OurCollectionSection />
+
+      {/* ROW 3: BOUTIQUE LINEN TAILORING */}
+      <BoutiqueTailoringSection />
+
+      {/* ROW 4: ETERNO MANIFESTO */}
+      <EternoManifestoSection />
+
+      {/* ROW 5: ETERNO WORLD CAROUSEL */}
+      <EternoWorldCarousel />
 
       {/* PROCESS STEPS SECTION */}
       <div id="process">
