@@ -56,7 +56,7 @@ export default function FromTheYarnSection() {
   }, [])
 
   return (
-    <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-28">
+    <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-28" id="from-the-yarn">
       <div className="w-full px-0">
         <div className="flex flex-col md:flex-row items-center">
           {/* Text Content - Left side on desktop, top on mobile */}
@@ -95,7 +95,7 @@ export default function FromTheYarnSection() {
                 </div>
               )}
 
-              {/* Linen Production Video */}
+              {/* Linen Production Video - Updated with new video URL */}
               <video
                 ref={videoRef}
                 autoPlay
@@ -107,7 +107,7 @@ export default function FromTheYarnSection() {
                 }`}
               >
                 <source
-                  src="https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/linen-production-NJnQXXQXnXXXXXXXXXXXXXXXXXXXXXXX.mp4"
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0519%281%29-Xy0WyDFlMph8Zi5RE1UoMYvGtsckAc.mp4"
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
