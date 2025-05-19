@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import Image from "next/image"
 
 // Color swatches data
 const SHIRT_COLORS = [
@@ -21,6 +22,8 @@ const TROUSER_COLORS = [
 
 export default function OurCollectionSection() {
   const [isMobile, setIsMobile] = useState(false)
+  const [shirtImageLoaded, setShirtImageLoaded] = useState(false)
+  const [trouserImageLoaded, setTrouserImageLoaded] = useState(false)
 
   // Check if device is mobile
   const checkMobile = useCallback(() => {
@@ -45,6 +48,12 @@ export default function OurCollectionSection() {
     </div>
   )
 
+  // Handle image loading errors
+  const handleImageError = (imageType: string) => {
+    console.error(`Failed to load ${imageType} image`)
+    // You could set a state to show a fallback image here
+  }
+
   return (
     <>
       {/* SHIRT Row - Lighter background spanning full width */}
@@ -54,11 +63,24 @@ export default function OurCollectionSection() {
             {/* Image Section - Left */}
             <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0 pb-8 md:pb-4">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
-                <img
-                  src="/white-linen-shirt-new.png"
-                  alt="ETERNO White Linen Shirt"
-                  className="w-auto h-auto max-h-[300px] sm:max-h-[400px] md:max-h-[500px] object-contain object-center"
-                />
+                {/* Using next/image for better performance and error handling */}
+                <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
+                  <Image
+                    src="/white-linen-shirt-new.png"
+                    alt="ETERNO White Linen Shirt"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    style={{ objectFit: "contain", objectPosition: "center" }}
+                    onLoad={() => setShirtImageLoaded(true)}
+                    onError={() => handleImageError("shirt")}
+                    priority
+                  />
+                  {!shirtImageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#f5f5f3]">
+                      <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -99,11 +121,24 @@ export default function OurCollectionSection() {
             {/* Image Section - Right */}
             <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0 pb-8 md:pb-4">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
-                <img
-                  src="/cream-linen-trousers-new.png"
-                  alt="ETERNO Cream Linen Trousers"
-                  className="w-auto h-auto max-h-[300px] sm:max-h-[400px] md:max-h-[500px] object-contain object-center"
-                />
+                {/* Using next/image for better performance and error handling */}
+                <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
+                  <Image
+                    src="/cream-linen-trousers-new.png"
+                    alt="ETERNO Cream Linen Trousers"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    style={{ objectFit: "contain", objectPosition: "center" }}
+                    onLoad={() => setTrouserImageLoaded(true)}
+                    onError={() => handleImageError("trouser")}
+                    priority
+                  />
+                  {!trouserImageLoaded && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#f5f5f3]">
+                      <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useEffect, useState, useCallback } from "react"
+import Image from "next/image"
 
 // Constants
 const VIDEO_URL =
@@ -11,6 +12,7 @@ export default function FromTheYarnSection() {
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [isVideoError, setIsVideoError] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [fallbackImageLoaded, setFallbackImageLoaded] = useState(false)
 
   // Check if device is mobile
   const checkMobile = useCallback(() => {
@@ -53,6 +55,9 @@ export default function FromTheYarnSection() {
     }
   }, [])
 
+  // Fallback image for when video fails
+  const fallbackImage = "/tailoring-workshop-artisan-detail.png"
+
   return (
     <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-28" id="from-the-yarn">
       <div className="w-full px-0">
@@ -79,34 +84,47 @@ export default function FromTheYarnSection() {
             </div>
           </div>
 
-          {/* Video Content - Right side on desktop, bottom on mobile */}
+          {/* Video/Image Content - Right side on desktop, bottom on mobile */}
           <div className="w-full md:w-1/2 px-8 sm:px-12 md:px-16 lg:px-20">
             <div className="h-[250px] sm:h-[300px] md:h-[500px] relative overflow-hidden bg-[#e8e4d9]">
-              {/* Fallback while video loads */}
-              {(!videoLoaded || isVideoError) && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#e8e4d9]">
-                  {isVideoError ? (
-                    <p className="text-[#5a5a56]/50 text-xs sm:text-sm">Video preview unavailable</p>
-                  ) : (
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
-                  )}
+              {/* Show video if loaded successfully */}
+              {!isVideoError && (
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+                    videoLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                >
+                  <source src={VIDEO_URL} type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              )}
+
+              {/* Fallback image when video fails */}
+              {isVideoError && (
+                <div className="relative w-full h-full">
+                  <Image
+                    src={fallbackImage || "/placeholder.svg"}
+                    alt="Linen production process"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    style={{ objectFit: "cover", objectPosition: "center" }}
+                    onLoad={() => setFallbackImageLoaded(true)}
+                    priority
+                  />
                 </div>
               )}
 
-              {/* Linen Production Video */}
-              <video
-                ref={videoRef}
-                autoPlay
-                muted
-                loop
-                playsInline
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-                  videoLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <source src={VIDEO_URL} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              {/* Loading state */}
+              {(!videoLoaded && !isVideoError) || (isVideoError && !fallbackImageLoaded) ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-[#e8e4d9]">
+                  <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

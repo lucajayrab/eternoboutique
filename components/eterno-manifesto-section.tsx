@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import Image from "next/image"
 
 export default function EternoManifestoSection() {
   const [isMobile, setIsMobile] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   // Check if device is mobile
   const checkMobile = useCallback(() => {
@@ -17,18 +19,37 @@ export default function EternoManifestoSection() {
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
 
+  // Handle image error
+  const handleImageError = () => {
+    console.error("Failed to load manifesto image")
+    // You could set a state to show a fallback image here
+  }
+
   return (
     <section className="w-full bg-[#f9f8f5]" id="manifesto">
       <div className="w-full">
         <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
           {/* Image Section - Left on desktop, top on mobile */}
           <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-4 sm:px-8 md:px-16 lg:px-20 mb-0 md:mb-0">
-            <div className="w-full aspect-[4/3] md:h-full bg-[#f5f5f3] flex items-center justify-center overflow-hidden">
-              <img
-                src="/lakeside-balcony-view.png"
-                alt="Men in linen clothing overlooking an Italian lake from a balcony"
-                className="w-full h-full object-cover object-center"
-              />
+            <div className="w-full aspect-[4/3] md:h-full bg-[#f5f5f3] flex items-center justify-center overflow-hidden relative">
+              {/* Using next/image for better performance and error handling */}
+              <div className="relative w-full h-full">
+                <Image
+                  src="/lakeside-balcony-view.png"
+                  alt="Men in linen clothing overlooking an Italian lake from a balcony"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  style={{ objectFit: "cover", objectPosition: "center" }}
+                  onLoad={() => setImageLoaded(true)}
+                  onError={handleImageError}
+                  priority
+                />
+                {!imageLoaded && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-[#f5f5f3]">
+                    <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
