@@ -6,6 +6,7 @@ export default function FromTheYarnSection() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [isVideoError, setIsVideoError] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     const video = videoRef.current
@@ -37,16 +38,37 @@ export default function FromTheYarnSection() {
     }
   }, [])
 
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
+
   return (
     <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-28">
       <div className="w-full px-0">
         <div className="flex flex-col md:flex-row items-center">
           {/* Text Content - Left side on desktop, top on mobile */}
           <div className="w-full md:w-1/2 space-y-4 sm:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20">
-            <h2 className="font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
+            <h2
+              className={`font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] ${isMobile ? "text-center" : ""}`}
+            >
               From the Yarn
             </h2>
-            <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[600px]">
+            <div
+              className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[600px] ${isMobile ? "text-center mx-auto" : ""}`}
+            >
               <p>
                 Our journey begins with the finest flax fibers, cultivated in the nutrient-rich soils of Northern Italy.
                 These exceptional raw materials are transformed into luxurious linen through a meticulous process that

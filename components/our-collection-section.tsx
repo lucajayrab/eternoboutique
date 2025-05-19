@@ -1,4 +1,27 @@
+"use client"
+
+import { useState, useEffect } from "react"
+
 export default function OurCollectionSection() {
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkMobile()
+
+    // Add resize listener
+    window.addEventListener("resize", checkMobile)
+
+    return () => {
+      window.removeEventListener("resize", checkMobile)
+    }
+  }, [])
+
   return (
     <>
       {/* SHIRT Row - Lighter background spanning full width */}
@@ -18,12 +41,14 @@ export default function OurCollectionSection() {
 
             {/* Text Section - Right (taking about 50% width to match video container) */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16 items-start">
-              <div className="space-y-1 text-left">
+              <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">SHIRT</h3>
               </div>
 
-              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] text-left">
+              <div
+                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
+              >
                 <p>
                   Our signature shirt captures the spirit of Southern Italy through thoughtful tailoring and refined
                   detail. The clean, single-placket front flows into the soft roll of the paramontura collar, echoed by
@@ -33,9 +58,9 @@ export default function OurCollectionSection() {
               </div>
 
               {/* Colorways */}
-              <div className="mt-4 md:mt-6 max-w-[550px] w-full text-left">
+              <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 6 colorways:</p>
-                <div className="flex flex-wrap gap-3 sm:gap-4 justify-start">
+                <div className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-start"}`}>
                   {[
                     { name: "White", color: "#f5f5f5" },
                     { name: "Black", color: "#2a2a33" },
@@ -76,12 +101,14 @@ export default function OurCollectionSection() {
 
             {/* Text Section - Left (taking about 50% width to match video container) */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16">
-              <div className="space-y-1 text-center md:text-left">
+              <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-center md:text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">TROUSER</h3>
               </div>
 
-              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px]">
+              <div
+                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : ""}`}
+              >
                 <p>
                   Our pleated linen trousers are a quiet study in refinement. A single forward pleat introduces movement
                   through the front, while the waistband combines a clean, classic front with discrete elastic at the
@@ -91,11 +118,11 @@ export default function OurCollectionSection() {
               </div>
 
               {/* Colorways */}
-              <div className="mt-4 md:mt-6 max-w-[550px]">
-                <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3 text-center md:text-left">
-                  Available to view in 4 colorways:
-                </p>
-                <div className="flex flex-wrap gap-3 sm:gap-4 justify-center md:justify-start">
+              <div className={`mt-4 md:mt-6 max-w-[550px] ${isMobile ? "text-center mx-auto" : ""}`}>
+                <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 4 colorways:</p>
+                <div
+                  className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-center md:justify-start"}`}
+                >
                   {[
                     { name: "White", color: "#f5f5f5" },
                     { name: "Black", color: "#2a2a33" },
