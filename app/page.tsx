@@ -229,28 +229,28 @@ export default function Home() {
       {/* ROW 4: ETERNO MANIFESTO */}
       <EternoManifestoSection />
 
-      {/* FINAL CTA SECTION - Updated with smaller text and narrower width */}
+      {/* FINAL CTA SECTION - Updated with email and address instead of button */}
       <div ref={contentRef}>
-        {/* Slimmer Register Interest CTA */}
         <section className="w-full py-6 sm:py-8 md:py-12 bg-eterno-sand">
           <div className="w-full px-4 sm:px-6 md:px-8 text-center">
             <div
-              className="max-w-xs sm:max-w-sm md:max-w-md mx-auto space-y-2 sm:space-y-3 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"
+              className="max-w-xs sm:max-w-sm md:max-w-md mx-auto space-y-3 sm:space-y-4 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"
               style={{ animationDelay: "0.3s" }}
             >
-              <div>
-                <SlidingButton
-                  onClick={handleRegisterClick}
-                  variant="dark"
-                  duration={1000}
-                  className="min-w-[140px] sm:min-w-[160px] md:min-w-[180px] py-2 sm:py-3 text-xs sm:text-sm"
+              <h2 className="font-mulish text-lg sm:text-xl font-light tracking-widest uppercase text-[#5a5a56]">
+                Contact Eterno
+              </h2>
+              <div className="space-y-1">
+                <a
+                  href="mailto:enquiries@eternotailoring.com"
+                  className="text-sm sm:text-base font-mulish text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
                 >
-                  REGISTER INTEREST
-                </SlidingButton>
+                  enquiries@eternotailoring.com
+                </a>
+                <p className="text-xs sm:text-sm font-mulish text-[#5a5a56]/70 mt-1">
+                  Clifford Street, London, W1S 4JY, United Kingdom
+                </p>
               </div>
-              <p className="text-[10px] sm:text-xs font-mulish text-[#5a5a56]/60 mt-1 sm:mt-2">
-                Be the first to access our bespoke pieces, private fittings, and upcoming events.
-              </p>
             </div>
           </div>
         </section>
