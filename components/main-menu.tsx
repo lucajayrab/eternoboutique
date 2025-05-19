@@ -5,7 +5,6 @@ import { useRouter, usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 import SlidingButton from "./sliding-button"
 
-// Rename the component back to MobileMenu
 export default function MobileMenu() {
   const pathname = usePathname()
   const [isTransparent, setIsTransparent] = useState(pathname === "/")
@@ -102,20 +101,28 @@ export default function MobileMenu() {
               HOME
             </a>
             <a
-              href="#about"
+              href="#from-the-yarn"
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2 w-full text-center"
               onClick={() => setIsOpen(false)}
               style={{ touchAction: "manipulation" }}
             >
-              ABOUT US
+              FROM THE YARN
             </a>
             <a
-              href="#process"
+              href="#collection"
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2 w-full text-center"
               onClick={() => setIsOpen(false)}
               style={{ touchAction: "manipulation" }}
             >
-              PROCESS
+              COLLECTION
+            </a>
+            <a
+              href="#tailoring"
+              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2 w-full text-center"
+              onClick={() => setIsOpen(false)}
+              style={{ touchAction: "manipulation" }}
+            >
+              BOUTIQUE TAILORING
             </a>
           </nav>
 

@@ -60,7 +60,9 @@ export default function FromTheYarnSection() {
       <div className="w-full px-0">
         <div className="flex flex-col md:flex-row items-center">
           {/* Text Content - Left side on desktop, top on mobile */}
-          <div className="w-full md:w-1/2 space-y-4 sm:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20">
+          <div
+            className={`w-full md:w-1/2 space-y-4 sm:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 ${isMobile ? "mb-10" : ""}`}
+          >
             <h2
               className={`font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] ${isMobile ? "text-center" : ""}`}
             >
