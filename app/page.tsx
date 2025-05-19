@@ -231,7 +231,7 @@ export default function Home() {
       {/* ROW 4: ETERNO MANIFESTO */}
       <EternoManifestoSection />
 
-      {/* ROW 5: ETERNO WORLD CAROUSEL */}
+      {/* ROW 5: ETERNO WORLD CAROUSEL - Now without title */}
       <EternoWorldCarousel />
 
       {/* PROCESS STEPS SECTION */}
@@ -242,7 +242,7 @@ export default function Home() {
       {/* FINAL CTA SECTION */}
       <div ref={contentRef}>
         {/* Slimmer Register Interest CTA */}
-        <section className="py-12 md:py-16 bg-[#eae8e3]">
+        <section className="py-12 md:py-16 bg-[#f9f8f5]">
           <div className="container mx-auto px-8 text-center">
             <div
               className="max-w-2xl mx-auto space-y-4 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"

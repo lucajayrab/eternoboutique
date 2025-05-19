@@ -5,30 +5,39 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+// New yacht lifestyle images
 const images = [
   {
-    src: "/mediterranean-villa-sunset.png",
-    alt: "Mediterranean Villa at Sunset",
+    src: "/yacht-images/yacht-image-1.png",
+    alt: "Relaxing on yacht deck",
   },
   {
-    src: "/man-linen-yacht.png",
-    alt: "Linen Style on a Yacht",
+    src: "/yacht-images/yacht-image-2.png",
+    alt: "Dining on yacht with city view",
   },
   {
-    src: "/amalfi-coast-town.png",
-    alt: "Italian Coastal Town",
+    src: "/yacht-images/yacht-image-3.png",
+    alt: "Taking photos on a boat",
   },
   {
-    src: "/luxury-mediterranean-evening.png",
-    alt: "Mediterranean Evening Dining",
+    src: "/yacht-images/yacht-image-4.png",
+    alt: "Climbing aboard yacht",
   },
   {
-    src: "/placeholder.svg?height=600&width=800&query=linen%20fabric%20close%20up%20natural%20texture",
-    alt: "Linen Fabric Texture",
+    src: "/yacht-images/yacht-image-5.png",
+    alt: "Luxury yacht with sports car",
   },
   {
-    src: "/placeholder.svg?height=600&width=800&query=tailoring%20workshop%20artisan%20detail",
-    alt: "Tailoring Craftsmanship",
+    src: "/yacht-images/yacht-image-6.png",
+    alt: "Wooden speedboat on blue water",
+  },
+  {
+    src: "/yacht-images/yacht-image-7.png",
+    alt: "Couple on yacht with mountain view",
+  },
+  {
+    src: "/yacht-images/yacht-image-8.png",
+    alt: "Man in white linen enjoying sunset on yacht",
   },
 ]
 
@@ -102,18 +111,14 @@ export default function EternoWorldCarousel() {
   useEffect(() => {
     const interval = setInterval(() => {
       nextSlide()
-    }, 5000)
+    }, 4000) // Slightly faster rotation for more dynamic feel
 
     return () => clearInterval(interval)
   }, [currentIndex, isAnimating])
 
   return (
-    <section className="w-full bg-[#f5f4f1] py-20 md:py-28">
+    <section className="w-full bg-[#f9f8f5] py-12 md:py-16">
       <div className="container mx-auto px-6 md:px-8">
-        <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] text-center mb-12">
-          The ETERNO World
-        </h2>
-
         <div className="relative">
           {/* Carousel Navigation */}
           <button
@@ -162,7 +167,7 @@ export default function EternoWorldCarousel() {
           </div>
 
           {/* Carousel Indicators */}
-          <div className="flex justify-center mt-6 space-x-2">
+          <div className="flex justify-center mt-4 space-x-2">
             {Array.from({ length: maxIndex + 1 }).map((_, index) => (
               <button
                 key={index}

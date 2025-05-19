@@ -38,7 +38,7 @@ export default function ProcessSteps() {
   ]
 
   return (
-    <section className="w-full bg-white py-20 px-6 md:px-12">
+    <section className="w-full bg-[#eeeeec] py-20 px-6 md:px-12">
       <div className="container mx-auto max-w-7xl">
         <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] text-center mb-16">
           Our Process
