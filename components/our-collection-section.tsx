@@ -25,11 +25,11 @@ export default function OurCollectionSection() {
   return (
     <>
       {/* SHIRT Row - Lighter background spanning full width */}
-      <section className="w-full bg-[#eeeeec]">
+      <section className="w-full bg-[#eeeeec]" id="collection">
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-6 md:gap-0 min-h-[400px] md:min-h-[600px]">
             {/* Image Section - Left (taking about 50% width to match video container) */}
-            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
+            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
                 <img
                   src="/white-linen-shirt-new.png"
@@ -41,7 +41,7 @@ export default function OurCollectionSection() {
 
             {/* Text Section - Right (taking about 50% width to match video container) */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16 items-start">
-              <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-left"}`}>
+              <div className={`space-y-1 ${isMobile ? "text-center w-full mt-10" : "text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">SHIRT</h3>
               </div>
@@ -89,7 +89,7 @@ export default function OurCollectionSection() {
         <div className="w-full">
           <div className="flex flex-col md:flex-row-reverse gap-6 md:gap-0 min-h-[400px] md:min-h-[600px]">
             {/* Image Section - Right (taking about 50% width to match video container) */}
-            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
+            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
                 <img
                   src="/cream-linen-trousers-new.png"
@@ -101,7 +101,7 @@ export default function OurCollectionSection() {
 
             {/* Text Section - Left (taking about 50% width to match video container) */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16">
-              <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-center md:text-left"}`}>
+              <div className={`space-y-1 ${isMobile ? "text-center w-full mt-10" : "text-center md:text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">TROUSER</h3>
               </div>

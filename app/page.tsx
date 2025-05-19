@@ -109,6 +109,56 @@ export default function Home() {
     }
   }, [isMobile])
 
+  // Force video play on mobile devices
+  useEffect(() => {
+    if (!isMobile) return
+
+    // Function to attempt playing the video
+    const attemptPlay = () => {
+      const videoElements = document.querySelectorAll("video")
+      videoElements.forEach((video) => {
+        // Ensure video is muted (required for autoplay on most mobile browsers)
+        video.muted = true
+
+        // Try to play the video
+        const playPromise = video.play()
+
+        if (playPromise !== undefined) {
+          playPromise.catch((error) => {
+            console.log("Mobile autoplay prevented:", error)
+          })
+        }
+      })
+    }
+
+    // Try to play immediately
+    attemptPlay()
+
+    // Also try to play on visibility change (when user returns to tab)
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") {
+        attemptPlay()
+      }
+    })
+
+    // Try to play on first user interaction
+    const playOnInteraction = () => {
+      attemptPlay()
+      // Clean up event listeners after first interaction
+      document.removeEventListener("touchstart", playOnInteraction)
+      document.removeEventListener("touchend", playOnInteraction)
+    }
+
+    document.addEventListener("touchstart", playOnInteraction)
+    document.addEventListener("touchend", playOnInteraction)
+
+    return () => {
+      document.removeEventListener("visibilitychange", attemptPlay)
+      document.removeEventListener("touchstart", playOnInteraction)
+      document.removeEventListener("touchend", playOnInteraction)
+    }
+  }, [isMobile])
+
   const handleRegisterClick = () => {
     router.push("/register")
   }
@@ -158,10 +208,45 @@ export default function Home() {
         {/* Background Video with optimized loading */}
         {videoUrl && (
           <video
-            autoPlay
+            ref={(el) => {
+              if (el) {
+                // Set video element properties
+                el.muted = true
+                el.playsInline = true
+                el.autoplay = true
+
+                // Force play on load
+                el.load()
+
+                // Attempt to play immediately
+                const playPromise = el.play()
+
+                // Handle play promise (avoid uncaught promise errors)
+                if (playPromise !== undefined) {
+                  playPromise.catch((error) => {
+                    console.log("Auto-play was prevented, trying again on user interaction")
+
+                    // Try to play again on first user interaction
+                    const playVideoOnInteraction = () => {
+                      el.play().catch((e) => console.log("Still cannot play video:", e))
+                      // Remove event listeners after first interaction
+                      document.removeEventListener("touchstart", playVideoOnInteraction)
+                      document.removeEventListener("click", playVideoOnInteraction)
+                    }
+
+                    document.addEventListener("touchstart", playVideoOnInteraction, { once: true })
+                    document.addEventListener("click", playVideoOnInteraction, { once: true })
+                  })
+                }
+              }
+            }}
             muted
             loop
             playsInline
+            autoPlay
+            preload="auto"
+            disablePictureInPicture
+            disableRemotePlayback
             className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-700 ${
               videoLoaded ? "opacity-100" : "opacity-0"
             }`}
@@ -170,6 +255,7 @@ export default function Home() {
               console.error("Video failed to load:", e)
               setIsVideoError(true)
             }}
+            style={{ objectFit: "cover" }}
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
