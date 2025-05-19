@@ -6,7 +6,7 @@ export default function OurCollectionSection() {
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-6 md:gap-0 min-h-[400px] md:min-h-[600px]">
             {/* Image Section - Left (taking about 50% width to match video container) */}
-            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16">
+            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
                 <img
                   src="/white-linen-shirt-new.png"
@@ -17,13 +17,13 @@ export default function OurCollectionSection() {
             </div>
 
             {/* Text Section - Right (taking about 50% width to match video container) */}
-            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 sm:px-8 md:px-12 flex flex-col justify-center py-8 md:py-16">
-              <div className="space-y-1">
+            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16 items-start">
+              <div className="space-y-1 text-left">
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">SHIRT</h3>
               </div>
 
-              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm">
+              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] text-left">
                 <p>
                   Our signature shirt captures the spirit of Southern Italy through thoughtful tailoring and refined
                   detail. The clean, single-placket front flows into the soft roll of the paramontura collar, echoed by
@@ -33,9 +33,9 @@ export default function OurCollectionSection() {
               </div>
 
               {/* Colorways */}
-              <div className="mt-4 md:mt-6">
+              <div className="mt-4 md:mt-6 max-w-[550px] w-full text-left">
                 <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 6 colorways:</p>
-                <div className="flex flex-wrap gap-3 sm:gap-4">
+                <div className="flex flex-wrap gap-3 sm:gap-4 justify-start">
                   {[
                     { name: "White", color: "#f5f5f5" },
                     { name: "Black", color: "#2a2a33" },
@@ -64,7 +64,7 @@ export default function OurCollectionSection() {
         <div className="w-full">
           <div className="flex flex-col md:flex-row-reverse gap-6 md:gap-0 min-h-[400px] md:min-h-[600px]">
             {/* Image Section - Right (taking about 50% width to match video container) */}
-            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16">
+            <div className="w-full md:w-1/2 flex items-center py-8 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
                 <img
                   src="/cream-linen-trousers-new.png"
@@ -75,13 +75,13 @@ export default function OurCollectionSection() {
             </div>
 
             {/* Text Section - Left (taking about 50% width to match video container) */}
-            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 sm:px-8 md:px-12 flex flex-col justify-center py-8 md:py-16">
+            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-8 md:py-16">
               <div className="space-y-1 text-center md:text-left">
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">TROUSER</h3>
               </div>
 
-              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm">
+              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px]">
                 <p>
                   Our pleated linen trousers are a quiet study in refinement. A single forward pleat introduces movement
                   through the front, while the waistband combines a clean, classic front with discrete elastic at the
@@ -91,7 +91,7 @@ export default function OurCollectionSection() {
               </div>
 
               {/* Colorways */}
-              <div className="mt-4 md:mt-6">
+              <div className="mt-4 md:mt-6 max-w-[550px]">
                 <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3 text-center md:text-left">
                   Available to view in 4 colorways:
                 </p>
