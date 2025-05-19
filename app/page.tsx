@@ -100,24 +100,20 @@ export default function Home() {
 
   // Force video play on mobile devices
   useEffect(() => {
-    if (!isMobile || !videoRef.current) return
+    if (!isMobile) return
 
-    // Function to attempt playing the video with multiple strategies
-    const attemptPlay = async () => {
-      if (!videoRef.current) return
-
-      try {
-        videoRef.current.muted = true
-        videoRef.current.playsInline = true
-        videoRef.current.setAttribute("playsinline", "")
-        videoRef.current.setAttribute("webkit-playsinline", "")
-
-        // Try to play immediately
-        await videoRef.current.play()
-        console.log("Video playing successfully")
-      } catch (error) {
-        console.log("Initial autoplay failed, will retry on user interaction")
-      }
+    // Function to attempt playing the video
+    const attemptPlay = () => {
+      const videoElements = document.querySelectorAll("video")
+      videoElements.forEach((video) => {
+        video.muted = true
+        const playPromise = video.play()
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            // Silent catch - we have multiple fallbacks
+          })
+        }
+      })
     }
 
     // Try to play immediately
@@ -130,24 +126,21 @@ export default function Home() {
       }
     }
 
-    // Play on any user interaction with the page
+    // Play on user interaction
     const playOnInteraction = () => {
       attemptPlay()
+      document.removeEventListener("touchstart", playOnInteraction)
+      document.removeEventListener("touchend", playOnInteraction)
     }
 
-    // Add multiple event listeners to catch any user interaction
-    const events = ["touchstart", "touchend", "click", "scroll"]
-
     document.addEventListener("visibilitychange", handleVisibilityChange)
-    events.forEach((event) => {
-      document.addEventListener(event, playOnInteraction, { once: true })
-    })
+    document.addEventListener("touchstart", playOnInteraction)
+    document.addEventListener("touchend", playOnInteraction)
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange)
-      events.forEach((event) => {
-        document.removeEventListener(event, playOnInteraction)
-      })
+      document.removeEventListener("touchstart", playOnInteraction)
+      document.removeEventListener("touchend", playOnInteraction)
     }
   }, [isMobile])
 
@@ -203,7 +196,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* Background Video with optimized loading and mobile autoplay fixes */}
+        {/* Background Video with optimized loading */}
         {videoUrl && (
           <video
             ref={videoRef}
@@ -219,14 +212,7 @@ export default function Home() {
             }`}
             onLoadedData={handleVideoLoaded}
             onError={handleVideoError}
-            style={{
-              objectFit: "cover",
-              // Remove any default play button styling
-              WebkitMediaControls: "none",
-              // Force hardware acceleration
-              transform: "translateZ(0)",
-            }}
-            poster="/yacht-images/yacht-image-1.png"
+            style={{ objectFit: "cover" }}
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
