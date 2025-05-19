@@ -317,25 +317,26 @@ export default function Home() {
 
       {/* FINAL CTA SECTION - Updated with email and address instead of button */}
       <div ref={contentRef}>
-        <section className="w-full py-6 sm:py-8 md:py-12 bg-eterno-sand">
-          <div className="w-full px-4 sm:px-6 md:px-8 text-center">
-            <div
-              className="max-w-xs sm:max-w-sm md:max-w-md mx-auto space-y-3 sm:space-y-4 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"
-              style={{ animationDelay: "0.3s" }}
-            >
-              <h2 className="font-mulish text-lg sm:text-xl font-light tracking-widest uppercase text-[#5a5a56]">
+        <section className="w-full py-12 md:py-16 bg-eterno-sand border-t border-[#e0ddd2]">
+          <div className="w-full px-4 sm:px-6 md:px-8">
+            <div className="max-w-xl mx-auto space-y-6 text-center">
+              <h2 className="font-mulish text-base sm:text-lg font-light tracking-widest uppercase text-[#5a5a56]">
                 Contact Eterno
               </h2>
-              <div className="space-y-1">
+
+              <div className="space-y-3">
                 <a
                   href="mailto:enquiries@eternotailoring.com"
-                  className="text-sm sm:text-base font-mulish text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
+                  className="block text-sm sm:text-base font-mulish text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
                 >
                   enquiries@eternotailoring.com
                 </a>
-                <p className="text-xs sm:text-sm font-mulish text-[#5a5a56]/70 mt-1">
-                  Clifford Street, London, W1S 4JY, United Kingdom
-                </p>
+
+                <p className="text-xs sm:text-sm font-mulish text-[#5a5a56]/70">Clifford Street, London, W1S 4JY</p>
+              </div>
+
+              <div className="pt-4 mt-6 border-t border-[#e0ddd2] text-[10px] text-[#5a5a56]/50 font-mulish">
+                © {new Date().getFullYear()} ETERNO. All rights reserved.
               </div>
             </div>
           </div>
