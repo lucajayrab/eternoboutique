@@ -5,39 +5,31 @@ import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-// New yacht lifestyle images
+// Only include the actual images that exist
 const images = [
   {
     src: "/yacht-images/yacht-image-1.png",
     alt: "Relaxing on yacht deck",
   },
   {
+    src: "/yacht-images/mediterranean-statue-view.jpeg",
+    alt: "Man in navy linen shirt by statue overlooking Mediterranean",
+  },
+  {
     src: "/yacht-images/yacht-image-2.png",
     alt: "Dining on yacht with city view",
+  },
+  {
+    src: "/yacht-images/terrace-sea-view.jpeg",
+    alt: "Relaxing on Mediterranean terrace with sea view",
   },
   {
     src: "/yacht-images/yacht-image-3.png",
     alt: "Taking photos on a boat",
   },
   {
-    src: "/yacht-images/yacht-image-4.png",
-    alt: "Climbing aboard yacht",
-  },
-  {
-    src: "/yacht-images/yacht-image-5.png",
-    alt: "Luxury yacht with sports car",
-  },
-  {
-    src: "/yacht-images/yacht-image-6.png",
-    alt: "Wooden speedboat on blue water",
-  },
-  {
-    src: "/yacht-images/yacht-image-7.png",
-    alt: "Couple on yacht with mountain view",
-  },
-  {
-    src: "/yacht-images/yacht-image-8.png",
-    alt: "Man in white linen enjoying sunset on yacht",
+    src: "/yacht-images/beach-club-linen.jpeg",
+    alt: "Man in white linen at luxury beach club",
   },
 ]
 
@@ -64,19 +56,34 @@ export default function EternoWorldCarousel() {
   }, [])
 
   const visibleImages = isMobile ? 1 : 3
-  const maxIndex = images.length - visibleImages
 
+  // Calculate the maximum valid index
+  const maxIndex = Math.max(0, images.length - visibleImages)
+
+  // Ensure we only show actual images (no blank tiles)
   const nextSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
+    setCurrentIndex((prev) => {
+      // If we're at the end, loop back to the beginning
+      if (prev >= maxIndex) {
+        return 0
+      }
+      return prev + 1
+    })
     setTimeout(() => setIsAnimating(false), 500)
   }
 
   const prevSlide = () => {
     if (isAnimating) return
     setIsAnimating(true)
-    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
+    setCurrentIndex((prev) => {
+      // If we're at the beginning, loop to the end
+      if (prev <= 0) {
+        return maxIndex
+      }
+      return prev - 1
+    })
     setTimeout(() => setIsAnimating(false), 500)
   }
 
@@ -116,14 +123,17 @@ export default function EternoWorldCarousel() {
     return () => clearInterval(interval)
   }, [currentIndex, isAnimating])
 
+  // Calculate the number of indicators needed
+  const indicatorCount = maxIndex + 1
+
   return (
-    <section className="w-full bg-[#f9f8f5] py-12 md:py-16">
-      <div className="container mx-auto px-6 md:px-8">
-        <div className="relative">
+    <section className="w-full bg-[#f9f8f5] overflow-hidden">
+      <div className="container mx-auto">
+        <div className="relative h-[500px]">
           {/* Carousel Navigation */}
           <button
             onClick={prevSlide}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
+            className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
             aria-label="Previous slide"
           >
             <ChevronLeft className="text-[#5a5a56]" />
@@ -131,7 +141,7 @@ export default function EternoWorldCarousel() {
 
           <button
             onClick={nextSlide}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
+            className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white/80 hover:bg-white rounded-full p-2 transition-all"
             aria-label="Next slide"
           >
             <ChevronRight className="text-[#5a5a56]" />
@@ -140,25 +150,30 @@ export default function EternoWorldCarousel() {
           {/* Carousel Container */}
           <div
             ref={carouselRef}
-            className="overflow-hidden"
+            className="overflow-hidden h-full"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
           >
             <div
-              className="flex transition-transform duration-500 ease-in-out"
+              className="flex transition-transform duration-500 ease-in-out h-full"
               style={{
                 transform: `translateX(-${currentIndex * (100 / visibleImages)}%)`,
                 width: `${(images.length / visibleImages) * 100}%`,
               }}
             >
               {images.map((image, index) => (
-                <div key={index} className="relative" style={{ width: `${(100 / images.length) * visibleImages}%` }}>
-                  <div className="aspect-[4/3] m-2 overflow-hidden">
+                <div
+                  key={index}
+                  className="relative h-full"
+                  style={{ width: `${(100 / images.length) * visibleImages}%` }}
+                >
+                  <div className="h-full aspect-[4/3] overflow-hidden">
                     <img
                       src={image.src || "/placeholder.svg"}
                       alt={image.alt}
                       className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                      style={{ objectPosition: "center" }}
                     />
                   </div>
                 </div>
@@ -167,8 +182,8 @@ export default function EternoWorldCarousel() {
           </div>
 
           {/* Carousel Indicators */}
-          <div className="flex justify-center mt-4 space-x-2">
-            {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+          <div className="flex justify-center mt-4 space-x-2 absolute bottom-2 left-0 right-0">
+            {Array.from({ length: indicatorCount }).map((_, index) => (
               <button
                 key={index}
                 onClick={() => {

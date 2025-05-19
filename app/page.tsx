@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import SlidingButton from "@/components/sliding-button"
 import StickyBanner from "@/components/sticky-banner"
-import ProcessSteps from "@/components/process-steps"
 import MobileMenu from "@/components/main-menu"
 import FromTheYarnSection from "@/components/from-the-yarn-section"
 import BoutiqueTailoringSection from "@/components/boutique-tailoring-section"
@@ -234,18 +233,13 @@ export default function Home() {
       {/* ROW 5: ETERNO WORLD CAROUSEL - Now without title */}
       <EternoWorldCarousel />
 
-      {/* PROCESS STEPS SECTION */}
-      <div id="process">
-        <ProcessSteps />
-      </div>
-
-      {/* FINAL CTA SECTION */}
+      {/* FINAL CTA SECTION - Updated with smaller text and narrower width */}
       <div ref={contentRef}>
         {/* Slimmer Register Interest CTA */}
-        <section className="py-12 md:py-16 bg-[#f9f8f5]">
-          <div className="container mx-auto px-8 text-center">
+        <section className="py-8 md:py-12 bg-eterno-sand">
+          <div className="container mx-auto px-4 text-center">
             <div
-              className="max-w-2xl mx-auto space-y-4 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"
+              className="max-w-md mx-auto space-y-3 opacity-0 animate-[fadeIn_1s_ease-in-out_forwards]"
               style={{ animationDelay: "0.3s" }}
             >
               <div>
@@ -253,12 +247,12 @@ export default function Home() {
                   onClick={handleRegisterClick}
                   variant="dark"
                   duration={1000}
-                  className="min-w-[200px] py-4 text-base"
+                  className="min-w-[180px] py-3 text-sm"
                 >
                   REGISTER INTEREST
                 </SlidingButton>
               </div>
-              <p className="text-sm font-mulish text-[#5a5a56]/60 mt-4">
+              <p className="text-xs font-mulish text-[#5a5a56]/60 mt-2">
                 Be the first to access our bespoke pieces, private fittings, and upcoming events.
               </p>
             </div>

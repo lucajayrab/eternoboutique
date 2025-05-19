@@ -46,23 +46,13 @@ export default function FromTheYarnSection() {
             <h2 className="font-mulish text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
               From the Yarn
             </h2>
-            <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed space-y-4 text-sm">
+            <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm">
               <p>
                 Our journey begins with the finest flax fibers, cultivated in the nutrient-rich soils of Northern Italy.
                 These exceptional raw materials are transformed into luxurious linen through a meticulous process that
-                honors centuries-old traditions while embracing modern precision.
-              </p>
-              <p>
-                Each thread is carefully spun to achieve the perfect balance of strength and softness, creating a fabric
-                that breathes with the wearer and develops a unique character over time. The natural irregularities in
-                the weave tell the story of linen's organic origins, celebrating the authentic beauty that only comes
-                from nature's own design.
-              </p>
-              <p>
-                Before reaching our master tailors, the fabric undergoes multiple washing cycles to enhance its
-                suppleness and ensure exceptional comfort from the very first wear. This pre-softening process is
-                essential to achieving ETERNO's signature feel—a refined tactile experience that distinguishes our
-                garments from the moment they touch your skin.
+                honors centuries-old traditions while embracing modern precision. Each thread is carefully spun to
+                achieve the perfect balance of strength and softness, creating a fabric that breathes with the wearer
+                and develops a unique character over time.
               </p>
             </div>
           </div>
