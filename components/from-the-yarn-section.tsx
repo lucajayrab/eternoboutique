@@ -1,6 +1,10 @@
 "use client"
 
-import { useRef, useEffect, useState } from "react"
+import { useRef, useEffect, useState, useCallback } from "react"
+
+// Constants
+const VIDEO_URL =
+  "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0519%281%29-Xy0WyDFlMph8Zi5RE1UoMYvGtsckAc.mp4"
 
 export default function FromTheYarnSection() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -8,6 +12,19 @@ export default function FromTheYarnSection() {
   const [isVideoError, setIsVideoError] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
+  // Check if device is mobile
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
+
+  // Initialize mobile detection
+  useEffect(() => {
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [checkMobile])
+
+  // Video loading and error handling
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
@@ -17,41 +34,22 @@ export default function FromTheYarnSection() {
     }
 
     const handleError = () => {
-      console.error("Video failed to load")
       setIsVideoError(true)
     }
 
     video.addEventListener("loadeddata", handleLoadedData)
     video.addEventListener("error", handleError)
 
-    // Attempt to load and play the video
+    // Attempt to load the video
     try {
       video.load()
     } catch (error) {
-      console.error("Error loading video:", error)
       setIsVideoError(true)
     }
 
     return () => {
       video.removeEventListener("loadeddata", handleLoadedData)
       video.removeEventListener("error", handleError)
-    }
-  }, [])
-
-  // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    // Initial check
-    checkMobile()
-
-    // Add resize listener
-    window.addEventListener("resize", checkMobile)
-
-    return () => {
-      window.removeEventListener("resize", checkMobile)
     }
   }, [])
 
@@ -95,7 +93,7 @@ export default function FromTheYarnSection() {
                 </div>
               )}
 
-              {/* Linen Production Video - Updated with new video URL */}
+              {/* Linen Production Video */}
               <video
                 ref={videoRef}
                 autoPlay
@@ -106,10 +104,7 @@ export default function FromTheYarnSection() {
                   videoLoaded ? "opacity-100" : "opacity-0"
                 }`}
               >
-                <source
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/0519%281%29-Xy0WyDFlMph8Zi5RE1UoMYvGtsckAc.mp4"
-                  type="video/mp4"
-                />
+                <source src={VIDEO_URL} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>

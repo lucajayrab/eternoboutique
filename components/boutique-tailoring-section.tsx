@@ -1,9 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import SlidingButton from "./sliding-button"
 import Link from "next/link"
+
+// Constants
+const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=Clifford+Street,+Mayfair,+London,+W1S+4JY,+UK"
 
 export default function BoutiqueTailoringSection() {
   const router = useRouter()
@@ -11,28 +14,78 @@ export default function BoutiqueTailoringSection() {
   const [activeSection, setActiveSection] = useState<"in-person" | "online">("in-person")
 
   // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    // Initial check
-    checkMobile()
-
-    // Add resize listener
-    window.addEventListener("resize", checkMobile)
-
-    return () => {
-      window.removeEventListener("resize", checkMobile)
-    }
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768)
   }, [])
 
-  const handleRegisterClick = () => {
-    router.push("/register")
-  }
+  // Initialize mobile detection
+  useEffect(() => {
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [checkMobile])
 
-  // Google Maps link for Clifford Street, Mayfair, London
-  const googleMapsLink = "https://maps.google.com/?q=Clifford+Street,+Mayfair,+London,+W1S+4JY,+UK"
+  const handleRegisterClick = useCallback(() => {
+    router.push("/register")
+  }, [router])
+
+  const handleSectionChange = useCallback((section: "in-person" | "online") => {
+    setActiveSection(section)
+  }, [])
+
+  // Render size chart table
+  const renderSizeTable = (title: string, sizes: { size: string; measurement: string }[]) => (
+    <div className="bg-[#eeeeec] p-3 sm:p-4 font-mulish text-[#5a5a56]/80 h-full">
+      <h4 className="text-[#5a5a56] font-normal mb-2 sm:mb-3 text-xs sm:text-sm uppercase tracking-wider text-left">
+        {title}
+      </h4>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[180px] border-collapse">
+          <thead>
+            <tr>
+              <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">Size</th>
+              <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">
+                {title.includes("Shirt") ? "Neck" : "Waist"}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {sizes.map((item, index) => (
+              <tr key={index}>
+                <td
+                  className={`py-1 px-2 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] sm:text-xs`}
+                >
+                  {item.size}
+                </td>
+                <td
+                  className={`py-1 px-2 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] sm:text-xs`}
+                >
+                  {item.measurement}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+
+  // Size data
+  const shirtSizes = [
+    { size: "XS", measurement: "14.5" },
+    { size: "S", measurement: "15" },
+    { size: "M", measurement: "15.5" },
+    { size: "L", measurement: "16.5" },
+    { size: "XL", measurement: "17.5" },
+  ]
+
+  const trouserSizes = [
+    { size: "XS", measurement: "28–30" },
+    { size: "S", measurement: "30–32" },
+    { size: "M", measurement: "32–34" },
+    { size: "L", measurement: "34–36" },
+    { size: "XL", measurement: "36–38" },
+  ]
 
   return (
     <section className="w-full bg-[#eeeeec] py-8 sm:py-12 md:py-16 lg:py-16">
@@ -42,7 +95,7 @@ export default function BoutiqueTailoringSection() {
           <div className="flex justify-center mb-8 px-8">
             <div className="grid grid-cols-2 w-full max-w-[300px] border border-[#e0ddd2]">
               <button
-                onClick={() => setActiveSection("in-person")}
+                onClick={() => handleSectionChange("in-person")}
                 className={`py-2 px-4 text-xs uppercase tracking-wider font-light transition-colors ${
                   activeSection === "in-person" ? "bg-[#5a5a56] text-white" : "bg-[#eeeeec] text-[#5a5a56]"
                 }`}
@@ -50,7 +103,7 @@ export default function BoutiqueTailoringSection() {
                 In-Person
               </button>
               <button
-                onClick={() => setActiveSection("online")}
+                onClick={() => handleSectionChange("online")}
                 className={`py-2 px-4 text-xs uppercase tracking-wider font-light transition-colors ${
                   activeSection === "online" ? "bg-[#5a5a56] text-white" : "bg-[#eeeeec] text-[#5a5a56]"
                 }`}
@@ -85,7 +138,7 @@ export default function BoutiqueTailoringSection() {
 
               {/* Locate Us Box - Now a clickable link */}
               <Link
-                href={googleMapsLink}
+                href={GOOGLE_MAPS_LINK}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block bg-[#eeeeec] p-4 sm:p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#e8e4d9] transition-colors duration-300 border border-[#e0ddd2] mb-6"
@@ -156,90 +209,10 @@ export default function BoutiqueTailoringSection() {
                 {/* Size Charts - Using grid layout with equal sizing and wider width */}
                 <div className="size-tables grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-[600px]">
                   {/* Shirt Size Chart */}
-                  <div className="bg-[#eeeeec] p-3 sm:p-4 font-mulish text-[#5a5a56]/80 h-full">
-                    <h4 className="text-[#5a5a56] font-normal mb-2 sm:mb-3 text-xs sm:text-sm uppercase tracking-wider text-left">
-                      Shirts (Neck Size in Inches)
-                    </h4>
-                    <div className="overflow-x-auto">
-                      <table className="w-full min-w-[180px] border-collapse">
-                        <thead>
-                          <tr>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">
-                              Size
-                            </th>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">
-                              Neck
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">XS</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">14.5</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">S</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">15</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">M</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">15.5</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">L</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">16.5</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 text-[10px] sm:text-xs">XL</td>
-                            <td className="py-1 px-2 text-[10px] sm:text-xs">17.5</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  {renderSizeTable("Shirts (Neck Size in Inches)", shirtSizes)}
 
                   {/* Trouser Size Chart */}
-                  <div className="bg-[#eeeeec] p-3 sm:p-4 font-mulish text-[#5a5a56]/80 h-full">
-                    <h4 className="text-[#5a5a56] font-normal mb-2 sm:mb-3 text-xs sm:text-sm uppercase tracking-wider text-left">
-                      Trousers (Waist Size in Inches)
-                    </h4>
-                    <div className="overflow-x-auto">
-                      <table className="w-full min-w-[180px] border-collapse">
-                        <thead>
-                          <tr>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">
-                              Size
-                            </th>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">
-                              Waist
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">XS</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">28–30</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">S</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">30–32</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">M</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">32–34</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">L</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] sm:text-xs">34–36</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 text-[10px] sm:text-xs">XL</td>
-                            <td className="py-1 px-2 text-[10px] sm:text-xs">36–38</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  {renderSizeTable("Trousers (Waist Size in Inches)", trouserSizes)}
                 </div>
               </div>
             </div>
@@ -271,7 +244,7 @@ export default function BoutiqueTailoringSection() {
 
                 {/* Locate Us Box - Centered for mobile */}
                 <Link
-                  href={googleMapsLink}
+                  href={GOOGLE_MAPS_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block bg-[#eeeeec] p-4 font-mulish text-[#5a5a56]/80 max-w-[550px] mx-auto hover:bg-[#e8e4d9] transition-colors duration-300 border border-[#e0ddd2] mb-8 text-center"
@@ -357,26 +330,20 @@ export default function BoutiqueTailoringSection() {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">XS</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">14.5</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">S</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">15</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">M</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">15.5</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">L</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">16.5</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 text-[10px] text-center">XL</td>
-                            <td className="py-1 px-2 text-[10px] text-center">17.5</td>
-                          </tr>
+                          {shirtSizes.map((item, index) => (
+                            <tr key={index}>
+                              <td
+                                className={`py-1 px-2 ${index < shirtSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                              >
+                                {item.size}
+                              </td>
+                              <td
+                                className={`py-1 px-2 ${index < shirtSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                              >
+                                {item.measurement}
+                              </td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </div>
@@ -400,26 +367,20 @@ export default function BoutiqueTailoringSection() {
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">XS</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">28–30</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">S</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">30–32</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">M</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">32–34</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">L</td>
-                            <td className="py-1 px-2 border-b border-[#e0ddd2] text-[10px] text-center">34–36</td>
-                          </tr>
-                          <tr>
-                            <td className="py-1 px-2 text-[10px] text-center">XL</td>
-                            <td className="py-1 px-2 text-[10px] text-center">36–38</td>
-                          </tr>
+                          {trouserSizes.map((item, index) => (
+                            <tr key={index}>
+                              <td
+                                className={`py-1 px-2 ${index < trouserSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                              >
+                                {item.size}
+                              </td>
+                              <td
+                                className={`py-1 px-2 ${index < trouserSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                              >
+                                {item.measurement}
+                              </td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </div>

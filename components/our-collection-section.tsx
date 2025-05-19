@@ -1,26 +1,49 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
+
+// Color swatches data
+const SHIRT_COLORS = [
+  { name: "White", color: "#f5f5f5" },
+  { name: "Black", color: "#2a2a33" },
+  { name: "Navy", color: "#2d2a3e" },
+  { name: "Sky Blue", color: "#c9d7e8" },
+  { name: "Pink", color: "#e7d0d3" },
+  { name: "Sage", color: "#9ca594" },
+]
+
+const TROUSER_COLORS = [
+  { name: "White", color: "#f5f5f5" },
+  { name: "Black", color: "#2a2a33" },
+  { name: "Navy", color: "#2d2a3e" },
+  { name: "Natural", color: "#eae7d9" },
+]
 
 export default function OurCollectionSection() {
   const [isMobile, setIsMobile] = useState(false)
 
   // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    // Initial check
-    checkMobile()
-
-    // Add resize listener
-    window.addEventListener("resize", checkMobile)
-
-    return () => {
-      window.removeEventListener("resize", checkMobile)
-    }
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768)
   }, [])
+
+  // Initialize mobile detection
+  useEffect(() => {
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [checkMobile])
+
+  // Render a color swatch
+  const renderSwatch = (swatch: { name: string; color: string }, index: number) => (
+    <div key={index} className="flex flex-col items-center">
+      <div
+        className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-[#ddd]"
+        style={{ backgroundColor: swatch.color }}
+      ></div>
+      <span className="text-[10px] sm:text-xs mt-1">{swatch.name}</span>
+    </div>
+  )
 
   return (
     <>
@@ -28,7 +51,7 @@ export default function OurCollectionSection() {
       <section className="w-full bg-[#eeeeec]" id="collection">
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
-            {/* Image Section - Left (taking about 50% width to match video container) */}
+            {/* Image Section - Left */}
             <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0 pb-8 md:pb-4">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
                 <img
@@ -39,7 +62,7 @@ export default function OurCollectionSection() {
               </div>
             </div>
 
-            {/* Text Section - Right (taking about 50% width to match video container) */}
+            {/* Text Section - Right */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-16 items-start pt-8 md:pt-4 mt-0 md:mt-0">
               <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
@@ -61,22 +84,7 @@ export default function OurCollectionSection() {
               <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 6 colorways:</p>
                 <div className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-start"}`}>
-                  {[
-                    { name: "White", color: "#f5f5f5" },
-                    { name: "Black", color: "#2a2a33" },
-                    { name: "Navy", color: "#2d2a3e" },
-                    { name: "Sky Blue", color: "#c9d7e8" },
-                    { name: "Pink", color: "#e7d0d3" },
-                    { name: "Sage", color: "#9ca594" },
-                  ].map((swatch, i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div
-                        className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-[#ddd]"
-                        style={{ backgroundColor: swatch.color }}
-                      ></div>
-                      <span className="text-[10px] sm:text-xs mt-1">{swatch.name}</span>
-                    </div>
-                  ))}
+                  {SHIRT_COLORS.map(renderSwatch)}
                 </div>
               </div>
             </div>
@@ -88,7 +96,7 @@ export default function OurCollectionSection() {
       <section className="w-full bg-[#f9f8f5]">
         <div className="w-full">
           <div className="flex flex-col md:flex-row-reverse gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
-            {/* Image Section - Right (taking about 50% width to match video container) */}
+            {/* Image Section - Right */}
             <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0 pb-8 md:pb-4">
               <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
                 <img
@@ -99,7 +107,7 @@ export default function OurCollectionSection() {
               </div>
             </div>
 
-            {/* Text Section - Left (taking about 50% width to match video container) */}
+            {/* Text Section - Left */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-16 pt-8 md:pt-4 mt-0 md:mt-0">
               <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-center md:text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
@@ -123,20 +131,7 @@ export default function OurCollectionSection() {
                 <div
                   className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-center md:justify-start"}`}
                 >
-                  {[
-                    { name: "White", color: "#f5f5f5" },
-                    { name: "Black", color: "#2a2a33" },
-                    { name: "Navy", color: "#2d2a3e" },
-                    { name: "Natural", color: "#eae7d9" },
-                  ].map((swatch, i) => (
-                    <div key={i} className="flex flex-col items-center">
-                      <div
-                        className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-[#ddd]"
-                        style={{ backgroundColor: swatch.color }}
-                      ></div>
-                      <span className="text-[10px] sm:text-xs mt-1">{swatch.name}</span>
-                    </div>
-                  ))}
+                  {TROUSER_COLORS.map(renderSwatch)}
                 </div>
               </div>
             </div>

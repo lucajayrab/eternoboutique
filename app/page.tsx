@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import SlidingButton from "@/components/sliding-button"
 import StickyBanner from "@/components/sticky-banner"
 import MobileMenu from "@/components/main-menu"
@@ -13,57 +13,52 @@ import OurCollectionSection from "@/components/our-collection-section"
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
 
+// Default fallback video URL
+const FALLBACK_VIDEO_URL =
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
+
 export default function Home() {
   const router = useRouter()
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [isVideoError, setIsVideoError] = useState(false)
   const [videoUrl, setVideoUrl] = useState("")
+  const [isMobile, setIsMobile] = useState(false)
+  const [isArrowClicked, setIsArrowClicked] = useState(false)
+  const [isButtonVisible, setIsButtonVisible] = useState(false)
+
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
   const buttonRef = useRef<HTMLDivElement>(null)
   const aboutSectionRef = useRef<HTMLDivElement>(null)
-  const [isMobile, setIsMobile] = useState(false)
-  const [isArrowClicked, setIsArrowClicked] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
-  // State for button visibility
-  const [isButtonVisible, setIsButtonVisible] = useState(false)
+  // Check if device is mobile - memoized for performance
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768)
+  }, [])
 
-  // Check if device is mobile
+  // Initialize mobile detection
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
     checkMobile()
     window.addEventListener("resize", checkMobile)
-
-    return () => {
-      window.removeEventListener("resize", checkMobile)
-    }
-  }, [])
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [checkMobile])
 
   // Get the video URL from environment variable
   useEffect(() => {
-    // Access the environment variable after component mounts (client-side)
     const envUrl = process.env.NEXT_PUBLIC_VIDEO_URL
-
-    // Fallback URL if environment variable is not set
-    const fallbackUrl =
-      "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
 
     if (envUrl) {
       setVideoUrl(envUrl)
-      console.log("Using environment variable for video URL")
     } else {
-      console.log("NEXT_PUBLIC_VIDEO_URL not set, using fallback URL")
-      setVideoUrl(fallbackUrl)
+      setVideoUrl(FALLBACK_VIDEO_URL)
     }
   }, [])
 
   // Mouse tracking for button visibility (desktop only)
   useEffect(() => {
     if (isMobile) {
-      setIsButtonVisible(true) // Always show button on mobile
+      setIsButtonVisible(true)
       return
     }
 
@@ -73,7 +68,6 @@ export default function Home() {
     if (!heroSection || !buttonElement) return
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Get hero section dimensions and position
       const heroRect = heroSection.getBoundingClientRect()
       const buttonRect = buttonElement.getBoundingClientRect()
 
@@ -100,13 +94,8 @@ export default function Home() {
       setIsButtonVisible(distanceFromCenter <= radius || isOverButton)
     }
 
-    // Add mouse move listener
     window.addEventListener("mousemove", handleMouseMove)
-
-    // Clean up
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-    }
+    return () => window.removeEventListener("mousemove", handleMouseMove)
   }, [isMobile])
 
   // Force video play on mobile devices
@@ -117,15 +106,11 @@ export default function Home() {
     const attemptPlay = () => {
       const videoElements = document.querySelectorAll("video")
       videoElements.forEach((video) => {
-        // Ensure video is muted (required for autoplay on most mobile browsers)
         video.muted = true
-
-        // Try to play the video
         const playPromise = video.play()
-
         if (playPromise !== undefined) {
-          playPromise.catch((error) => {
-            console.log("Mobile autoplay prevented:", error)
+          playPromise.catch(() => {
+            // Silent catch - we have multiple fallbacks
           })
         }
       })
@@ -134,73 +119,65 @@ export default function Home() {
     // Try to play immediately
     attemptPlay()
 
-    // Also try to play on visibility change (when user returns to tab)
-    document.addEventListener("visibilitychange", () => {
+    // Play on visibility change
+    const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         attemptPlay()
       }
-    })
+    }
 
-    // Try to play on first user interaction
+    // Play on user interaction
     const playOnInteraction = () => {
       attemptPlay()
-      // Clean up event listeners after first interaction
       document.removeEventListener("touchstart", playOnInteraction)
       document.removeEventListener("touchend", playOnInteraction)
     }
 
+    document.addEventListener("visibilitychange", handleVisibilityChange)
     document.addEventListener("touchstart", playOnInteraction)
     document.addEventListener("touchend", playOnInteraction)
 
     return () => {
-      document.removeEventListener("visibilitychange", attemptPlay)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
       document.removeEventListener("touchstart", playOnInteraction)
       document.removeEventListener("touchend", playOnInteraction)
     }
   }, [isMobile])
 
-  const handleRegisterClick = () => {
+  // Navigation handlers
+  const handleRegisterClick = useCallback(() => {
     router.push("/register")
-  }
+  }, [router])
 
-  // Modify the handleScrollDown function to account for the sticky header height on mobile
-  const handleScrollDown = () => {
-    // Set arrow clicked state to true
+  const handleScrollDown = useCallback(() => {
     setIsArrowClicked(true)
 
-    // Reset the state after animation completes
     setTimeout(() => {
       setIsArrowClicked(false)
     }, 300)
 
-    if (aboutSectionRef.current) {
-      // For mobile devices, add an offset to account for the sticky header
-      if (window.innerWidth < 768) {
-        const offsetTop = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
-        // Subtract the sticky header height (60px) plus a small buffer (10px)
-        const scrollToPosition = offsetTop - 70
+    if (!aboutSectionRef.current) return
 
-        window.scrollTo({
-          top: scrollToPosition,
-          behavior: "smooth",
-        })
-      } else {
-        // On desktop, use the default scrollIntoView behavior
-        aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
-      }
+    if (isMobile) {
+      const offsetTop = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
+      const scrollToPosition = offsetTop - 70 // Sticky header height + buffer
+      window.scrollTo({
+        top: scrollToPosition,
+        behavior: "smooth",
+      })
+    } else {
+      aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  }
+  }, [isMobile])
 
-  // Handle video loaded event
-  const handleVideoLoaded = () => {
+  // Video event handlers
+  const handleVideoLoaded = useCallback(() => {
     setVideoLoaded(true)
-  }
+  }, [])
 
-  // Handle video error
-  const handleVideoError = () => {
-    console.error("Video failed to load")
+  const handleVideoError = useCallback(() => {
     setIsVideoError(true)
-  }
+  }, [])
 
   return (
     <div className="relative">
@@ -222,38 +199,7 @@ export default function Home() {
         {/* Background Video with optimized loading */}
         {videoUrl && (
           <video
-            ref={(el) => {
-              if (el) {
-                // Set video element properties
-                el.muted = true
-                el.playsInline = true
-                el.autoplay = true
-
-                // Force play on load
-                el.load()
-
-                // Attempt to play immediately
-                const playPromise = el.play()
-
-                // Handle play promise (avoid uncaught promise errors)
-                if (playPromise !== undefined) {
-                  playPromise.catch((error) => {
-                    console.log("Auto-play was prevented, trying again on user interaction")
-
-                    // Try to play again on first user interaction
-                    const playVideoOnInteraction = () => {
-                      el.play().catch((e) => console.log("Still cannot play video:", e))
-                      // Remove event listeners after first interaction
-                      document.removeEventListener("touchstart", playVideoOnInteraction)
-                      document.removeEventListener("click", playVideoOnInteraction)
-                    }
-
-                    document.addEventListener("touchstart", playVideoOnInteraction, { once: true })
-                    document.addEventListener("click", playVideoOnInteraction, { once: true })
-                  })
-                }
-              }
-            }}
+            ref={videoRef}
             muted
             loop
             playsInline
@@ -265,10 +211,7 @@ export default function Home() {
               videoLoaded ? "opacity-100" : "opacity-0"
             }`}
             onLoadedData={handleVideoLoaded}
-            onError={(e) => {
-              console.error("Video failed to load:", e)
-              setIsVideoError(true)
-            }}
+            onError={handleVideoError}
             style={{ objectFit: "cover" }}
           >
             <source src={videoUrl} type="video/mp4" />
@@ -322,7 +265,7 @@ export default function Home() {
         <FromTheYarnSection />
       </div>
 
-      {/* ROW 2: OUR COLLECTION SECTION (NEW) */}
+      {/* ROW 2: OUR COLLECTION SECTION */}
       <OurCollectionSection />
 
       {/* ROW 3: BOUTIQUE LINEN TAILORING */}

@@ -1,25 +1,26 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import EternoLogo from "@/components/eterno-logo"
 import MobileMenu from "@/components/main-menu"
+
+// Constants
+const LOGO_SIZE = "45mm"
+const VIDEO_URL =
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
+const POSTER_URL = "/yacht-images/yacht-image-1.png"
+const MAX_VIDEO_ATTEMPTS = 3
 
 export default function ConfirmationPage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [showMessage, setShowMessage] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
   const [videoAttempts, setVideoAttempts] = useState(0)
   const [fallbackActive, setFallbackActive] = useState(false)
 
-  // Define logo size to match sticky banner
-  const LOGO_SIZE = "45mm"
-
-  // Properly formatted video URL - ensuring there are no typos or extra spaces
-  const videoUrl =
-    "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   // Function to force video playback with multiple fallback strategies
-  const forceVideoPlay = () => {
+  const forceVideoPlay = useCallback(() => {
     if (!videoRef.current) return
 
     const video = videoRef.current
@@ -29,37 +30,34 @@ export default function ConfirmationPage() {
     video.playsInline = true
     video.autoplay = true
     video.preload = "auto"
-    video.currentTime = 0
 
     // Try to play with catch for browser restrictions
     const playPromise = video.play()
 
     if (playPromise !== undefined) {
-      playPromise.catch((error) => {
-        console.log("Video play failed:", error)
-
+      playPromise.catch(() => {
         // Increment attempts counter
-        setVideoAttempts((prev) => prev + 1)
-
-        // If we've tried 3 times and failed, activate fallback
-        if (videoAttempts >= 2) {
-          setFallbackActive(true)
-        } else {
-          // Try again with a slight delay
-          setTimeout(forceVideoPlay, 100)
-        }
+        setVideoAttempts((prev) => {
+          const newCount = prev + 1
+          // If we've tried enough times and failed, activate fallback
+          if (newCount >= MAX_VIDEO_ATTEMPTS) {
+            setFallbackActive(true)
+          } else {
+            // Try again with a slight delay
+            setTimeout(forceVideoPlay, 100)
+          }
+          return newCount
+        })
       })
     }
-  }
+  }, [])
 
   // Preload the video as soon as possible
   useEffect(() => {
     // Create a new video element to preload the video
-    const preloadVideo = new Audio(videoUrl)
+    const preloadVideo = new Audio(VIDEO_URL)
     preloadVideo.muted = true
     preloadVideo.preload = "auto"
-
-    // Start loading the video immediately
     preloadVideo.load()
 
     // Try to play the actual video element as soon as component mounts
@@ -74,13 +72,9 @@ export default function ConfirmationPage() {
       // Force load
       video.load()
 
-      // Force play with multiple attempts
+      // Force play with multiple attempts at staggered intervals
       forceVideoPlay()
-
-      // Backup attempts with increasing delays
-      setTimeout(forceVideoPlay, 50)
-      setTimeout(forceVideoPlay, 200)
-      setTimeout(forceVideoPlay, 500)
+      const timers = [setTimeout(forceVideoPlay, 50), setTimeout(forceVideoPlay, 200), setTimeout(forceVideoPlay, 500)]
     }
 
     setIsLoaded(true)
@@ -93,7 +87,7 @@ export default function ConfirmationPage() {
       preloadVideo.pause()
       preloadVideo.src = ""
     }
-  }, [])
+  }, [forceVideoPlay])
 
   // Add event listeners for user interaction to help with autoplay restrictions
   useEffect(() => {
@@ -102,63 +96,46 @@ export default function ConfirmationPage() {
     }
 
     // Add multiple event listeners to catch any user interaction
-    document.addEventListener("click", playOnUserInteraction, { once: true })
-    document.addEventListener("touchstart", playOnUserInteraction, { once: true })
-    document.addEventListener("keydown", playOnUserInteraction, { once: true })
-    document.addEventListener("scroll", playOnUserInteraction, { once: true })
+    const events = ["click", "touchstart", "keydown", "scroll"]
+    events.forEach((event) => {
+      document.addEventListener(event, playOnUserInteraction, { once: true })
+    })
 
     return () => {
-      document.removeEventListener("click", playOnUserInteraction)
-      document.removeEventListener("touchstart", playOnUserInteraction)
-      document.removeEventListener("keydown", playOnUserInteraction)
-      document.removeEventListener("scroll", playOnUserInteraction)
+      events.forEach((event) => {
+        document.removeEventListener(event, playOnUserInteraction)
+      })
     }
-  }, [])
+  }, [forceVideoPlay])
 
   // Monitor video state
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
-    const handleCanPlay = () => {
-      console.log("Video can play now")
-      forceVideoPlay()
+    const videoEvents = {
+      loadedmetadata: forceVideoPlay,
+      loadeddata: forceVideoPlay,
+      canplay: forceVideoPlay,
+      canplaythrough: forceVideoPlay,
+      playing: () => console.log("Video is playing"),
+      error: () => setFallbackActive(true),
     }
 
-    const handleLoadedData = () => {
-      console.log("Video data loaded")
-      forceVideoPlay()
-    }
-
-    const handlePlaying = () => {
-      console.log("Video is playing")
-    }
-
-    const handleError = (e: Event) => {
-      console.error("Video error:", e)
-      setFallbackActive(true)
-    }
-
-    // Add all possible event listeners to catch any loading state
-    video.addEventListener("loadedmetadata", forceVideoPlay)
-    video.addEventListener("loadeddata", handleLoadedData)
-    video.addEventListener("canplay", handleCanPlay)
-    video.addEventListener("canplaythrough", forceVideoPlay)
-    video.addEventListener("playing", handlePlaying)
-    video.addEventListener("error", handleError)
+    // Add all event listeners
+    Object.entries(videoEvents).forEach(([event, handler]) => {
+      video.addEventListener(event, handler as EventListener)
+    })
 
     return () => {
-      video.removeEventListener("loadedmetadata", forceVideoPlay)
-      video.removeEventListener("loadeddata", handleLoadedData)
-      video.removeEventListener("canplay", handleCanPlay)
-      video.removeEventListener("canplaythrough", forceVideoPlay)
-      video.removeEventListener("playing", handlePlaying)
-      video.removeEventListener("error", handleError)
+      // Clean up all event listeners
+      if (video) {
+        Object.entries(videoEvents).forEach(([event, handler]) => {
+          video.removeEventListener(event, handler as EventListener)
+        })
+      }
     }
-  }, [])
-
-  // Create a poster image URL for immediate visual feedback
-  const posterUrl = "/yacht-images/yacht-image-1.png"
+  }, [forceVideoPlay])
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-4 bg-black text-white overflow-hidden">
@@ -170,7 +147,7 @@ export default function ConfirmationPage() {
         {/* Fallback image that shows immediately while video loads */}
         <div
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${videoRef.current?.playing ? "opacity-0" : "opacity-100"}`}
-          style={{ backgroundImage: `url(${posterUrl})`, filter: "brightness(0.5)" }}
+          style={{ backgroundImage: `url(${POSTER_URL})`, filter: "brightness(0.5)" }}
         />
 
         <video
@@ -180,11 +157,11 @@ export default function ConfirmationPage() {
           loop
           playsInline
           className="w-full h-full object-cover opacity-80"
-          poster={posterUrl}
+          poster={POSTER_URL}
           preload="auto"
           style={{ objectFit: "cover" }}
         >
-          <source src={videoUrl} type="video/mp4" />
+          <source src={VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
       </div>

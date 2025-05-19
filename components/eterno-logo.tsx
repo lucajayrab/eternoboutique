@@ -1,54 +1,53 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 interface EternoLogoProps {
   width?: string
   inverted?: boolean
   className?: string
-  mobileWidth?: string // Add mobile width prop
-  fixedSize?: boolean // New prop to ensure size doesn't change
+  mobileWidth?: string
+  fixedSize?: boolean
 }
 
 export default function EternoLogo({
   width = "60mm",
   inverted = true,
   className = "",
-  mobileWidth, // Optional mobile-specific width
-  fixedSize = false, // Default to false for backward compatibility
+  mobileWidth,
+  fixedSize = false,
 }: EternoLogoProps) {
   const [logoLoaded, setLogoLoaded] = useState(false)
   const [useFallbackLogo, setUseFallbackLogo] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [initialWidth, setInitialWidth] = useState(width)
 
+  // Logo URLs
+  const primaryLogoUrl = inverted
+    ? "/eterno-logo-bold.svg"
+    : "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/ETERNO%20Website%20Logo-i1zsaaao2lf5Zfk5uUfw31YkKv3QjC.svg"
+
   // Handle logo error and switch to fallback
-  const handleLogoError = () => {
-    console.log("Logo SVG failed to load, switching to fallback")
+  const handleLogoError = useCallback(() => {
     setUseFallbackLogo(true)
-  }
+  }, [])
 
   // Handle logo loaded successfully
-  const handleLogoLoaded = () => {
+  const handleLogoLoaded = useCallback(() => {
     setLogoLoaded(true)
-  }
+  }, [])
 
   // Check if we're on mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-
-    // Initial check
-    checkMobile()
-
-    // Add resize listener
-    window.addEventListener("resize", checkMobile)
-
-    return () => {
-      window.removeEventListener("resize", checkMobile)
-    }
+  const checkMobile = useCallback(() => {
+    setIsMobile(window.innerWidth < 768)
   }, [])
+
+  // Initialize mobile detection
+  useEffect(() => {
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [checkMobile])
 
   // Set initial width on first render
   useEffect(() => {
@@ -69,7 +68,6 @@ export default function EternoLogo({
   }, [logoLoaded])
 
   // Determine the actual width to use
-  // If fixedSize is true, always use the initialWidth
   const actualWidth = fixedSize ? initialWidth : isMobile && mobileWidth ? mobileWidth : width
 
   // Convert mm to pixels (approximate)
@@ -78,18 +76,12 @@ export default function EternoLogo({
   return (
     <div className={`flex items-center justify-center w-full h-full overflow-visible ${className}`}>
       {!useFallbackLogo ? (
-        // Primary SVG logo - now using the new URL
+        // Primary SVG logo
         <img
-          src={
-            inverted
-              ? "/eterno-logo-bold.svg"
-              : "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/ETERNO%20Website%20Logo-i1zsaaao2lf5Zfk5uUfw31YkKv3QjC.svg"
-          }
+          src={primaryLogoUrl || "/placeholder.svg"}
           alt="ETERNO"
           width={widthInPx}
-          style={{
-            width: actualWidth,
-          }}
+          style={{ width: actualWidth }}
           className="mx-auto max-h-full"
           onError={handleLogoError}
           onLoad={handleLogoLoaded}
