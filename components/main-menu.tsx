@@ -107,6 +107,7 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
             <MenuLink href="#from-the-yarn" label="FROM THE YARN" />
             <MenuLink href="#collection" label="COLLECTION" />
             <MenuLink href="#tailoring" label="BOUTIQUE TAILORING" />
+            <MenuLink href="#manifesto" label="OUR PHILOSOPHY" />
           </nav>
 
           <div className="w-full max-w-xs">
