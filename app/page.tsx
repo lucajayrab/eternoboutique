@@ -163,6 +163,7 @@ export default function Home() {
     router.push("/register")
   }
 
+  // Modify the handleScrollDown function to account for the sticky header height on mobile
   const handleScrollDown = () => {
     // Set arrow clicked state to true
     setIsArrowClicked(true)
@@ -173,7 +174,20 @@ export default function Home() {
     }, 300)
 
     if (aboutSectionRef.current) {
-      aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
+      // For mobile devices, add an offset to account for the sticky header
+      if (window.innerWidth < 768) {
+        const offsetTop = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
+        // Subtract the sticky header height (60px) plus a small buffer (10px)
+        const scrollToPosition = offsetTop - 70
+
+        window.scrollTo({
+          top: scrollToPosition,
+          behavior: "smooth",
+        })
+      } else {
+        // On desktop, use the default scrollIntoView behavior
+        aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
+      }
     }
   }
 
@@ -317,17 +331,17 @@ export default function Home() {
 
       {/* FINAL CTA SECTION - Updated with email and address instead of button */}
       <div ref={contentRef}>
-        <section className="w-full py-12 md:py-16 bg-eterno-sand border-t border-[#e0ddd2]">
+        <section className="w-full py-6 md:py-8 bg-eterno-sand border-t border-[#e0ddd2]">
           <div className="w-full px-4 sm:px-6 md:px-8">
-            <div className="max-w-xl mx-auto space-y-6 text-center">
+            <div className="max-w-xl mx-auto space-y-4 text-center">
               <h2 className="font-mulish text-base sm:text-lg font-light tracking-widest uppercase text-[#5a5a56]">
                 Contact Eterno
               </h2>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <a
                   href="mailto:enquiries@eternotailoring.com"
-                  className="block text-sm sm:text-base font-mulish text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
+                  className="block text-sm sm:text-base font-mulish font-light text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
                 >
                   enquiries@eternotailoring.com
                 </a>
@@ -335,7 +349,7 @@ export default function Home() {
                 <p className="text-xs sm:text-sm font-mulish text-[#5a5a56]/70">Clifford Street, London, W1S 4JY</p>
               </div>
 
-              <div className="pt-4 mt-6 border-t border-[#e0ddd2] text-[10px] text-[#5a5a56]/50 font-mulish">
+              <div className="pt-3 mt-4 border-t border-[#e0ddd2] text-[10px] text-[#5a5a56]/50 font-mulish">
                 © {new Date().getFullYear()} ETERNO. All rights reserved.
               </div>
             </div>
