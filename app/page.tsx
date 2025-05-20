@@ -159,12 +159,13 @@ export default function Home() {
     if (!aboutSectionRef.current) return
 
     if (isMobile) {
-      // For mobile, calculate the exact position that ensures content isn't covered
+      // For mobile, use the exact same positioning as the menu navigation
+      // to ensure consistent behavior
       const stickyHeaderHeight = 70 // Height of sticky banner
       const targetPosition = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
 
-      // For the first section (From The Yarn), we want the sticky banner to be visible
-      // and positioned at the top of the section content
+      // Use the same offset as the "From The Yarn" section in the menu navigation
+      // This ensures the sticky banner is positioned at the top of the section content
       const scrollOffset = stickyHeaderHeight
 
       // Scroll to position with proper offset
