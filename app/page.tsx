@@ -236,46 +236,50 @@ export default function Home() {
           </SlidingButton>
         </div>
 
-        {/* Scroll down indicator - Only visible on desktop */}
-        {!isMobile && (
-          <div
-            className={`absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
-            onClick={handleScrollDown}
+        {/* Scroll down indicator - Now visible on both desktop and mobile */}
+        <div
+          className={`absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
+          onClick={handleScrollDown}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="white"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="arrow-icon"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="arrow-icon"
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-          </div>
-        )}
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </div>
       </section>
 
-      {/* ROW 1: FROM THE YARN SECTION */}
-      <div ref={aboutSectionRef}>
+      {/* ROW 1: FROM THE YARN SECTION - Added extra padding for mobile */}
+      <div ref={aboutSectionRef} className="md:pt-0 pt-6">
         <FromTheYarnSection />
       </div>
 
-      {/* ROW 2: OUR COLLECTION SECTION */}
-      <OurCollectionSection />
+      {/* ROW 2: OUR COLLECTION SECTION - Added extra padding for mobile */}
+      <div className="md:pt-0 pt-6">
+        <OurCollectionSection />
+      </div>
 
-      {/* ROW 3: BOUTIQUE LINEN TAILORING */}
-      <BoutiqueTailoringSection />
+      {/* ROW 3: BOUTIQUE LINEN TAILORING - Added extra padding for mobile */}
+      <div className="md:pt-0 pt-6">
+        <BoutiqueTailoringSection />
+      </div>
 
-      {/* ROW 4: ETERNO MANIFESTO */}
-      <EternoManifestoSection />
+      {/* ROW 4: ETERNO MANIFESTO - Added extra padding for mobile */}
+      <div className="md:pt-0 pt-6">
+        <EternoManifestoSection />
+      </div>
 
       {/* FINAL CTA SECTION - Updated with email and address instead of button */}
-      <div ref={contentRef}>
+      <div ref={contentRef} className="md:pt-0 pt-6">
         <section className="w-full py-6 md:py-8 bg-eterno-sand border-t border-[#e0ddd2]">
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="max-w-xl mx-auto space-y-4 text-center">
