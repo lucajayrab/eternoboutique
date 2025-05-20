@@ -245,26 +245,28 @@ export default function Home() {
           </SlidingButton>
         </div>
 
-        {/* Scroll down indicator - Now visible on both desktop and mobile with adjusted mobile position */}
-        <div
-          className={`absolute sm:bottom-6 bottom-10 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
-          onClick={handleScrollDown}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="arrow-icon"
+        {/* Scroll down indicator - Only visible on desktop */}
+        {!isMobile && (
+          <div
+            className={`absolute sm:bottom-6 bottom-10 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
+            onClick={handleScrollDown}
           >
-            <path d="M12 5v14M5 12l7 7 7-7" />
-          </svg>
-        </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="arrow-icon"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </div>
+        )}
       </section>
 
       {/* ROW 1: FROM THE YARN SECTION - Added extra padding with matching background */}
