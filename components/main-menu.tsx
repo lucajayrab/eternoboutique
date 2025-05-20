@@ -87,14 +87,26 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
 
       const targetElement = document.getElementById(targetId)
       if (targetElement) {
-        // For mobile, add offset to account for sticky header
+        // For mobile, add section-specific offset
         const stickyHeaderHeight = 70 // Height of sticky banner
-        const extraPadding = 24 // The pt-6 we added (1.5rem = 24px)
         const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
 
-        // Scroll with offset
+        // Section-specific offsets
+        let scrollOffset = 0
+
+        if (targetId === "from-the-yarn") {
+          // For "From The Yarn" section, make sure the sticky banner is visible
+          // and positioned at the top of the section content
+          scrollOffset = stickyHeaderHeight
+        } else {
+          // For other sections, position the sticky banner to cover the color transition
+          // This places the sticky banner on top of the added margin (pt-6 = 24px)
+          scrollOffset = stickyHeaderHeight + 12 // Half of the padding to position banner in the middle
+        }
+
+        // Scroll with calculated offset
         window.scrollTo({
-          top: offsetTop - stickyHeaderHeight - extraPadding,
+          top: offsetTop - scrollOffset,
           behavior: "smooth",
         })
       } else {
