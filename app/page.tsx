@@ -159,13 +159,18 @@ export default function Home() {
     if (!aboutSectionRef.current) return
 
     if (isMobile) {
-      const offsetTop = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
-      const scrollToPosition = offsetTop - 70 // Sticky header height + buffer
+      // For mobile, calculate the exact position that ensures content isn't covered
+      const stickyHeaderHeight = 70 // Height of sticky banner
+      const extraPadding = 24 // The pt-6 we added (1.5rem = 24px)
+      const targetPosition = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
+
+      // Scroll to position with proper offset
       window.scrollTo({
-        top: scrollToPosition,
+        top: targetPosition - stickyHeaderHeight,
         behavior: "smooth",
       })
     } else {
+      // Desktop behavior remains unchanged
       aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
     }
   }, [isMobile])
@@ -236,9 +241,9 @@ export default function Home() {
           </SlidingButton>
         </div>
 
-        {/* Scroll down indicator - Now visible on both desktop and mobile */}
+        {/* Scroll down indicator - Now visible on both desktop and mobile with adjusted mobile position */}
         <div
-          className={`absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
+          className={`absolute sm:bottom-6 bottom-10 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
           onClick={handleScrollDown}
         >
           <svg
@@ -258,28 +263,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ROW 1: FROM THE YARN SECTION - Added extra padding for mobile */}
-      <div ref={aboutSectionRef} className="md:pt-0 pt-6">
+      {/* ROW 1: FROM THE YARN SECTION - Added extra padding with matching background */}
+      <div ref={aboutSectionRef} className="md:pt-0 pt-6 bg-[#f9f8f5]">
         <FromTheYarnSection />
       </div>
 
-      {/* ROW 2: OUR COLLECTION SECTION - Added extra padding for mobile */}
-      <div className="md:pt-0 pt-6">
+      {/* ROW 2: OUR COLLECTION SECTION - Added extra padding with matching background */}
+      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
         <OurCollectionSection />
       </div>
 
-      {/* ROW 3: BOUTIQUE LINEN TAILORING - Added extra padding for mobile */}
-      <div className="md:pt-0 pt-6">
+      {/* ROW 3: BOUTIQUE LINEN TAILORING - Added extra padding with matching background */}
+      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
         <BoutiqueTailoringSection />
       </div>
 
-      {/* ROW 4: ETERNO MANIFESTO - Added extra padding for mobile */}
-      <div className="md:pt-0 pt-6">
+      {/* ROW 4: ETERNO MANIFESTO - Added extra padding with matching background */}
+      <div className="md:pt-0 pt-6 bg-[#f9f8f5]">
         <EternoManifestoSection />
       </div>
 
-      {/* FINAL CTA SECTION - Updated with email and address instead of button */}
-      <div ref={contentRef} className="md:pt-0 pt-6">
+      {/* FINAL CTA SECTION - Added extra padding with matching background */}
+      <div ref={contentRef} className="md:pt-0 pt-6 bg-eterno-sand">
         <section className="w-full py-6 md:py-8 bg-eterno-sand border-t border-[#e0ddd2]">
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="max-w-xl mx-auto space-y-4 text-center">
