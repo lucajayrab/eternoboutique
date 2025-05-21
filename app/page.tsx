@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef, useCallback } from "react"
-import SlidingButton from "@/components/sliding-button"
 import StickyBanner from "@/components/sticky-banner"
 import MobileMenu from "@/components/main-menu"
 import FromTheYarnSection from "@/components/from-the-yarn-section"
@@ -24,12 +23,10 @@ export default function Home() {
   const [videoUrl, setVideoUrl] = useState("")
   const [isMobile, setIsMobile] = useState(false)
   const [isArrowClicked, setIsArrowClicked] = useState(false)
-  const [isButtonVisible, setIsButtonVisible] = useState(false)
   const [hasTouched, setHasTouched] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
-  const buttonRef = useRef<HTMLDivElement>(null)
   const aboutSectionRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -55,49 +52,6 @@ export default function Home() {
       setVideoUrl(FALLBACK_VIDEO_URL)
     }
   }, [])
-
-  // Mouse tracking for button visibility (desktop only)
-  useEffect(() => {
-    if (isMobile) {
-      setIsButtonVisible(true)
-      return
-    }
-
-    const heroSection = heroSectionRef.current
-    const buttonElement = buttonRef.current
-
-    if (!heroSection || !buttonElement) return
-
-    const handleMouseMove = (e: MouseEvent) => {
-      const heroRect = heroSection.getBoundingClientRect()
-      const buttonRect = buttonElement.getBoundingClientRect()
-
-      // Calculate center of hero section
-      const centerX = heroRect.left + heroRect.width / 2
-      const centerY = heroRect.top + heroRect.height / 2
-
-      // Calculate distance from mouse to center
-      const mouseX = e.clientX
-      const mouseY = e.clientY
-      const distanceFromCenter = Math.sqrt(Math.pow(mouseX - centerX, 2) + Math.pow(mouseY - centerY, 2))
-
-      // Calculate radius threshold (30% of the smaller dimension)
-      const radius = Math.min(heroRect.width, heroRect.height) * 0.3
-
-      // Check if mouse is over button
-      const isOverButton =
-        mouseX >= buttonRect.left &&
-        mouseX <= buttonRect.right &&
-        mouseY >= buttonRect.top &&
-        mouseY <= buttonRect.bottom
-
-      // Show button if mouse is within radius or over button
-      setIsButtonVisible(distanceFromCenter <= radius || isOverButton)
-    }
-
-    window.addEventListener("mousemove", handleMouseMove)
-    return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [isMobile])
 
   // Force video play on mobile devices and track touch for button visibility
   useEffect(() => {
@@ -127,7 +81,7 @@ export default function Home() {
       }
     }
 
-    // Play on user interaction and show button
+    // Play on user interaction
     const playOnInteraction = () => {
       attemptPlay()
       setHasTouched(true) // Set touch state to true when user interacts
@@ -143,11 +97,6 @@ export default function Home() {
       document.removeEventListener("touchend", playOnInteraction)
     }
   }, [isMobile])
-
-  // Navigation handlers
-  const handleRegisterClick = useCallback(() => {
-    router.push("/register")
-  }, [router])
 
   const handleScrollDown = useCallback(() => {
     setIsArrowClicked(true)
@@ -227,23 +176,6 @@ export default function Home() {
             Your browser does not support the video tag.
           </video>
         )}
-
-        {/* Register Button - now with conditional visibility on desktop, always visible on mobile */}
-        <div
-          ref={buttonRef}
-          className={`absolute inset-0 flex items-center justify-center z-10 transition-opacity duration-500 ${
-            (isButtonVisible && !isMobile) || (isMobile && hasTouched && videoLoaded) ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <SlidingButton
-            onClick={handleRegisterClick}
-            duration={1000}
-            variant="light"
-            className="min-w-[160px] sm:min-w-[180px] md:min-w-[200px] py-3 md:py-4 text-sm md:text-base"
-          >
-            REGISTER INTEREST
-          </SlidingButton>
-        </div>
 
         {/* Scroll down indicator - Only visible on desktop */}
         {!isMobile && (
