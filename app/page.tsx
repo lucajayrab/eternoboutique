@@ -199,6 +199,45 @@ export default function Home() {
             </svg>
           </div>
         )}
+
+        {/* Scroll down indicator - Mobile version that goes to From the Yarn */}
+        {isMobile && (
+          <div
+            className={`absolute sm:bottom-6 bottom-10 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
+            onClick={() => {
+              setIsArrowClicked(true)
+              setTimeout(() => setIsArrowClicked(false), 300)
+
+              // Navigate to From the Yarn section with proper mobile offset
+              const targetElement = document.getElementById("from-the-yarn")
+              if (targetElement) {
+                const stickyHeaderHeight = 70
+                const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
+                const scrollOffset = stickyHeaderHeight
+
+                window.scrollTo({
+                  top: offsetTop - scrollOffset,
+                  behavior: "smooth",
+                })
+              }
+            }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="arrow-icon"
+            >
+              <path d="M12 5v14M5 12l7 7 7-7" />
+            </svg>
+          </div>
+        )}
       </section>
 
       {/* ROW 1: FROM THE YARN SECTION - Added extra padding with matching background */}

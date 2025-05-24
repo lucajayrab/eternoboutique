@@ -117,129 +117,119 @@ export default function BoutiqueTailoringSection() {
 
         {/* Desktop Layout - Two-column grid (hidden on mobile) */}
         {!isMobile && (
-          <>
-            {/* Shop Now header above both columns */}
-            <div className="w-full px-8 sm:px-12 md:px-16 lg:px-20 mb-6 md:mb-8">
-              <h2 className="font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] text-left">
-                Shop Now
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-              {/* Left Column - In-Person */}
-              <div className="px-8 sm:px-12 md:px-16 lg:px-20 mb-10 md:mb-0">
-                <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6 text-center md:text-left">
-                  IN-PERSON
-                </h3>
-                <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm mb-6 sm:mb-10 max-w-[550px]">
-                  <p>
-                    Our Clifford Street location in the heart of Mayfair offers a refined setting for your personal
-                    tailoring experience. Here, we provide in-person boutique tailoring appointments for clients who
-                    wish to have their items fully tailored to their build, as well as those who prefer to view our
-                    collection in-person before purchasing.
-                  </p>
-                  <p className="mt-3 sm:mt-4">
-                    Once tailored to your specifications, an order will be placed, and you will receive your bespoke
-                    garments in 4-6 weeks. We will keep your measurements and preferences saved on file for future
-                    orders as we expand our operations.
-                  </p>
-                </div>
-
-                {/* Locate Us Box - Now a clickable link */}
-                <Link
-                  href={GOOGLE_MAPS_LINK}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block bg-[#eeeeec] p-4 sm:p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#e8e4d9] transition-colors duration-300 border border-[#e0ddd2] mb-6"
-                >
-                  <h4 className="text-[#5a5a56] font-normal mb-2 sm:mb-3 text-xs sm:text-sm uppercase tracking-wider">
-                    LOCATE US
-                  </h4>
-                  <p className="text-[10px] sm:text-xs flex items-center">
-                    Clifford Street, London, England, W1S 4JY, United Kingdom
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3 w-3 ml-1 inline-block"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                      />
-                    </svg>
-                  </p>
-                </Link>
-
-                {/* Register Interest Button - Now under Locate Us */}
-                <div className="max-w-[550px]">
-                  <div className="flex justify-start">
-                    <SlidingButton
-                      onClick={handleRegisterClick}
-                      variant="dark"
-                      duration={1000}
-                      className="min-w-[140px] sm:min-w-[160px] md:min-w-[200px] py-2 sm:py-3 text-xs sm:text-sm"
-                    >
-                      ENQUIRE
-                    </SlidingButton>
-                  </div>
-                  <p className="text-[10px] sm:text-xs mt-3 text-[#5a5a56]/70 max-w-[400px]">
-                    Submit an enquiry and our team will contact you to discuss your order details.
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 w-full">
+            {/* Left Column - In-Person */}
+            <div className="px-8 sm:px-12 md:px-16 lg:px-20 mb-10 md:mb-0">
+              {/* Shop Now header above In-Person only */}
+              <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1">SHOP NOW</p>
+              <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6 text-center md:text-left">
+                IN-PERSON
+              </h3>
+              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm mb-6 sm:mb-10 max-w-[550px]">
+                <p>
+                  Our Clifford Street location in the heart of Mayfair offers a refined setting for your personal
+                  tailoring experience. Here, we provide in-person boutique tailoring appointments for clients who wish
+                  to have their items fully tailored to their build, as well as those who prefer to view our collection
+                  in-person before purchasing.
+                </p>
+                <p className="mt-3 sm:mt-4">
+                  Once tailored to your specifications, an order will be placed, and you will receive your bespoke
+                  garments in 4-6 weeks. We will keep your measurements and preferences saved on file for future orders
+                  as we expand our operations.
+                </p>
               </div>
 
-              {/* Right Column - Online - Using grid layout */}
-              <div className="px-8 sm:px-12 md:px-16 lg:px-20">
-                <div className="grid grid-cols-1 gap-6 sm:gap-8">
-                  {/* Online Text Section */}
-                  <div className="online-text max-w-[600px]">
-                    <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6 text-center md:text-left">
-                      ONLINE
-                    </h3>
-                    <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm text-left">
-                      <p>
-                        For clients who prefer to order remotely, we offer the option to place standard orders from our
-                        capsule collection through our Register Interest form. After submitting your details, one of our
-                        representatives will be in touch to confirm your preferred size, color, and any additional
-                        extras you wish to include with your order.
-                      </p>
-                      <p className="mt-3 sm:mt-4">
-                        All online orders are crafted with the same attention to detail as our in-person tailoring
-                        service. Your garments will be delivered within 4-6 weeks from order confirmation, packaged with
-                        care and ready to wear.
-                      </p>
-                    </div>
-                  </div>
+              {/* Locate Us Box - Now a clickable link */}
+              <Link
+                href={GOOGLE_MAPS_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block bg-[#eeeeec] p-4 sm:p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#e8e4d9] transition-colors duration-300 border border-[#e0ddd2] mb-6"
+              >
+                <h4 className="text-[#5a5a56] font-normal mb-2 sm:mb-3 text-xs sm:text-sm uppercase tracking-wider">
+                  LOCATE US
+                </h4>
+                <p className="text-[10px] sm:text-xs flex items-center">
+                  Clifford Street, London, England, W1S 4JY, United Kingdom
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-3 w-3 ml-1 inline-block"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </p>
+              </Link>
 
-                  {/* Size Charts - Using grid layout with equal sizing and wider width */}
-                  <div className="size-tables grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-[600px]">
-                    {/* Shirt Size Chart */}
-                    {renderSizeTable("Shirts (Neck Size in Inches)", shirtSizes)}
+              {/* Register Interest Button - Now under Locate Us */}
+              <div className="max-w-[550px]">
+                <div className="flex justify-start">
+                  <SlidingButton
+                    onClick={handleRegisterClick}
+                    variant="dark"
+                    duration={1000}
+                    className="min-w-[140px] sm:min-w-[160px] md:min-w-[200px] py-2 sm:py-3 text-xs sm:text-sm"
+                  >
+                    ENQUIRE
+                  </SlidingButton>
+                </div>
+                <p className="text-[10px] sm:text-xs mt-3 text-[#5a5a56]/70 max-w-[400px]">
+                  Submit an enquiry and our team will contact you to discuss your order details.
+                </p>
+              </div>
+            </div>
 
-                    {/* Trouser Size Chart */}
-                    {renderSizeTable("Trousers (Waist Size in Inches)", trouserSizes)}
+            {/* Right Column - Online - Using grid layout */}
+            <div className="px-8 sm:px-12 md:px-16 lg:px-20">
+              <div className="grid grid-cols-1 gap-6 sm:gap-8">
+                {/* Online Text Section */}
+                <div className="online-text max-w-[600px]">
+                  <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6 text-center md:text-left">
+                    ONLINE
+                  </h3>
+                  <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm text-left">
+                    <p>
+                      For clients who prefer to order remotely, we offer the option to place standard orders from our
+                      capsule collection through our Register Interest form. After submitting your details, one of our
+                      representatives will be in touch to confirm your preferred size, color, and any additional extras
+                      you wish to include with your order.
+                    </p>
+                    <p className="mt-3 sm:mt-4">
+                      All online orders are crafted with the same attention to detail as our in-person tailoring
+                      service. Your garments will be delivered within 4-6 weeks from order confirmation, packaged with
+                      care and ready to wear.
+                    </p>
                   </div>
+                </div>
+
+                {/* Size Charts - Using grid layout with equal sizing and wider width */}
+                <div className="size-tables grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-[600px]">
+                  {/* Shirt Size Chart */}
+                  {renderSizeTable("Shirts (Neck Size in Inches)", shirtSizes)}
+
+                  {/* Trouser Size Chart */}
+                  {renderSizeTable("Trousers (Waist Size in Inches)", trouserSizes)}
                 </div>
               </div>
             </div>
-          </>
+          </div>
         )}
 
         {/* Mobile Layout - Tab-based content (only visible on mobile) */}
         {isMobile && (
           <div className="px-8">
-            {/* Add Shop Now header for mobile */}
-            <h2 className="font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] text-center mb-8">
-              Shop Now
-            </h2>
-
             {/* In-Person Content */}
             {activeSection === "in-person" && (
               <div className="text-center">
+                {/* Shop Now header above In-Person for mobile */}
+                <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1 text-center">SHOP NOW</p>
                 <h3 className="text-[#5a5a56] font-normal text-base uppercase tracking-wider mb-6 text-center">
                   IN-PERSON
                 </h3>
@@ -308,6 +298,8 @@ export default function BoutiqueTailoringSection() {
             {/* Online Content */}
             {activeSection === "online" && (
               <div className="text-center">
+                {/* Shop Now header above Online for mobile */}
+                <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1 text-center">SHOP NOW</p>
                 <h3 className="text-[#5a5a56] font-normal text-base uppercase tracking-wider mb-6 text-center">
                   ONLINE
                 </h3>

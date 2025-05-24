@@ -123,6 +123,13 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
             >
               PROCESS
             </a>
+            <a
+              href="#boutique-tailoring"
+              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              SHOP NOW
+            </a>
           </nav>
 
           <div className="w-full max-w-xs">
@@ -132,7 +139,7 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
               duration={1000}
               className="w-full py-4 text-base"
             >
-              REGISTER INTEREST
+              ENQUIRE
             </SlidingButton>
           </div>
         </div>

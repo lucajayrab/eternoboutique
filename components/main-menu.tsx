@@ -152,7 +152,7 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
             <MenuLink href="/" label="HOME" />
             <MenuLink href="#from-the-yarn" label="FROM THE YARN" />
             <MenuLink href="#collection" label="COLLECTION" />
-            <MenuLink href="#boutique-tailoring" label="BOUTIQUE TAILORING" />
+            <MenuLink href="#boutique-tailoring" label="SHOP NOW" />
             <MenuLink href="#manifesto" label="OUR PHILOSOPHY" />
           </nav>
 
@@ -163,7 +163,7 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
               duration={1000}
               className="w-full py-4 text-base"
             >
-              REGISTER INTEREST
+              ENQUIRE
             </SlidingButton>
           </div>
         </div>
