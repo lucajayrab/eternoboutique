@@ -203,7 +203,7 @@ export default function Home() {
         {/* Scroll down indicator - Mobile version that goes to From the Yarn */}
         {isMobile && (
           <div
-            className={`absolute sm:bottom-6 bottom-10 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
+            className={`absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
             onClick={() => {
               setIsArrowClicked(true)
               setTimeout(() => setIsArrowClicked(false), 300)
