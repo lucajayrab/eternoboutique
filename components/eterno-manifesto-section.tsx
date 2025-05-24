@@ -71,24 +71,27 @@ export default function EternoManifestoSection() {
                 }`}
               >
                 <div className="space-y-2">
-                  <p>We were founded on a simple idea:</p>
-                  <p>That the best clothes are the ones that become part of your story.</p>
+                  <p>Eterno was born from a simple idea:</p>
+                  <p>The best clothes become part of your story.</p>
+                </div>
+
+                <div className="space-y-2">
                   <p>Linen worn through long lunches on the coast.</p>
-                  <p>Garments made not just to be seen—but to be lived in.</p>
+                  <p>Not made to be seen—made to be lived in.</p>
                 </div>
 
                 <div className="space-y-2">
-                  <p>Handcrafted in Italy and inspired by summers you never want to end,</p>
-                  <p>Eterno captures the art of dressing with intention.</p>
+                  <p>Handcrafted in Italy. Inspired by endless summers.</p>
+                  <p>Eterno is dressing with intention.</p>
                 </div>
 
                 <div className="space-y-2">
-                  <p>Because the best things in life aren't rushed.</p>
-                  <p>They're chosen slowly, worn in deeply, and remembered long after.</p>
+                  <p>Because the best things aren't rushed—</p>
+                  <p>they're chosen, worn, remembered.</p>
                 </div>
 
                 <div className="space-y-2">
-                  <p>For the ones who don't need to say too much—</p>
+                  <p>For those who don't speak loudly—</p>
                   <p>because the linen already does.</p>
                 </div>
               </div>
