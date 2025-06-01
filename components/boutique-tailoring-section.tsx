@@ -6,7 +6,7 @@ import SlidingButton from "./sliding-button"
 import Link from "next/link"
 
 // Constants
-const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=Clifford+Street,+Mayfair,+London,+W1S+4JY,+UK"
+const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=Mayfair,+London,+UK"
 
 export default function BoutiqueTailoringSection() {
   const router = useRouter()
@@ -127,10 +127,10 @@ export default function BoutiqueTailoringSection() {
               </h3>
               <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm mb-6 sm:mb-10 max-w-[550px]">
                 <p>
-                  Our Clifford Street location in the heart of Mayfair offers a refined setting for your personal
-                  tailoring experience. Here, we provide in-person boutique tailoring appointments for clients who wish
-                  to have their items fully tailored to their build, as well as those who prefer to view our collection
-                  in-person before purchasing.
+                  Our showroom in the heart of Mayfair offers a refined setting for your personal tailoring experience.
+                  Here, we provide in-person boutique tailoring appointments for clients who wish to have their items
+                  fully tailored to their build, as well as those who prefer to view our collection in-person before
+                  purchasing.
                 </p>
                 <p className="mt-3 sm:mt-4">
                   Once tailored to your specifications, an order will be placed, and you will receive your bespoke
@@ -150,7 +150,7 @@ export default function BoutiqueTailoringSection() {
                   LOCATE US
                 </h4>
                 <p className="text-[10px] sm:text-xs flex items-center">
-                  Clifford Street, London, England, W1S 4JY, United Kingdom
+                  The Mayfair Showroom
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-3 w-3 ml-1 inline-block"
@@ -235,10 +235,10 @@ export default function BoutiqueTailoringSection() {
                 </h3>
                 <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs mb-8 max-w-[550px] mx-auto text-center">
                   <p>
-                    Our Clifford Street location in the heart of Mayfair offers a refined setting for your personal
-                    tailoring experience. Here, we provide in-person boutique tailoring appointments for clients who
-                    wish to have their items fully tailored to their build, as well as those who prefer to view our
-                    collection in-person before purchasing.
+                    Our showroom in the heart of Mayfair offers a refined setting for your personal tailoring
+                    experience. Here, we provide in-person boutique tailoring appointments for clients who wish to have
+                    their items fully tailored to their build, as well as those who prefer to view our collection
+                    in-person before purchasing.
                   </p>
                   <p className="mt-4">
                     Once tailored to your specifications, an order will be placed, and you will receive your bespoke
@@ -258,7 +258,7 @@ export default function BoutiqueTailoringSection() {
                     LOCATE US
                   </h4>
                   <p className="text-[10px] flex items-center justify-center">
-                    Clifford Street, London, England, W1S 4JY, United Kingdom
+                    The Mayfair Showroom
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-3 w-3 ml-1 inline-block"
