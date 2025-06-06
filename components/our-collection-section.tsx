@@ -16,6 +16,7 @@ const SHIRT_COLORS = [
 
 const TROUSER_COLORS = [
   { name: "Natural", color: "#eae7d9", image: "/cream-linen-trousers-new.png" },
+  { name: "White", color: "#f5f5f5", image: "/white-linen-trousers.png" },
   { name: "Navy", color: "#2d2a3e", image: "/navy-linen-trousers-new.png" },
   { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png" },
 ]
@@ -206,7 +207,7 @@ export default function OurCollectionSection() {
 
               {/* Colorways with active indicator */}
               <div className={`mt-4 md:mt-6 max-w-[550px] ${isMobile ? "text-center mx-auto" : ""}`}>
-                <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 3 colorways:</p>
+                <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 4 colorways:</p>
                 <div
                   className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-center md:justify-start"}`}
                 >
