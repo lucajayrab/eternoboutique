@@ -61,8 +61,8 @@ export default function OurCollectionSection() {
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
             {/* Image Section - Left */}
-            <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0 pb-8 md:pb-4">
-              <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
+            <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
+              <div className="w-full h-full bg-[#eeeeec] flex items-center justify-center min-h-[400px] md:min-h-[500px]">
                 {/* Using next/image for better performance and error handling */}
                 <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
                   <Image
@@ -76,7 +76,7 @@ export default function OurCollectionSection() {
                     priority
                   />
                   {!shirtImageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#f5f5f3]">
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#eeeeec]">
                       <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
                     </div>
                   )}
@@ -119,8 +119,8 @@ export default function OurCollectionSection() {
         <div className="w-full">
           <div className="flex flex-col md:flex-row-reverse gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
             {/* Image Section - Right */}
-            <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20 mb-0 md:mb-0 pb-8 md:pb-4">
-              <div className="w-full h-full bg-[#f5f5f3] flex items-center justify-center">
+            <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
+              <div className="w-full h-full bg-[#f9f8f5] flex items-center justify-center min-h-[400px] md:min-h-[500px]">
                 {/* Using next/image for better performance and error handling */}
                 <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
                   <Image
@@ -134,7 +134,7 @@ export default function OurCollectionSection() {
                     priority
                   />
                   {!trouserImageLoaded && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#f5f5f3]">
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#f9f8f5]">
                       <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
                     </div>
                   )}
