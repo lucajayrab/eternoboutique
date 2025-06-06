@@ -132,6 +132,9 @@ export default function OurCollectionSection() {
                 <div className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-start"}`}>
                   {SHIRT_COLORS.map(renderSwatch)}
                 </div>
+
+                {/* Price */}
+                <p className="text-sm text-[#5a5a56] font-medium mt-4">£350</p>
               </div>
             </div>
           </div>
@@ -229,6 +232,9 @@ export default function OurCollectionSection() {
                     </div>
                   ))}
                 </div>
+
+                {/* Price */}
+                <p className="text-sm text-[#5a5a56] font-medium mt-4 text-center md:text-left">£350</p>
               </div>
             </div>
           </div>

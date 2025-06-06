@@ -67,19 +67,20 @@ export default function FromTheYarnSection() {
             className={`w-full md:w-1/2 space-y-4 sm:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 ${isMobile ? "mb-10" : ""}`}
           >
             <h2
-              className={`font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] ${isMobile ? "text-center" : ""}`}
+              className={`font-mulish text-sm sm:text-base font-light tracking-widest uppercase text-[#5a5a56] ${isMobile ? "text-center" : ""}`}
             >
-              From the Yarn
+              CRAFTED IN ITALY
             </h2>
             <div
               className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[600px] ${isMobile ? "text-center mx-auto" : ""}`}
             >
               <p>
-                Our journey begins with the finest flax fibers, cultivated in the nutrient-rich soils of Northern Italy.
-                These exceptional raw materials are transformed into luxurious linen through a meticulous process that
-                honors centuries-old traditions while embracing modern precision. Each thread is carefully spun to
-                achieve the perfect balance of strength and softness, creating a fabric that breathes with the wearer
-                and develops a unique character over time.
+                All our pieces are handmade in Italy, beginning with the finest yarns and culminating in garments
+                crafted in the heart of Naples by some of Italy's most skilled artisans. Each piece represents a
+                commitment to traditional Italian craftsmanship, where time-honoured techniques are passed down through
+                generations. From the initial selection of premium fibres to the final hand-finished details, every step
+                of our process takes place within Italy's renowned textile heritage, ensuring unparalleled quality and
+                authenticity in every garment we create.
               </p>
             </div>
           </div>
@@ -109,7 +110,7 @@ export default function FromTheYarnSection() {
                 <div className="relative w-full h-full">
                   <Image
                     src={fallbackImage || "/placeholder.svg"}
-                    alt="Linen production process"
+                    alt="Italian artisan craftsmanship process"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
                     style={{ objectFit: "cover", objectPosition: "center" }}
