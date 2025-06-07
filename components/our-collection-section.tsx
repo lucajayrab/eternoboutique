@@ -14,7 +14,6 @@ const SHIRT_COLORS = [
   { name: "Sage", color: "#9ca594", image: "/images/shirts/new-sage-linen-shirt.png" },
 ]
 
-// TROUSER_COLORS remain unchanged
 const TROUSER_COLORS = [
   { name: "Natural", color: "#eae7d9", image: "/cream-linen-trousers-new.png" },
   { name: "White", color: "#f5f5f5", image: "/white-linen-trousers.png" },
@@ -22,8 +21,8 @@ const TROUSER_COLORS = [
   { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png" },
 ]
 
-const SHIRT_PRICE = 100 // Declare SHIRT_PRICE variable
-const TROUSER_PRICE = 120 // Declare TROUSER_PRICE variable
+const SHIRT_PRICE = 325
+const TROUSER_PRICE = 325
 
 export default function OurCollectionSection() {
   const [isMobile, setIsMobile] = useState(false)
@@ -32,7 +31,7 @@ export default function OurCollectionSection() {
   const [currentShirtIndex, setCurrentShirtIndex] = useState(0)
   const [currentTrouserIndex, setCurrentTrouserIndex] = useState(0)
   const [isShirtTransitioning, setIsShirtTransitioning] = useState(false)
-  const [isTrouserTransitioning, setIsTrouserTransitioning] = useState(false) // Renamed for clarity
+  const [isTrouserTransitioning, setIsTrouserTransitioning] = useState(false)
   const [shirtImageError, setShirtImageError] = useState(false)
   const [trouserImageError, setTrouserImageError] = useState(false)
 
@@ -94,26 +93,31 @@ export default function OurCollectionSection() {
 
   return (
     <>
+      {/* Shirt Section */}
       <section className="w-full bg-[#eeeeec]" id="collection">
         <div className="w-full">
-          <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
-            <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
-              <div className="w-full h-full bg-[#eeeeec] flex items-center justify-center min-h-[400px] md:min-h-[500px] relative">
+          <div className="flex flex-col md:flex-row gap-0 min-h-[500px] md:min-h-[600px]">
+            {/* Image Container - Mobile optimized */}
+            <div className="w-full md:w-1/2 flex items-center justify-center py-6 md:py-16 px-4 sm:px-6 md:px-16 lg:px-20">
+              <div className="w-full h-full bg-[#eeeeec] flex items-center justify-center min-h-[350px] sm:min-h-[400px] md:min-h-[500px] relative">
                 <button
                   onClick={() => navigateShirt("prev")}
-                  className="absolute left-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute left-2 md:left-4 z-10 rounded-full p-2 md:p-3 bg-white/80 hover:bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20 touch-manipulation"
                   aria-label="Previous shirt color"
+                  style={{ touchAction: "manipulation" }}
                 >
-                  <ChevronLeft className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
+                  <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-[#5a5a56]" />
                 </button>
                 <button
                   onClick={() => navigateShirt("next")}
-                  className="absolute right-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute right-2 md:right-4 z-10 rounded-full p-2 md:p-3 bg-white/80 hover:bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20 touch-manipulation"
                   aria-label="Next shirt color"
+                  style={{ touchAction: "manipulation" }}
                 >
-                  <ChevronRight className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
+                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-[#5a5a56]" />
                 </button>
-                <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
+
+                <div className="relative w-full h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px]">
                   {!shirtImageError && (
                     <div
                       className={`transition-opacity duration-300 ${shirtImageLoaded ? "opacity-100" : "opacity-0"}`}
@@ -122,7 +126,7 @@ export default function OurCollectionSection() {
                         src={SHIRT_COLORS[currentShirtIndex].image || "/placeholder.svg"}
                         alt={`ETERNO ${SHIRT_COLORS[currentShirtIndex].name} Linen Shirt`}
                         fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 50vw"
                         style={{ objectFit: "contain", objectPosition: "center" }}
                         onLoad={() => setShirtImageLoaded(true)}
                         onError={handleShirtImageError}
@@ -133,8 +137,12 @@ export default function OurCollectionSection() {
                   {shirtImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#eeeeec]">
                       <div className="text-center">
-                        <div className="w-16 h-16 bg-[#5a5a56]/10 rounded-full flex items-center justify-center mb-2">
-                          <svg className="w-8 h-8 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="w-12 h-12 md:w-16 md:h-16 bg-[#5a5a56]/10 rounded-full flex items-center justify-center mb-2">
+                          <svg
+                            className="w-6 h-6 md:w-8 md:h-8 text-[#5a5a56]/50"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
                             <path
                               fillRule="evenodd"
                               d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -154,29 +162,38 @@ export default function OurCollectionSection() {
                 </div>
               </div>
             </div>
-            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-16 items-start pt-8 md:pt-4 mt-0 md:mt-0">
-              <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-left"}`}>
+
+            {/* Text Content - Mobile optimized */}
+            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 sm:px-6 md:px-16 lg:px-20 flex flex-col justify-center py-6 md:py-16">
+              <div className={`space-y-2 ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
-                <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">SHIRT</h3>
+                <h3 className="text-[#5a5a56] font-normal text-base sm:text-lg md:text-xl uppercase tracking-wider">
+                  SHIRT
+                </h3>
               </div>
+
               <div
-                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
+                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm sm:text-base max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
               >
                 <p>
                   Our signature shirt captures the spirit of Southern Italy through thoughtful tailoring and refined
                   detail. The clean, single-placket front flows into the soft roll of the paramontura collar, echoed by
-                  curved cuffs fastened with genuine mother-of-pearl buttons. Hand-finished edges and perfect
-                  buttonholes complete each piece.
+                  curved cuffs fastened with genuine mother-of-pearl buttons.
                 </p>
               </div>
-              <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center" : "text-left"}`}>
-                <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 6 colorways:</p>
+
+              <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center mx-auto" : "text-left"}`}>
+                <p className="text-sm text-[#5a5a56] mb-3 sm:mb-4">Available in 6 colorways:</p>
                 <div className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-start"}`}>
                   {SHIRT_COLORS.map((swatch, index) => (
                     <div key={index} className="flex flex-col items-center">
-                      <div
-                        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border cursor-pointer transition-all duration-200 ${index === currentShirtIndex ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20" : "border-[#ddd] hover:border-[#5a5a56]/50"}`}
-                        style={{ backgroundColor: swatch.color }}
+                      <button
+                        className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full border cursor-pointer transition-all duration-200 touch-manipulation ${
+                          index === currentShirtIndex
+                            ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20 scale-110"
+                            : "border-[#ddd] hover:border-[#5a5a56]/50"
+                        }`}
+                        style={{ backgroundColor: swatch.color, touchAction: "manipulation" }}
                         onClick={() => {
                           if (!isShirtTransitioning) {
                             setIsShirtTransitioning(true)
@@ -186,38 +203,44 @@ export default function OurCollectionSection() {
                             setTimeout(() => setIsShirtTransitioning(false), 300)
                           }
                         }}
-                      ></div>
-                      <span className="text-[10px] sm:text-xs mt-1">{swatch.name}</span>
+                        aria-label={`Select ${swatch.name} shirt`}
+                      />
+                      <span className="text-xs sm:text-sm mt-1 text-[#5a5a56]">{swatch.name}</span>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-[#5a5a56] font-medium mt-4">£{SHIRT_PRICE}</p>
+                <p className="text-base sm:text-lg text-[#5a5a56] font-medium mt-4">£{SHIRT_PRICE}</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Trouser Section */}
       <section className="w-full bg-[#f9f8f5]">
         <div className="w-full">
-          <div className="flex flex-col md:flex-row-reverse gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
-            <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
-              <div className="w-full h-full bg-[#f9f8f5] flex items-center justify-center min-h-[400px] md:min-h-[500px] relative">
+          <div className="flex flex-col md:flex-row-reverse gap-0 min-h-[500px] md:min-h-[600px]">
+            {/* Image Container - Mobile optimized */}
+            <div className="w-full md:w-1/2 flex items-center justify-center py-6 md:py-16 px-4 sm:px-6 md:px-16 lg:px-20">
+              <div className="w-full h-full bg-[#f9f8f5] flex items-center justify-center min-h-[350px] sm:min-h-[400px] md:min-h-[500px] relative">
                 <button
                   onClick={() => navigateTrouser("prev")}
-                  className="absolute left-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute left-2 md:left-4 z-10 rounded-full p-2 md:p-3 bg-white/80 hover:bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20 touch-manipulation"
                   aria-label="Previous trouser color"
+                  style={{ touchAction: "manipulation" }}
                 >
-                  <ChevronLeft className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
+                  <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-[#5a5a56]" />
                 </button>
                 <button
                   onClick={() => navigateTrouser("next")}
-                  className="absolute right-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute right-2 md:right-4 z-10 rounded-full p-2 md:p-3 bg-white/80 hover:bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20 touch-manipulation"
                   aria-label="Next trouser color"
+                  style={{ touchAction: "manipulation" }}
                 >
-                  <ChevronRight className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
+                  <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-[#5a5a56]" />
                 </button>
-                <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
+
+                <div className="relative w-full h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px]">
                   {!trouserImageError && (
                     <div
                       className={`transition-opacity duration-300 ${trouserImageLoaded ? "opacity-100" : "opacity-0"}`}
@@ -226,7 +249,7 @@ export default function OurCollectionSection() {
                         src={TROUSER_COLORS[currentTrouserIndex].image || "/placeholder.svg"}
                         alt={`ETERNO ${TROUSER_COLORS[currentTrouserIndex].name} Linen Trousers`}
                         fill
-                        sizes="(max-width: 768px) 100vw, 50vw"
+                        sizes="(max-width: 640px) 100vw, (max-width: 768px) 90vw, 50vw"
                         style={{ objectFit: "contain", objectPosition: "center" }}
                         onLoad={() => setTrouserImageLoaded(true)}
                         onError={handleTrouserImageError}
@@ -237,8 +260,12 @@ export default function OurCollectionSection() {
                   {trouserImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#f9f8f5]">
                       <div className="text-center">
-                        <div className="w-16 h-16 bg-[#5a5a56]/10 rounded-full flex items-center justify-center mb-2">
-                          <svg className="w-8 h-8 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="w-12 h-12 md:w-16 md:h-16 bg-[#5a5a56]/10 rounded-full flex items-center justify-center mb-2">
+                          <svg
+                            className="w-6 h-6 md:w-8 md:h-8 text-[#5a5a56]/50"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
                             <path
                               fillRule="evenodd"
                               d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
@@ -258,31 +285,38 @@ export default function OurCollectionSection() {
                 </div>
               </div>
             </div>
-            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-16 pt-8 md:pt-4 mt-0 md:mt-0">
-              <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-center md:text-left"}`}>
+
+            {/* Text Content - Mobile optimized */}
+            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 sm:px-6 md:px-16 lg:px-20 flex flex-col justify-center py-6 md:py-16">
+              <div className={`space-y-2 ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
-                <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">TROUSER</h3>
+                <h3 className="text-[#5a5a56] font-normal text-base sm:text-lg md:text-xl uppercase tracking-wider">
+                  TROUSER
+                </h3>
               </div>
+
               <div
-                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : ""}`}
+                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm sm:text-base max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
               >
                 <p>
                   Our pleated linen trousers are a quiet study in refinement. A single forward pleat introduces movement
                   through the front, while the waistband combines a clean, classic front with discrete elastic at the
-                  back for added comfort. A single jetted pocket and classic-finished hem maintain the streamlined
-                  silhouette. Woven from the finest Italian linen and tailored in Italy.
+                  back for added comfort.
                 </p>
               </div>
-              <div className={`mt-4 md:mt-6 max-w-[550px] ${isMobile ? "text-center mx-auto" : ""}`}>
-                <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 4 colorways:</p>
-                <div
-                  className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-center md:justify-start"}`}
-                >
+
+              <div className={`mt-4 md:mt-6 max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}>
+                <p className="text-sm text-[#5a5a56] mb-3 sm:mb-4">Available in 4 colorways:</p>
+                <div className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-start"}`}>
                   {TROUSER_COLORS.map((swatch, index) => (
                     <div key={index} className="flex flex-col items-center">
-                      <div
-                        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border cursor-pointer transition-all duration-200 ${index === currentTrouserIndex ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20" : "border-[#ddd] hover:border-[#5a5a56]/50"}`}
-                        style={{ backgroundColor: swatch.color }}
+                      <button
+                        className={`w-6 h-6 sm:w-7 sm:h-7 rounded-full border cursor-pointer transition-all duration-200 touch-manipulation ${
+                          index === currentTrouserIndex
+                            ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20 scale-110"
+                            : "border-[#ddd] hover:border-[#5a5a56]/50"
+                        }`}
+                        style={{ backgroundColor: swatch.color, touchAction: "manipulation" }}
                         onClick={() => {
                           if (!isTrouserTransitioning) {
                             setIsTrouserTransitioning(true)
@@ -292,12 +326,13 @@ export default function OurCollectionSection() {
                             setTimeout(() => setIsTrouserTransitioning(false), 300)
                           }
                         }}
-                      ></div>
-                      <span className="text-[10px] sm:text-xs mt-1">{swatch.name}</span>
+                        aria-label={`Select ${swatch.name} trousers`}
+                      />
+                      <span className="text-xs sm:text-sm mt-1 text-[#5a5a56]">{swatch.name}</span>
                     </div>
                   ))}
                 </div>
-                <p className="text-sm text-[#5a5a56] font-medium mt-4 text-center md:text-left">£{TROUSER_PRICE}</p>
+                <p className="text-base sm:text-lg text-[#5a5a56] font-medium mt-4">£{TROUSER_PRICE}</p>
               </div>
             </div>
           </div>

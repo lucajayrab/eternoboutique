@@ -57,8 +57,8 @@ export default function StickyBanner({
     }
   }, [threshold, alwaysVisible, isHomePage])
 
-  // Calculate proportional logo size for mobile
-  const mobileLogoWidth = "36mm"
+  // Mobile-optimized logo size
+  const mobileLogoWidth = "32mm"
 
   return (
     <div
@@ -67,27 +67,28 @@ export default function StickyBanner({
       } ${isTransparent ? "bg-transparent" : "bg-[#d8d3c2] shadow-md"}`}
     >
       {/* Left spacer for centering */}
-      <div className="w-10 md:w-12"></div>
+      <div className="w-8 md:w-12"></div>
 
       {/* Centered Logo */}
       <div className="flex-1 flex justify-center">
         <Link href="/" className="flex items-center justify-center">
           <EternoLogo
             width={isMobile ? mobileLogoWidth : logoWidth}
-            inverted={false} // Always use dark logo since background is beige
+            inverted={false}
             className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
             fixedSize={true}
           />
         </Link>
       </div>
 
-      {/* Menu Button */}
+      {/* Menu Button - Mobile optimized */}
       <button
         onClick={onMenuClick}
-        className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-black/5 rounded transition-colors"
+        className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center hover:bg-black/5 rounded transition-colors touch-manipulation"
         aria-label="Open menu"
+        style={{ touchAction: "manipulation" }}
       >
-        <Menu size={20} className="text-[#5a5a56]" />
+        <Menu size={isMobile ? 18 : 20} className="text-[#5a5a56]" />
       </button>
     </div>
   )

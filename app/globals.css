@@ -48,47 +48,55 @@
 }
 
 html {
-  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
-  touch-action: manipulation; /* Improve touch responsiveness */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  scroll-behavior: smooth;
 }
 
 body {
   background-color: #e8e4d9;
   color: #231f20;
   font-family: var(--font-mulish), "Helvetica Neue", Arial, sans-serif;
-  text-size-adjust: 100%; /* Prevent text size adjustment on orientation change */
+  text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -moz-text-size-adjust: 100%;
+  line-height: 1.5;
 }
 
-/* Improve touch targets for mobile */
-button,
-a,
-input,
-select,
-textarea {
-  touch-action: manipulation;
-}
-
-/* Minimum touch target size for mobile */
+/* Mobile-first responsive design */
 @media (max-width: 767px) {
+  body {
+    font-size: 16px; /* Prevent iOS zoom on input focus */
+  }
+
+  /* Ensure minimum touch target sizes */
   button,
   a,
   input[type="button"],
   input[type="submit"],
   input[type="reset"],
-  input[type="checkbox"],
-  input[type="radio"] {
+  [role="button"] {
     min-height: 44px;
     min-width: 44px;
+    touch-action: manipulation;
   }
 
-  /* Ensure proper spacing between touch targets */
-  .touch-target-spacing > * {
-    margin-bottom: 8px;
+  /* Improve spacing for mobile */
+  .mobile-spacing > * {
+    margin-bottom: 16px;
+  }
+
+  /* Better mobile form inputs */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important; /* Prevent iOS zoom */
+    border-radius: 0; /* Remove iOS styling */
+    -webkit-appearance: none;
   }
 }
 
+/* Video optimization */
 video {
   object-fit: cover;
   width: 100%;
@@ -96,14 +104,33 @@ video {
   position: absolute;
   top: 0;
   left: 0;
+  /* Hardware acceleration for better mobile performance */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
 }
 
-/* Arrow animations */
+/* Mobile video specific optimizations */
+@media (max-width: 767px) {
+  video {
+    /* Optimize for mobile performance */
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+}
+
+/* Arrow animations - Mobile optimized */
 .arrow-container {
   transition: transform 0.3s ease;
+  /* Larger touch target for mobile */
+  min-width: 44px;
+  min-height: 44px;
 }
 
-.arrow-container:hover .arrow-icon {
+.arrow-container:hover .arrow-icon,
+.arrow-container:active .arrow-icon {
   transform: translateY(5px);
   opacity: 0.9;
 }
@@ -118,70 +145,7 @@ video {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-/* Phone input custom styles */
-.react-tel-input .form-control {
-  width: 100% !important;
-  height: 40px !important;
-  background-color: transparent !important;
-  border: 0 !important;
-  border-bottom: 1px solid rgba(35, 31, 32, 0.2) !important;
-  border-radius: 0 !important;
-  padding: 4px 0 !important;
-  font-size: 0.875rem !important;
-  font-weight: 300 !important;
-  color: #231f20 !important;
-}
-
-.react-tel-input .form-control:focus {
-  border-bottom: 1px solid rgba(35, 31, 32, 0.5) !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-.react-tel-input .flag-dropdown {
-  background-color: transparent !important;
-  border: 0 !important;
-  border-bottom: 1px solid rgba(35, 31, 32, 0.2) !important;
-  border-radius: 0 !important;
-}
-
-.react-tel-input .selected-flag {
-  padding: 0 8px 0 8px !important;
-  background-color: transparent !important;
-}
-
-.react-tel-input .selected-flag:hover,
-.react-tel-input .selected-flag:focus {
-  background-color: transparent !important;
-}
-
-.react-tel-input .country-list {
-  margin: 0 !important;
-  padding: 0 !important;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-  border-radius: 4px !important;
-}
-
-.react-tel-input .country-list .search {
-  padding: 10px !important;
-}
-
-.react-tel-input .country-list .search-box {
-  width: 100% !important;
-  padding: 8px !important;
-  border: 1px solid rgba(35, 31, 32, 0.2) !important;
-  border-radius: 4px !important;
-}
-
-.react-tel-input .country-list .country {
-  padding: 8px 10px !important;
-}
-
-.react-tel-input .country-list .country.highlight {
-  background-color: rgba(35, 31, 32, 0.05) !important;
-}
-
-/* Improved fade-in animation keyframes */
+/* Improved fade-in animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -193,24 +157,21 @@ video {
   }
 }
 
-/* Animation classes */
 .fade-in {
   opacity: 0;
   animation: fadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* Mobile-optimized delays */
 .delay-200 {
   animation-delay: 200ms;
 }
-
 .delay-400 {
   animation-delay: 400ms;
 }
-
 .delay-600 {
   animation-delay: 600ms;
 }
-
 .delay-800 {
   animation-delay: 800ms;
 }
@@ -220,69 +181,7 @@ video {
   transition: opacity 500ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.page-transition.fade-in {
-  opacity: 1;
-}
-
-.page-transition.fade-out {
-  opacity: 0;
-}
-
-/* Cinematic text styles */
-.cinematic-text {
-  letter-spacing: 0.05em;
-  font-weight: 300;
-  text-transform: uppercase;
-}
-
-/* Form field animations */
-.form-field-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.form-field-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 500ms, transform 500ms;
-}
-
-/* Video overlay gradient */
-.video-overlay {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.1) 100%);
-}
-
-/* Custom button hover effect */
-.transparent-text-on-hover:hover {
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-
-/* Scroll reveal animation */
-@keyframes revealUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.reveal-up {
-  opacity: 0;
-  animation: revealUp 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-/* Parallax effect */
-.parallax {
-  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Typography Styles for ETERNO */
+/* Typography improvements for mobile */
 .eterno-title {
   font-family: var(--font-mulish), "Helvetica Neue", Arial, sans-serif;
   font-weight: 300;
@@ -299,134 +198,101 @@ video {
   line-height: 1.6;
 }
 
+/* Mobile typography adjustments */
+@media (max-width: 767px) {
+  .eterno-title {
+    font-size: 1.25rem;
+    letter-spacing: 0.1em;
+  }
+
+  .eterno-body {
+    font-size: 0.875rem;
+    line-height: 1.7;
+  }
+}
+
+/* Better mobile button styling */
 .eterno-button {
   font-family: var(--font-mulish), "Helvetica Neue", Arial, sans-serif;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   font-weight: 400;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Lookbook heading style */
-.lookbook-heading {
-  font-family: var(--font-mulish), "Helvetica Neue", Arial, sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: #6d6d6d;
-}
-
-/* Custom select styling to match input fields */
-select.border-eterno-text\/20 {
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23666' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
-  background-position: right 0.25rem center;
-  background-repeat: no-repeat;
-  background-size: 1.5em 1.5em;
-  padding-right: 2rem;
-}
-
-/* Remove browser default styling for number inputs */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
-/* Ensure phone input fields align properly */
-.phone-input-container {
-  display: flex;
-  align-items: center;
-}
-
-.phone-input-container select {
-  flex: 0 0 auto;
-  width: 40%;
-  margin-right: 0.5rem;
-}
-
-.phone-input-container input {
-  flex: 1 1 auto;
-}
-
-/* Mobile-specific styles */
+/* Mobile-specific improvements */
 @media (max-width: 767px) {
-  /* Increase font size for better readability on mobile */
-  body {
-    font-size: 16px;
+  /* Ensure proper spacing */
+  section {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
-  /* Increase spacing between interactive elements */
-  .mobile-spacing > * {
-    margin-bottom: 16px;
+  /* Better mobile image handling */
+  img {
+    max-width: 100%;
+    height: auto;
   }
 
-  /* Ensure form elements are large enough for touch */
-  input,
-  select,
-  textarea {
-    font-size: 16px !important; /* Prevent iOS zoom on focus */
-  }
-
-  /* Improve button touch targets */
-  button,
-  .button,
-  [role="button"] {
-    padding: 12px 16px;
+  /* Improve mobile carousel performance */
+  .carousel-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
 }
 
-/* Fix iOS input zoom issues */
-@media screen and (max-width: 767px) {
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"],
-  input[type="number"],
-  input[type="date"],
-  select,
-  textarea {
-    font-size: 16px !important;
+/* Loading states */
+.loading-spinner {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #5a5a56;
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
-/* Ensure logo is properly centered on mobile */
-@media (max-width: 767px) {
-  /* Sticky banner specific centering */
-  .fixed.top-0.left-0.right-0.z-50 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 
-  /* Ensure all links in the sticky banner are full width for proper centering */
-  .fixed.top-0.left-0.right-0.z-50 a {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-  }
-
-  /* Force center alignment for the logo */
-  .fixed.top-0.left-0.right-0.z-50 img,
-  .fixed.top-0.left-0.right-0.z-50 svg {
-    margin-left: auto;
-    margin-right: auto;
+  .arrow-icon {
+    transition: none;
   }
 }
 
-/* Fix for logo getting cut off in sticky banner */
-.fixed.top-0.left-0.right-0.z-50 {
-  contain: layout;
+/* Focus styles for better accessibility */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #5a5a56;
+  outline-offset: 2px;
 }
 
-/* Ensure logo is properly contained */
-@media (max-width: 767px) {
-  .fixed.top-0.left-0.right-0.z-50 img,
-  .fixed.top-0.left-0.right-0.z-50 svg {
-    max-height: 90%;
-    width: auto;
-    object-fit: contain;
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .text-[#5a5a56] {
+    color: #000000;
+  }
+
+  .bg-[#5a5a56] {
+    background-color: #000000;
   }
 }

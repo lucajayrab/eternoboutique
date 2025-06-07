@@ -10,32 +10,36 @@ import SlidingButton from "@/components/sliding-button"
 import NavigationMenu from "@/components/navigation-menu"
 import ProcessSteps from "@/components/process-steps"
 import EternoWorldCarousel from "@/components/eterno-world-carousel"
-import { useVideoBackground } from "@/hooks/use-video-background"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
 
-// Default fallback video URL
-const FALLBACK_VIDEO_URL =
+// Video URLs - using different quality for mobile
+const DESKTOP_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
+const MOBILE_VIDEO_URL =
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_HD-K76mJKem8ZBUjscwppFegs0RJxNhwO.mp4"
+const FALLBACK_IMAGE = "/images/hero.jpg"
 
 export default function HomePage() {
   const router = useRouter()
-  const { videoUrl, isLoading } = useVideoBackground()
   const [isMounted, setIsMounted] = useState(false)
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false)
   const [isVideoError, setIsVideoError] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [isArrowClicked, setIsArrowClicked] = useState(false)
-  const [hasTouched, setHasTouched] = useState(false)
+  const [videoAttempts, setVideoAttempts] = useState(0)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
   const aboutSectionRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  // Check if device is mobile - memoized for performance
+  // Check if device is mobile
   const checkMobile = useCallback(() => {
-    setIsMobile(window.innerWidth < 768)
+    const mobile = window.innerWidth < 768
+    setIsMobile(mobile)
+    return mobile
   }, [])
 
   // Initialize mobile detection
@@ -45,50 +49,94 @@ export default function HomePage() {
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
 
-  // Force video play on mobile devices and track touch for button visibility
-  useEffect(() => {
-    if (!isMobile) return
+  // Video loading and playback logic
+  const attemptVideoPlay = useCallback(async () => {
+    const video = videoRef.current
+    if (!video || isVideoError || videoAttempts > 3) return
 
-    // Function to attempt playing the video
-    const attemptPlay = () => {
-      const videoElements = document.querySelectorAll("video")
-      videoElements.forEach((video) => {
-        video.muted = true
-        const playPromise = video.play()
-        if (playPromise !== undefined) {
-          playPromise.catch(() => {
-            // Silent catch - we have multiple fallbacks
-          })
-        }
-      })
-    }
+    try {
+      // Set video properties for mobile optimization
+      video.muted = true
+      video.playsInline = true
+      video.autoplay = true
+      video.loop = true
+      video.preload = "auto"
 
-    // Try to play immediately
-    attemptPlay()
+      // Mobile-specific attributes
+      if (isMobile) {
+        video.setAttribute("playsinline", "")
+        video.setAttribute("webkit-playsinline", "")
+        video.setAttribute("x5-playsinline", "")
+      }
 
-    // Play on visibility change
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        attemptPlay()
+      // Load the appropriate video source immediately
+      const videoUrl = isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL
+      video.src = videoUrl
+      video.load()
+
+      // Attempt to play immediately
+      const playPromise = video.play()
+      if (playPromise !== undefined) {
+        await playPromise
+        setIsVideoLoaded(true)
+      }
+    } catch (error) {
+      console.warn("Video play attempt failed:", error)
+      setVideoAttempts((prev) => prev + 1)
+
+      // Retry with exponential backoff
+      if (videoAttempts < 3) {
+        setTimeout(attemptVideoPlay, 500 * Math.pow(2, videoAttempts))
+      } else {
+        setIsVideoError(true)
       }
     }
+  }, [isMobile, isVideoError, videoAttempts])
 
-    // Play on user interaction
-    const playOnInteraction = () => {
-      attemptPlay()
-      setHasTouched(true) // Set touch state to true when user interacts
+  // Initialize video on mount
+  useEffect(() => {
+    setIsMounted(true)
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      attemptVideoPlay()
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [attemptVideoPlay])
+
+  // Handle user interactions for mobile autoplay restrictions
+  useEffect(() => {
+    if (!isMobile || isVideoLoaded) return
+
+    const handleUserInteraction = () => {
+      attemptVideoPlay()
     }
 
-    document.addEventListener("visibilitychange", handleVisibilityChange)
-    document.addEventListener("touchstart", playOnInteraction)
-    document.addEventListener("touchend", playOnInteraction)
+    // Add event listeners for user interaction
+    const events = ["touchstart", "touchend", "click", "scroll"]
+    events.forEach((event) => {
+      document.addEventListener(event, handleUserInteraction, { once: true, passive: true })
+    })
 
     return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange)
-      document.removeEventListener("touchstart", playOnInteraction)
-      document.removeEventListener("touchend", playOnInteraction)
+      events.forEach((event) => {
+        document.removeEventListener(event, handleUserInteraction)
+      })
     }
-  }, [isMobile])
+  }, [isMobile, isVideoLoaded, attemptVideoPlay])
+
+  // Video event handlers
+  const handleVideoLoaded = useCallback(() => {
+    setIsVideoLoaded(true)
+    setIsVideoError(false)
+  }, [])
+
+  const handleVideoError = useCallback(() => {
+    console.error("Video failed to load")
+    setIsVideoError(true)
+    setIsVideoLoaded(false)
+  }, [])
 
   const handleScrollDown = useCallback(() => {
     setIsArrowClicked(true)
@@ -99,29 +147,14 @@ export default function HomePage() {
 
     if (!aboutSectionRef.current) return
 
-    if (isMobile) {
-      // For mobile, use the exact same positioning as the menu navigation
-      // to ensure consistent behavior
-      const stickyHeaderHeight = 70 // Height of sticky banner
-      const targetPosition = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
+    const stickyHeaderHeight = 70
+    const targetPosition = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
+    const scrollOffset = stickyHeaderHeight
 
-      // Use the same offset as the "From The Yarn" section in the menu navigation
-      // This ensures the sticky banner is positioned at the top of the section content
-      const scrollOffset = stickyHeaderHeight
-
-      // Scroll to position with proper offset
-      window.scrollTo({
-        top: targetPosition - scrollOffset,
-        behavior: "smooth",
-      })
-    } else {
-      // Desktop behavior remains unchanged
-      aboutSectionRef.current.scrollIntoView({ behavior: "smooth" })
-    }
-  }, [isMobile])
-
-  useEffect(() => {
-    setIsMounted(true)
+    window.scrollTo({
+      top: targetPosition - scrollOffset,
+      behavior: "smooth",
+    })
   }, [])
 
   if (!isMounted) {
@@ -135,37 +168,38 @@ export default function HomePage() {
 
       {/* HERO SECTION - Video Background */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black" id="home">
-        {/* Fallback background while video loads or if video fails */}
-        {(isLoading || !videoUrl) && (
-          <div
-            className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('/images/hero.jpg')", filter: "brightness(0.8)" }}
-          >
-            {isVideoError && <p className="text-white/50 text-sm">Video loading failed. Please check the video URL.</p>}
+        {/* Background Video - Always visible */}
+        <video
+          ref={videoRef}
+          muted
+          loop
+          playsInline
+          autoPlay
+          preload="auto"
+          disablePictureInPicture
+          disableRemotePlaybook
+          className="absolute inset-0 w-full h-full object-cover z-10"
+          style={{ objectFit: "cover", filter: "brightness(0.7)" }}
+          onLoadedData={handleVideoLoaded}
+          onCanPlay={handleVideoLoaded}
+          onError={handleVideoError}
+        >
+          <source src={isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+
+        {/* Only show loading on mobile if video hasn't loaded yet */}
+        {isMobile && !isVideoLoaded && !isVideoError && (
+          <div className="absolute inset-0 z-20 bg-black flex items-center justify-center">
+            <div className="text-white/70 text-center">
+              <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
+              <p className="text-sm">Loading...</p>
+            </div>
           </div>
         )}
 
-        {/* Background Video with optimized loading */}
-        {!isLoading && videoUrl && (
-          <video
-            ref={videoRef}
-            muted
-            loop
-            playsInline
-            autoPlay
-            preload="auto"
-            disablePictureInPicture
-            disableRemotePlayback
-            className="absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-700 opacity-100"
-            style={{ objectFit: "cover", filter: "brightness(0.8)" }}
-          >
-            <source src={videoUrl} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        )}
-
         {/* Down Arrow Button */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30">
           <button
             onClick={handleScrollDown}
             className={`arrow-container ${isArrowClicked ? "arrow-clicked" : ""} p-4 hover:bg-white/10 rounded-full transition-all duration-300`}
@@ -184,27 +218,25 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ROW 1: FROM THE YARN SECTION - Added extra padding with matching background */}
-      <div ref={aboutSectionRef} className="md:pt-0 pt-6 bg-[#f9f8f5]">
+      {/* Content Sections */}
+      <div ref={aboutSectionRef} className="bg-[#f9f8f5]">
         <FromTheYarnSection />
       </div>
 
-      {/* ROW 2: OUR COLLECTION SECTION - Added extra padding with matching background */}
-      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
+      <div className="bg-[#eeeeec]">
         <OurCollectionSection />
       </div>
 
-      {/* ROW 2.5: SHOP NOW SECTION - Replaces Style Combinations */}
-      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
+      <div className="bg-[#eeeeec]">
         <section className="w-full bg-[#eeeeec] py-12 sm:py-16 md:py-20" id="shop-now">
-          <div className="container mx-auto px-8 sm:px-12 md:px-16 lg:px-20 max-w-7xl">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
               <div className="mb-6">
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-2">COMPLETE THE LOOK</p>
                 <h2 className="font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] mb-4">
                   Explore Our Collection
                 </h2>
-                <p className="font-mulish font-light text-[#5a5a56]/80 text-xs sm:text-sm max-w-2xl mx-auto mb-8">
+                <p className="font-mulish font-light text-[#5a5a56]/80 text-sm sm:text-base max-w-2xl mx-auto mb-8">
                   Discover our curated selection of handcrafted linen pieces. Mix and match colors, add personal
                   touches, and create your perfect ensemble.
                 </p>
@@ -223,47 +255,43 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* ROW 3: BOUTIQUE LINEN TAILORING - Added extra padding with matching background */}
-      <div className="md:pt-0 pt-6 bg-[#f9f8f5]">
+      <div className="bg-[#f9f8f5]">
         <BoutiqueTailoringSection />
       </div>
 
-      {/* ROW 4: ETERNO MANIFESTO - Added extra padding with matching background */}
-      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
+      <div className="bg-[#eeeeec]">
         <EternoManifestoSection />
       </div>
 
-      {/* ROW 5: PROCESS STEPS */}
-      <div className="md:pt-0 pt-6 bg-[#f9f8f5]">
+      <div className="bg-[#f9f8f5]">
         <ProcessSteps />
       </div>
 
-      {/* ROW 6: ETERNO WORLD CAROUSEL */}
-      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
+      <div className="bg-[#eeeeec]">
         <EternoWorldCarousel />
       </div>
 
-      {/* FINAL CTA SECTION - Added extra padding with matching background */}
-      <div ref={contentRef} className="md:pt-0 pt-6 bg-eterno-sand">
-        <section className="w-full py-6 md:py-8 bg-eterno-sand border-t border-[#e0ddd2]">
+      {/* Footer */}
+      <div ref={contentRef} className="bg-eterno-sand">
+        <section className="w-full py-8 md:py-12 bg-eterno-sand border-t border-[#e0ddd2]">
           <div className="w-full px-4 sm:px-6 md:px-8">
-            <div className="max-w-xl mx-auto space-y-4 text-center">
-              <h2 className="font-mulish text-base sm:text-lg font-light tracking-widest uppercase text-[#5a5a56]">
+            <div className="max-w-xl mx-auto space-y-6 text-center">
+              <h2 className="font-mulish text-lg sm:text-xl font-light tracking-widest uppercase text-[#5a5a56]">
                 Contact Eterno
               </h2>
 
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <a
                   href="mailto:enquiries@eternotailoring.com"
-                  className="block text-sm sm:text-base font-mulish font-light text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
+                  className="block text-base sm:text-lg font-mulish font-light text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
                 >
                   enquiries@eternotailoring.com
                 </a>
 
-                <p className="text-xs sm:text-sm font-mulish text-[#5a5a56]/70">Clifford Street, London, W1S 4JY</p>
+                <p className="text-sm sm:text-base font-mulish text-[#5a5a56]/70">Clifford Street, London, W1S 4JY</p>
               </div>
 
-              <div className="pt-3 mt-4 border-t border-[#e0ddd2] text-[10px] text-[#5a5a56]/50 font-mulish">
+              <div className="pt-4 mt-6 border-t border-[#e0ddd2] text-xs text-[#5a5a56]/50 font-mulish">
                 © {new Date().getFullYear()} ETERNO. All rights reserved.
               </div>
             </div>
