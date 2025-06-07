@@ -8,7 +8,8 @@ import FromTheYarnSection from "@/components/from-the-yarn-section"
 import BoutiqueTailoringSection from "@/components/boutique-tailoring-section"
 import EternoManifestoSection from "@/components/eterno-manifesto-section"
 import OurCollectionSection from "@/components/our-collection-section"
-import StyleCombinationsSection from "@/components/style-combinations-section"
+import SlidingButton from "@/components/sliding-button"
+import DesktopNavigation from "@/components/desktop-navigation"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -146,6 +147,9 @@ export default function Home() {
       {/* Mobile Menu (only visible on mobile) */}
       <MobileMenu />
 
+      {/* Desktop Navigation (only visible on desktop) */}
+      <DesktopNavigation />
+
       {/* HERO SECTION - Video Background */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">
         {/* Fallback background while video loads or if video fails */}
@@ -251,9 +255,33 @@ export default function Home() {
         <OurCollectionSection />
       </div>
 
-      {/* ROW 2.5: STYLE COMBINATIONS SECTION - New section */}
+      {/* ROW 2.5: SHOP NOW SECTION - Replaces Style Combinations */}
       <div className="md:pt-0 pt-6 bg-[#eeeeec]">
-        <StyleCombinationsSection />
+        <section className="w-full bg-[#eeeeec] py-12 sm:py-16 md:py-20" id="shop-now">
+          <div className="container mx-auto px-8 sm:px-12 md:px-16 lg:px-20 max-w-7xl">
+            <div className="text-center">
+              <div className="mb-6">
+                <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-2">COMPLETE THE LOOK</p>
+                <h2 className="font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] mb-4">
+                  Explore Our Collection
+                </h2>
+                <p className="font-mulish font-light text-[#5a5a56]/80 text-xs sm:text-sm max-w-2xl mx-auto mb-8">
+                  Discover our curated selection of handcrafted linen pieces. Mix and match colors, add personal
+                  touches, and create your perfect ensemble.
+                </p>
+              </div>
+
+              <SlidingButton
+                onClick={() => router.push("/shop")}
+                variant="dark"
+                duration={1000}
+                className="px-8 py-4 text-sm"
+              >
+                SHOP NOW
+              </SlidingButton>
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* ROW 3: BOUTIQUE LINEN TAILORING - Added extra padding with matching background */}
