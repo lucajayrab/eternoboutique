@@ -4,22 +4,26 @@ import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-// Color swatches data - Updated with all 6 final shirt colors
+// Updated SHIRT_COLORS with new image paths
 const SHIRT_COLORS = [
-  { name: "White", color: "#f5f5f5", image: "/white-linen-shirt-final.png" },
-  { name: "Black", color: "#2a2a33", image: "/black-linen-shirt-final.png" },
-  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-shirt-final.png" },
-  { name: "Sky Blue", color: "#c9d7e8", image: "/sky-blue-linen-shirt-final.png" },
-  { name: "Pink", color: "#e7d0d3", image: "/pink-linen-shirt-updated.png" },
-  { name: "Sage", color: "#9ca594", image: "/sage-linen-shirt-final.png" },
+  { name: "White", color: "#f5f5f5", image: "/images/shirts/new-white-linen-shirt.png" },
+  { name: "Black", color: "#2a2a33", image: "/images/shirts/new-black-linen-shirt.png" },
+  { name: "Navy", color: "#2d2a3e", image: "/images/shirts/new-navy-linen-shirt.png" },
+  { name: "Sky Blue", color: "#c9d7e8", image: "/images/shirts/new-sky-blue-linen-shirt.png" },
+  { name: "Pink", color: "#e7d0d3", image: "/images/shirts/new-pink-linen-shirt.png" },
+  { name: "Sage", color: "#9ca594", image: "/images/shirts/new-sage-linen-shirt.png" },
 ]
 
+// TROUSER_COLORS remain unchanged
 const TROUSER_COLORS = [
   { name: "Natural", color: "#eae7d9", image: "/cream-linen-trousers-new.png" },
   { name: "White", color: "#f5f5f5", image: "/white-linen-trousers.png" },
   { name: "Navy", color: "#2d2a3e", image: "/navy-linen-trousers-new.png" },
   { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png" },
 ]
+
+const SHIRT_PRICE = 100 // Declare SHIRT_PRICE variable
+const TROUSER_PRICE = 120 // Declare TROUSER_PRICE variable
 
 export default function OurCollectionSection() {
   const [isMobile, setIsMobile] = useState(false)
@@ -28,101 +32,73 @@ export default function OurCollectionSection() {
   const [currentShirtIndex, setCurrentShirtIndex] = useState(0)
   const [currentTrouserIndex, setCurrentTrouserIndex] = useState(0)
   const [isShirtTransitioning, setIsShirtTransitioning] = useState(false)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [isTrouserTransitioning, setIsTrouserTransitioning] = useState(false) // Renamed for clarity
   const [shirtImageError, setShirtImageError] = useState(false)
   const [trouserImageError, setTrouserImageError] = useState(false)
 
-  // Check if device is mobile
   const checkMobile = useCallback(() => {
     setIsMobile(window.innerWidth < 768)
   }, [])
 
-  // Initialize mobile detection
   useEffect(() => {
     checkMobile()
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
 
-  // Reset image loaded state when shirt index changes
   useEffect(() => {
     setShirtImageLoaded(false)
     setShirtImageError(false)
   }, [currentShirtIndex])
 
-  // Reset image loaded state when trouser index changes
   useEffect(() => {
     setTrouserImageLoaded(false)
     setTrouserImageError(false)
   }, [currentTrouserIndex])
 
-  // Handle shirt navigation
   const navigateShirt = (direction: "next" | "prev") => {
     if (isShirtTransitioning) return
-
     setIsShirtTransitioning(true)
     setShirtImageLoaded(false)
     setShirtImageError(false)
-
     const totalShirts = SHIRT_COLORS.length
-
-    if (direction === "next") {
-      setCurrentShirtIndex((prev) => (prev + 1) % totalShirts)
-    } else {
-      setCurrentShirtIndex((prev) => (prev - 1 + totalShirts) % totalShirts)
-    }
-
-    // Reset transition state after animation completes
-    setTimeout(() => {
-      setIsShirtTransitioning(false)
-    }, 300)
+    setCurrentShirtIndex((prev) =>
+      direction === "next" ? (prev + 1) % totalShirts : (prev - 1 + totalShirts) % totalShirts,
+    )
+    setTimeout(() => setIsShirtTransitioning(false), 300)
   }
 
-  // Handle trouser navigation
   const navigateTrouser = (direction: "next" | "prev") => {
-    if (isTransitioning) return
-
-    setIsTransitioning(true)
+    if (isTrouserTransitioning) return
+    setIsTrouserTransitioning(true)
     setTrouserImageLoaded(false)
     setTrouserImageError(false)
-
     const totalTrousers = TROUSER_COLORS.length
-
-    if (direction === "next") {
-      setCurrentTrouserIndex((prev) => (prev + 1) % totalTrousers)
-    } else {
-      setCurrentTrouserIndex((prev) => (prev - 1 + totalTrousers) % totalTrousers)
-    }
-
-    // Reset transition state after animation completes
-    setTimeout(() => {
-      setIsTransitioning(false)
-    }, 300)
+    setCurrentTrouserIndex((prev) =>
+      direction === "next" ? (prev + 1) % totalTrousers : (prev - 1 + totalTrousers) % totalTrousers,
+    )
+    setTimeout(() => setIsTrouserTransitioning(false), 300)
   }
 
-  // Handle image loading errors with better error handling
   const handleShirtImageError = () => {
     console.warn(`Failed to load shirt image: ${SHIRT_COLORS[currentShirtIndex].image}`)
     setShirtImageError(true)
-    setShirtImageLoaded(true) // Set to true to stop loading spinner
+    setShirtImageLoaded(true)
   }
 
   const handleTrouserImageError = () => {
     console.warn(`Failed to load trouser image: ${TROUSER_COLORS[currentTrouserIndex].image}`)
     setTrouserImageError(true)
-    setTrouserImageLoaded(true) // Set to true to stop loading spinner
+    setTrouserImageLoaded(true)
   }
 
   return (
     <>
-      {/* SHIRT Row - Lighter background spanning full width */}
       <section className="w-full bg-[#eeeeec]" id="collection">
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
-            {/* Image Section - Left */}
             <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
               <div className="w-full h-full bg-[#eeeeec] flex items-center justify-center min-h-[400px] md:min-h-[500px] relative">
-                {/* Navigation arrows */}
                 <button
                   onClick={() => navigateShirt("prev")}
                   className="absolute left-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
@@ -130,7 +106,6 @@ export default function OurCollectionSection() {
                 >
                   <ChevronLeft className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
-
                 <button
                   onClick={() => navigateShirt("next")}
                   className="absolute right-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
@@ -138,10 +113,7 @@ export default function OurCollectionSection() {
                 >
                   <ChevronRight className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
-
-                {/* Image container */}
                 <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
-                  {/* Show image if loaded successfully and no error */}
                   {!shirtImageError && (
                     <div
                       className={`transition-opacity duration-300 ${shirtImageLoaded ? "opacity-100" : "opacity-0"}`}
@@ -158,8 +130,6 @@ export default function OurCollectionSection() {
                       />
                     </div>
                   )}
-
-                  {/* Error state - show placeholder */}
                   {shirtImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#eeeeec]">
                       <div className="text-center">
@@ -176,8 +146,6 @@ export default function OurCollectionSection() {
                       </div>
                     </div>
                   )}
-
-                  {/* Loading state */}
                   {!shirtImageLoaded && !shirtImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#eeeeec]">
                       <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
@@ -186,14 +154,11 @@ export default function OurCollectionSection() {
                 </div>
               </div>
             </div>
-
-            {/* Text Section - Right */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-16 items-start pt-8 md:pt-4 mt-0 md:mt-0">
               <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">SHIRT</h3>
               </div>
-
               <div
                 className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
               >
@@ -204,8 +169,6 @@ export default function OurCollectionSection() {
                   buttonholes complete each piece.
                 </p>
               </div>
-
-              {/* Colorways with active indicator */}
               <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 6 colorways:</p>
                 <div className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-start"}`}>
@@ -228,23 +191,18 @@ export default function OurCollectionSection() {
                     </div>
                   ))}
                 </div>
-
-                {/* Price */}
-                <p className="text-sm text-[#5a5a56] font-medium mt-4">£350</p>
+                <p className="text-sm text-[#5a5a56] font-medium mt-4">£{SHIRT_PRICE}</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* TROUSER Row - Darker background spanning full width */}
       <section className="w-full bg-[#f9f8f5]">
         <div className="w-full">
           <div className="flex flex-col md:flex-row-reverse gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
-            {/* Image Section - Right */}
             <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
               <div className="w-full h-full bg-[#f9f8f5] flex items-center justify-center min-h-[400px] md:min-h-[500px] relative">
-                {/* Navigation arrows */}
                 <button
                   onClick={() => navigateTrouser("prev")}
                   className="absolute left-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
@@ -252,7 +210,6 @@ export default function OurCollectionSection() {
                 >
                   <ChevronLeft className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
-
                 <button
                   onClick={() => navigateTrouser("next")}
                   className="absolute right-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
@@ -260,10 +217,7 @@ export default function OurCollectionSection() {
                 >
                   <ChevronRight className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
-
-                {/* Image container */}
                 <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
-                  {/* Show image if loaded successfully and no error */}
                   {!trouserImageError && (
                     <div
                       className={`transition-opacity duration-300 ${trouserImageLoaded ? "opacity-100" : "opacity-0"}`}
@@ -280,8 +234,6 @@ export default function OurCollectionSection() {
                       />
                     </div>
                   )}
-
-                  {/* Error state - show placeholder */}
                   {trouserImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#f9f8f5]">
                       <div className="text-center">
@@ -298,8 +250,6 @@ export default function OurCollectionSection() {
                       </div>
                     </div>
                   )}
-
-                  {/* Loading state */}
                   {!trouserImageLoaded && !trouserImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#f9f8f5]">
                       <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
@@ -308,14 +258,11 @@ export default function OurCollectionSection() {
                 </div>
               </div>
             </div>
-
-            {/* Text Section - Left */}
             <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-16 pt-8 md:pt-4 mt-0 md:mt-0">
               <div className={`space-y-1 ${isMobile ? "text-center w-full" : "text-center md:text-left"}`}>
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
                 <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base uppercase tracking-wider">TROUSER</h3>
               </div>
-
               <div
                 className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : ""}`}
               >
@@ -326,8 +273,6 @@ export default function OurCollectionSection() {
                   silhouette. Woven from the finest Italian linen and tailored in Italy.
                 </p>
               </div>
-
-              {/* Colorways with active indicator */}
               <div className={`mt-4 md:mt-6 max-w-[550px] ${isMobile ? "text-center mx-auto" : ""}`}>
                 <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 4 colorways:</p>
                 <div
@@ -339,12 +284,12 @@ export default function OurCollectionSection() {
                         className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border cursor-pointer transition-all duration-200 ${index === currentTrouserIndex ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20" : "border-[#ddd] hover:border-[#5a5a56]/50"}`}
                         style={{ backgroundColor: swatch.color }}
                         onClick={() => {
-                          if (!isTransitioning) {
-                            setIsTransitioning(true)
+                          if (!isTrouserTransitioning) {
+                            setIsTrouserTransitioning(true)
                             setTrouserImageLoaded(false)
                             setTrouserImageError(false)
                             setCurrentTrouserIndex(index)
-                            setTimeout(() => setIsTransitioning(false), 300)
+                            setTimeout(() => setIsTrouserTransitioning(false), 300)
                           }
                         }}
                       ></div>
@@ -352,9 +297,7 @@ export default function OurCollectionSection() {
                     </div>
                   ))}
                 </div>
-
-                {/* Price */}
-                <p className="text-sm text-[#5a5a56] font-medium mt-4 text-center md:text-left">£350</p>
+                <p className="text-sm text-[#5a5a56] font-medium mt-4 text-center md:text-left">£{TROUSER_PRICE}</p>
               </div>
             </div>
           </div>

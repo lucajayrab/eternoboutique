@@ -10,11 +10,6 @@ const config: Config = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        sans: ["var(--font-mulish)", "Helvetica Neue", "Arial", "sans-serif"],
-        mulish: ["var(--font-mulish)", "Helvetica Neue", "Arial", "sans-serif"],
-        serif: ["Georgia", "Times New Roman", "serif"],
-      },
       colors: {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
@@ -66,16 +61,7 @@ const config: Config = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
-        eterno: {
-          bg: "#e8e4d9", // Warm sand background
-          accent: "#a3195b", // From the SVG logo
-          text: "#231f20", // From the SVG logo
-          navy: "#1a2a3a", // Deep navy for CTAs
-          bronze: "#9c7a4d", // Matte bronze accent
-          charcoal: "#2c2c2c", // Soft black for text
-          sand: "#cec9b2", // Beige/sand color for sticky banner
-          gray: "#6D6D6D", // Medium gray for headers (matching the example)
-        },
+        "eterno-bg-light": "#fbfaf7",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -106,6 +92,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 export default config

@@ -3,35 +3,38 @@
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import StickyBanner from "@/components/sticky-banner"
-import MobileMenu from "@/components/main-menu"
-import DesktopNavigation from "@/components/desktop-navigation"
+import NavigationMenu from "@/components/navigation-menu"
 import SlidingButton from "@/components/sliding-button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // Product data
+const SHIRT_PRICE = 325
+const TROUSER_PRICE = 325
+const SET_PRICE = 600
+
 const SHIRT_COLORS = [
-  { name: "White", color: "#f5f5f5", image: "/white-linen-shirt-final.png", price: 350 },
-  { name: "Black", color: "#2a2a33", image: "/black-linen-shirt-final.png", price: 350 },
-  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-shirt-final.png", price: 350 },
-  { name: "Sky Blue", color: "#c9d7e8", image: "/sky-blue-linen-shirt-final.png", price: 350 },
-  { name: "Pink", color: "#e7d0d3", image: "/pink-linen-shirt-updated.png", price: 350 },
-  { name: "Sage", color: "#9ca594", image: "/sage-linen-shirt-final.png", price: 350 },
+  { name: "White", color: "#f5f5f5", image: "/images/shirts/new-white-linen-shirt.png", price: SHIRT_PRICE },
+  { name: "Black", color: "#2a2a33", image: "/images/shirts/new-black-linen-shirt.png", price: SHIRT_PRICE },
+  { name: "Navy", color: "#2d2a3e", image: "/images/shirts/new-navy-linen-shirt.png", price: SHIRT_PRICE },
+  { name: "Sky Blue", color: "#c9d7e8", image: "/images/shirts/new-sky-blue-linen-shirt.png", price: SHIRT_PRICE },
+  { name: "Pink", color: "#e7d0d3", image: "/images/shirts/new-pink-linen-shirt.png", price: SHIRT_PRICE },
+  { name: "Sage", color: "#9ca594", image: "/images/shirts/new-sage-linen-shirt.png", price: SHIRT_PRICE },
 ]
 
 const TROUSER_COLORS = [
-  { name: "Natural", color: "#eae7d9", image: "/cream-linen-trousers-new.png", price: 350 },
-  { name: "White", color: "#f5f5f5", image: "/white-linen-trousers.png", price: 350 },
-  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-trousers-new.png", price: 350 },
-  { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png", price: 350 },
+  { name: "Natural", color: "#eae7d9", image: "/cream-linen-trousers-new.png", price: TROUSER_PRICE },
+  { name: "White", color: "#f5f5f5", image: "/white-linen-trousers.png", price: TROUSER_PRICE },
+  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-trousers-new.png", price: TROUSER_PRICE },
+  { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png", price: TROUSER_PRICE },
 ]
 
 const SUGGESTED_COMBINATIONS = [
-  { shirt: 0, trouser: 0, name: "Classic Natural", price: 650 },
-  { shirt: 1, trouser: 1, name: "Monochrome", price: 650 },
-  { shirt: 2, trouser: 0, name: "Mediterranean", price: 650 },
-  { shirt: 3, trouser: 1, name: "Coastal", price: 650 },
-  { shirt: 4, trouser: 0, name: "Sunset", price: 650 },
-  { shirt: 5, trouser: 3, name: "Earth Tones", price: 650 },
+  { id: "combo-0", shirt: 0, trouser: 0, name: "Classic Natural", price: SET_PRICE },
+  { id: "combo-1", shirt: 1, trouser: 3, name: "Monochrome", price: SET_PRICE },
+  { id: "combo-2", shirt: 2, trouser: 0, name: "Mediterranean", price: SET_PRICE },
+  { id: "combo-3", shirt: 3, trouser: 1, name: "Coastal", price: SET_PRICE },
+  { id: "combo-4", shirt: 4, trouser: 0, name: "Sunset", price: SET_PRICE },
+  { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
 
 type ViewMode = "sets" | "shirts" | "trousers"
@@ -40,32 +43,40 @@ type CartItem = {
   shirtIndex?: number
   trouserIndex?: number
   setIndex?: number
+  customSetShirtIndex?: number
+  customSetTrouserIndex?: number
   quantity: number
 }
 
-// Carousel Component
-function ProductCarousel({ products, type }: { products: any[]; type: "shirt" | "trouser" }) {
+interface ProductCarouselProps {
+  products: any[]
+  type: "shirt" | "trouser"
+  onAddToCart: (type: "shirt" | "trouser", index: number) => void
+}
+
+function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) {
   const router = useRouter()
-  const [currentIndex, setCurrentIndex] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(products.length >= 3 ? 1 : 0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const carouselRef = useRef<HTMLDivElement>(null)
 
-  const ITEM_WIDTH_CENTER = 400
-  const ITEM_HEIGHT_CENTER = 533
-  const ITEM_WIDTH_SIDE = 300
-  const ITEM_HEIGHT_SIDE = 400
-  const ITEM_GAP = 32
+  // Increased dimensions for better visibility
+  const ITEM_WIDTH_CENTER = 500
+  const ITEM_HEIGHT_CENTER = 667
+  const ITEM_WIDTH_SIDE = 400 // Increased from 375 for better visibility
+  const ITEM_HEIGHT_SIDE = 533 // Increased proportionally
+  const ITEM_GAP = 40 // Increased gap for better spacing
+  const TRANSITION_DURATION = 600
+  const SMOOTH_EASING = "cubic-bezier(0.645, 0.045, 0.355, 1)"
 
-  // Auto-rotate carousel
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isTransitioning) {
         setIsTransitioning(true)
         setCurrentIndex((prev) => (prev + 1) % products.length)
-        setTimeout(() => setIsTransitioning(false), 600)
+        setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION)
       }
-    }, 3500)
-
+    }, 4000) // Slightly longer interval
     return () => clearInterval(interval)
   }, [products.length, isTransitioning])
 
@@ -76,7 +87,7 @@ function ProductCarousel({ products, type }: { products: any[]; type: "shirt" | 
       if (!isTransitioning) {
         setIsTransitioning(true)
         setCurrentIndex(index)
-        setTimeout(() => setIsTransitioning(false), 600)
+        setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION)
       }
     }
   }
@@ -85,32 +96,39 @@ function ProductCarousel({ products, type }: { products: any[]; type: "shirt" | 
     if (!isTransitioning) {
       setIsTransitioning(true)
       setCurrentIndex(newIndex)
-      setTimeout(() => setIsTransitioning(false), 600)
+      setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION)
     }
   }
 
   const calculateOffset = () => {
     if (!carouselRef.current) return 0
     const containerWidth = carouselRef.current.offsetWidth
+    let offsetToCenterOfCurrentItem = 0
 
-    let offset = 0
+    // Calculate offset to center the current item
     for (let i = 0; i < currentIndex; i++) {
-      offset += ITEM_WIDTH_SIDE + ITEM_GAP
+      offsetToCenterOfCurrentItem += ITEM_WIDTH_SIDE + ITEM_GAP
     }
-    offset += (ITEM_WIDTH_CENTER + ITEM_GAP) / 2
-    return containerWidth / 2 - offset
+    offsetToCenterOfCurrentItem += ITEM_WIDTH_CENTER / 2
+
+    return containerWidth / 2 - offsetToCenterOfCurrentItem
   }
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto py-12 overflow-hidden" ref={carouselRef}>
+    <div className="relative w-full max-w-7xl mx-auto py-12 overflow-hidden" ref={carouselRef}>
       <div
-        className="flex items-center transition-transform duration-500 ease-in-out"
-        style={{ transform: `translateX(${calculateOffset()}px)` }}
+        className="flex items-center"
+        style={{
+          transform: `translateX(${calculateOffset()}px)`,
+          transitionProperty: "transform",
+          transitionDuration: `${TRANSITION_DURATION}ms`,
+          transitionTimingFunction: SMOOTH_EASING,
+        }}
       >
         {products.map((product, index) => {
           const isCenter = index === currentIndex
-          const scale = isCenter ? "scale-100" : "scale-75"
-          const opacity = isCenter ? "opacity-100" : "opacity-40"
+          const scale = isCenter ? "scale-100" : "scale-90" // Less dramatic scaling
+          const opacity = isCenter ? "opacity-100" : "opacity-80" // Higher opacity for side items
           const zIndex = isCenter ? "z-20" : "z-10"
           const itemWidth = isCenter ? ITEM_WIDTH_CENTER : ITEM_WIDTH_SIDE
           const itemHeight = isCenter ? ITEM_HEIGHT_CENTER : ITEM_HEIGHT_SIDE
@@ -118,7 +136,7 @@ function ProductCarousel({ products, type }: { products: any[]; type: "shirt" | 
           return (
             <div
               key={product.image}
-              className={`relative flex-shrink-0 transition-all duration-500 ease-in-out transform cursor-pointer flex items-center justify-center`}
+              className={`relative flex-shrink-0 transform cursor-pointer flex items-center justify-center`}
               style={{
                 width: `${itemWidth}px`,
                 height: `${itemHeight}px`,
@@ -126,16 +144,19 @@ function ProductCarousel({ products, type }: { products: any[]; type: "shirt" | 
                 transform: `${scale}`,
                 opacity: opacity,
                 zIndex: zIndex,
+                transitionProperty: "transform, opacity",
+                transitionDuration: `${TRANSITION_DURATION}ms`,
+                transitionTimingFunction: SMOOTH_EASING,
               }}
               onClick={() => handleProductClick(index)}
             >
-              <div className={`relative w-full h-full`}>
+              <div className="relative w-full h-full">
                 <Image
                   src={product.image || `/placeholder.svg?width=${itemWidth}&height=${itemHeight}&query=linen+product`}
                   alt={`${product.name} Linen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
                   fill
                   style={{ objectFit: "contain" }}
-                  className="transition-transform duration-300 group-hover:scale-105"
+                  className="transition-transform duration-300 hover:scale-105"
                   priority={isCenter}
                   sizes={`(max-width: 768px) 100vw, ${itemWidth}px`}
                 />
@@ -145,8 +166,8 @@ function ProductCarousel({ products, type }: { products: any[]; type: "shirt" | 
         })}
       </div>
 
-      {/* Carousel Indicators */}
-      <div className="flex justify-center space-x-2 mt-12">
+      {/* Pagination dots */}
+      <div className="flex justify-center space-x-2 mt-8 md:mt-12">
         {products.map((_, index) => (
           <button
             key={index}
@@ -158,37 +179,18 @@ function ProductCarousel({ products, type }: { products: any[]; type: "shirt" | 
           />
         ))}
       </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={() => changeSlide((currentIndex - 1 + products.length) % products.length)}
-        className="absolute left-0 md:-left-4 top-1/2 -translate-y-1/2 transform bg-white/70 hover:bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-all duration-200 z-30"
-        aria-label="Previous slide"
-      >
-        <svg className="w-7 h-7 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button
-        onClick={() => changeSlide((currentIndex + 1) % products.length)}
-        className="absolute right-0 md:-right-4 top-1/2 -translate-y-1/2 transform bg-white/70 hover:bg-white rounded-full p-3 shadow-md hover:shadow-lg transition-all duration-200 z-30"
-        aria-label="Next slide"
-      >
-        <svg className="w-7 h-7 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
     </div>
   )
 }
 
 export default function ShopPage() {
   const router = useRouter()
-  const [viewMode, setViewMode] = useState<ViewMode>("sets")
+  const [activeTab, setActiveTab] = useState<ViewMode>("shirts")
+  const [viewMode, setViewMode] = useState<ViewMode>("shirts")
   const [cart, setCart] = useState<CartItem[]>([])
   const [selectedShirt, setSelectedShirt] = useState(0)
-  const [selectedTrouser, setSelectedTrouser] = useState(0)
-  const [activeTab, setActiveTab] = useState<ViewMode>("sets")
+  const [selectedTrouser, setSelectedTrouser] = useState(3)
+  const [selectedCombinationId, setSelectedCombinationId] = useState<string>("")
 
   useEffect(() => {
     const savedCart = localStorage.getItem("eternoCart")
@@ -199,45 +201,98 @@ export default function ShopPage() {
         console.error("Failed to parse saved cart", e)
       }
     }
+    const initialCombo = SUGGESTED_COMBINATIONS.find((c) => c.shirt === selectedShirt && c.trouser === selectedTrouser)
+    if (initialCombo) {
+      setSelectedCombinationId(initialCombo.id)
+    }
   }, [])
 
   useEffect(() => {
     localStorage.setItem("eternoCart", JSON.stringify(cart))
   }, [cart])
 
-  const addToCart = (item: CartItem) => {
-    setCart((prev) => {
-      const existingIndex = prev.findIndex(
-        (cartItem) =>
-          cartItem.type === item.type &&
-          cartItem.shirtIndex === item.shirtIndex &&
-          cartItem.trouserIndex === item.trouserIndex &&
-          cartItem.setIndex === item.setIndex,
-      )
+  const handleSuggestedCombinationChange = (comboId: string) => {
+    const combination = SUGGESTED_COMBINATIONS.find((c) => c.id === comboId)
+    if (combination) {
+      setSelectedShirt(combination.shirt)
+      setSelectedTrouser(combination.trouser)
+      setSelectedCombinationId(comboId)
+    } else {
+      setSelectedCombinationId("")
+    }
+  }
 
-      if (existingIndex >= 0) {
-        const newCart = [...prev]
-        newCart[existingIndex].quantity += 1
-        return newCart
+  const addItemToCart = (itemToAdd: CartItem) => {
+    setCart((prevCart) => {
+      let existingItemIndex = -1
+      if (itemToAdd.type === "set") {
+        if (itemToAdd.setIndex !== undefined) {
+          existingItemIndex = prevCart.findIndex((item) => item.type === "set" && item.setIndex === itemToAdd.setIndex)
+        } else {
+          existingItemIndex = prevCart.findIndex(
+            (item) =>
+              item.type === "set" &&
+              item.customSetShirtIndex === itemToAdd.customSetShirtIndex &&
+              item.customSetTrouserIndex === itemToAdd.customSetTrouserIndex,
+          )
+        }
+      } else if (itemToAdd.type === "shirt") {
+        existingItemIndex = prevCart.findIndex(
+          (item) => item.type === "shirt" && item.shirtIndex === itemToAdd.shirtIndex,
+        )
+      } else if (itemToAdd.type === "trouser") {
+        existingItemIndex = prevCart.findIndex(
+          (item) => item.type === "trouser" && item.trouserIndex === itemToAdd.trouserIndex,
+        )
+      }
+
+      if (existingItemIndex !== -1) {
+        const updatedCart = [...prevCart]
+        updatedCart[existingItemIndex].quantity += 1
+        return updatedCart
       } else {
-        return [...prev, item]
+        return [...prevCart, { ...itemToAdd, quantity: 1 }]
       }
     })
   }
 
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0)
+  const addSetFromPanelToCart = () => {
+    const matchedSuggestedCombo = SUGGESTED_COMBINATIONS.find(
+      (combo) => combo.shirt === selectedShirt && combo.trouser === selectedTrouser,
+    )
+    let itemToAdd: CartItem
+    if (matchedSuggestedCombo) {
+      const setIndex = SUGGESTED_COMBINATIONS.findIndex((c) => c.id === matchedSuggestedCombo.id)
+      itemToAdd = { type: "set", setIndex, quantity: 1 }
+    } else {
+      itemToAdd = {
+        type: "set",
+        customSetShirtIndex: selectedShirt,
+        customSetTrouserIndex: selectedTrouser,
+        quantity: 1,
+      }
+    }
+    addItemToCart(itemToAdd)
   }
+
+  const addIndividualItemToCart = (type: "shirt" | "trouser", index: number) => {
+    const itemToAdd: CartItem = { type, quantity: 1 }
+    if (type === "shirt") itemToAdd.shirtIndex = index
+    if (type === "trouser") itemToAdd.trouserIndex = index
+    addItemToCart(itemToAdd)
+  }
+
+  const getTotalItems = () => cart.reduce((total, item) => total + item.quantity, 0)
 
   const getTotalPrice = () => {
     return cart.reduce((total, item) => {
       let itemPrice = 0
-      if (item.type === "shirt") {
-        itemPrice = SHIRT_COLORS[item.shirtIndex!].price
-      } else if (item.type === "trouser") {
-        itemPrice = TROUSER_COLORS[item.trouserIndex!].price
+      if (item.type === "shirt" && item.shirtIndex !== undefined) {
+        itemPrice = SHIRT_COLORS[item.shirtIndex].price
+      } else if (item.type === "trouser" && item.trouserIndex !== undefined) {
+        itemPrice = TROUSER_COLORS[item.trouserIndex].price
       } else if (item.type === "set") {
-        itemPrice = SUGGESTED_COMBINATIONS[item.setIndex!].price
+        itemPrice = SET_PRICE
       }
       return total + itemPrice * item.quantity
     }, 0)
@@ -253,105 +308,57 @@ export default function ShopPage() {
     setViewMode(tab)
   }
 
-  const addCustomSetToCart = () => {
-    addToCart({
-      type: "set",
-      shirtIndex: selectedShirt,
-      trouserIndex: selectedTrouser,
-      quantity: 1,
-    })
-  }
-
-  const selectSuggestedCombination = (combo: (typeof SUGGESTED_COMBINATIONS)[0]) => {
-    setSelectedShirt(combo.shirt)
-    setSelectedTrouser(combo.trouser)
-  }
-
   return (
-    <div className="min-h-screen bg-white">
-      {/* Sticky Banner */}
-      <StickyBanner logoWidth="45mm" />
-
-      {/* Mobile Menu */}
-      <MobileMenu />
-
-      {/* Desktop Navigation */}
-      <DesktopNavigation />
-
-      {/* Main Content */}
+    <div className="min-h-screen bg-white font-mulish">
+      <NavigationMenu logoWidth="45mm" />
       <div className="pt-[70px]">
         <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-16 max-w-full py-12">
-          {/* Header */}
           <div className="text-center mb-12">
-            <h1 className="font-mulish text-2xl md:text-3xl font-light tracking-widest uppercase text-[#5a5a56] mb-4">
-              Eterno Collection
+            <h1 className="text-lg sm:text-xl md:text-2xl font-light tracking-[0.15em] uppercase text-[#5a5a56] mb-4">
+              COLLECTION
             </h1>
-            <p className="font-mulish font-light text-[#5a5a56]/80 text-sm md:text-base max-w-2xl mx-auto">
+            <p className="font-light text-[#5a5a56]/80 text-sm md:text-base max-w-2xl mx-auto">
               Handcrafted Italian linen pieces designed for the modern gentleman. Each piece tells a story of timeless
               elegance.
             </p>
           </div>
-
-          {/* View Mode Selector */}
           <div className="flex justify-center mb-12">
             <div className="border-b border-[#5a5a56]/20 flex space-x-4 md:space-x-8">
-              <button
-                onClick={() => handleTabChange("sets")}
-                className={`px-3 md:px-4 py-3 text-xs md:text-sm uppercase tracking-wider transition-all duration-300 relative ${
-                  activeTab === "sets" ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
-                }`}
-              >
-                Complete Sets
-                {activeTab === "sets" && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5a5a56] transform -translate-y-px"></span>
-                )}
-              </button>
-              <button
-                onClick={() => handleTabChange("shirts")}
-                className={`px-3 md:px-4 py-3 text-xs md:text-sm uppercase tracking-wider transition-all duration-300 relative ${
-                  activeTab === "shirts" ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
-                }`}
-              >
-                Shirts
-                {activeTab === "shirts" && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5a5a56] transform -translate-y-px"></span>
-                )}
-              </button>
-              <button
-                onClick={() => handleTabChange("trousers")}
-                className={`px-3 md:px-4 py-3 text-xs md:text-sm uppercase tracking-wider transition-all duration-300 relative ${
-                  activeTab === "trousers" ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
-                }`}
-              >
-                Trousers
-                {activeTab === "trousers" && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5a5a56] transform -translate-y-px"></span>
-                )}
-              </button>
+              {["shirts", "trousers", "sets"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => handleTabChange(tab as ViewMode)}
+                  className={`px-3 md:px-4 py-3 text-xs md:text-sm font-light uppercase tracking-wider transition-colors duration-300 relative ${
+                    activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
+                  }`}
+                >
+                  {tab}
+                  {activeTab === tab && (
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5a5a56] transform -translate-y-px"></span>
+                  )}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Complete Sets View with Interactive Customizer */}
           {viewMode === "sets" && (
             <div className="mb-16 max-w-7xl mx-auto px-4">
-              <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 shadow-sm overflow-hidden mb-12">
-                <div className="p-6 border-b border-[#5a5a56]/10">
-                  <h3 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56]">
-                    Create Your Custom Set
-                  </h3>
+              <div className="bg-white shadow-sm overflow-hidden">
+                <div className="p-6 md:p-8 border-b border-[#5a5a56]/10">
+                  <h3 className="font-light text-xl tracking-[0.1em] uppercase text-[#5a5a56]">Create Your Set</h3>
                 </div>
-
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
-                  {/* Main Preview */}
-                  <div className="col-span-2 bg-[#f9f8f5] p-6">
-                    <div className="aspect-[4/3] relative bg-[#f9f8f5] border border-[#5a5a56]/10">
-                      <div className="grid grid-cols-2 h-full">
+                  <div className="lg:col-span-2 p-6 md:p-8 flex items-center justify-center">
+                    <div className="aspect-[4/3] relative w-full max-w-3xl">
+                      <div className="grid grid-cols-2 h-full gap-2">
                         <div className="relative">
                           <Image
                             src={SHIRT_COLORS[selectedShirt].image || "/placeholder.svg"}
                             alt={`${SHIRT_COLORS[selectedShirt].name} Shirt`}
                             fill
                             style={{ objectFit: "contain" }}
+                            priority
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 30vw"
                           />
                         </div>
                         <div className="relative">
@@ -360,174 +367,140 @@ export default function ShopPage() {
                             alt={`${TROUSER_COLORS[selectedTrouser].name} Trousers`}
                             fill
                             style={{ objectFit: "contain" }}
+                            priority
+                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 30vw"
                           />
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Selection Controls */}
-                  <div className="bg-white p-6 flex flex-col">
-                    {/* Shirt Selection */}
-                    <div className="mb-6">
-                      <h4 className="font-mulish text-sm uppercase tracking-wider text-[#5a5a56]/80 mb-3">
-                        Select Shirt Color
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {SHIRT_COLORS.map((shirt, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setSelectedShirt(index)}
-                            className={`w-8 h-8 rounded-full transition-all duration-200 ${
-                              selectedShirt === index
-                                ? "ring-2 ring-offset-2 ring-[#5a5a56] scale-110"
-                                : "hover:scale-105"
-                            }`}
-                            style={{ backgroundColor: shirt.color }}
-                            aria-label={`${shirt.name} shirt color`}
-                          />
-                        ))}
+                  <div className="lg:border-l lg:border-[#5a5a56]/10 flex flex-col">
+                    <div className="p-6 md:p-8 space-y-6">
+                      <div>
+                        <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-3">
+                          Select Shirt:{" "}
+                          <span className="font-normal text-[#5a5a56]">{SHIRT_COLORS[selectedShirt].name}</span>
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {SHIRT_COLORS.map((shirt, index) => (
+                            <button
+                              key={shirt.name}
+                              onClick={() => {
+                                setSelectedShirt(index)
+                                const csId =
+                                  SUGGESTED_COMBINATIONS.find((c) => c.shirt === index && c.trouser === selectedTrouser)
+                                    ?.id || ""
+                                setSelectedCombinationId(csId)
+                              }}
+                              className={`w-8 h-8 rounded-full transition-all duration-200 border-2 ${
+                                selectedShirt === index
+                                  ? "ring-2 ring-offset-1 ring-[#5a5a56] border-transparent"
+                                  : "border-gray-300/70 hover:border-[#5a5a56]/50"
+                              }`}
+                              style={{ backgroundColor: shirt.color }}
+                              aria-label={`${shirt.name} shirt color`}
+                            />
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-sm text-[#5a5a56] mt-2">{SHIRT_COLORS[selectedShirt].name} Shirt</p>
-                    </div>
-
-                    {/* Trouser Selection */}
-                    <div className="mb-6">
-                      <h4 className="font-mulish text-sm uppercase tracking-wider text-[#5a5a56]/80 mb-3">
-                        Select Trouser Color
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {TROUSER_COLORS.map((trouser, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setSelectedTrouser(index)}
-                            className={`w-8 h-8 rounded-full transition-all duration-200 ${
-                              selectedTrouser === index
-                                ? "ring-2 ring-offset-2 ring-[#5a5a56] scale-110"
-                                : "hover:scale-105"
-                            }`}
-                            style={{ backgroundColor: trouser.color }}
-                            aria-label={`${trouser.name} trouser color`}
-                          />
-                        ))}
+                      <div>
+                        <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-3">
+                          Select Trouser:{" "}
+                          <span className="font-normal text-[#5a5a56]">{TROUSER_COLORS[selectedTrouser].name}</span>
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {TROUSER_COLORS.map((trouser, index) => (
+                            <button
+                              key={trouser.name}
+                              onClick={() => {
+                                setSelectedTrouser(index)
+                                const csId =
+                                  SUGGESTED_COMBINATIONS.find((c) => c.shirt === selectedShirt && c.trouser === index)
+                                    ?.id || ""
+                                setSelectedCombinationId(csId)
+                              }}
+                              className={`w-8 h-8 rounded-full transition-all duration-200 border-2 ${
+                                selectedTrouser === index
+                                  ? "ring-2 ring-offset-1 ring-[#5a5a56] border-transparent"
+                                  : "border-gray-300/70 hover:border-[#5a5a56]/50"
+                              }`}
+                              style={{ backgroundColor: trouser.color }}
+                              aria-label={`${trouser.name} trouser color`}
+                            />
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-sm text-[#5a5a56] mt-2">{TROUSER_COLORS[selectedTrouser].name} Trousers</p>
                     </div>
-
-                    {/* Price and Add to Cart */}
-                    <div className="mt-auto">
+                    <div className="p-6 md:p-8 border-t border-[#5a5a56]/10">
+                      <label
+                        htmlFor="suggested-set-select"
+                        className="block font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-3"
+                      >
+                        Or Start with a Suggested Set:
+                      </label>
+                      <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
+                        <SelectTrigger
+                          id="suggested-set-select"
+                          className="w-full bg-transparent border-gray-300/70 text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 rounded-none"
+                        >
+                          <SelectValue placeholder="Select a combination..." className="font-light" />
+                        </SelectTrigger>
+                        <SelectContent className="font-mulish rounded-none">
+                          {SUGGESTED_COMBINATIONS.map((combo) => (
+                            <SelectItem key={combo.id} value={combo.id} className="font-light text-sm">
+                              {combo.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="p-6 md:p-8 border-t border-[#5a5a56]/10 mt-auto">
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-[#5a5a56]">Total Price</span>
-                        <span className="text-lg font-medium text-[#5a5a56]">£650</span>
+                        <span className="font-light text-sm text-[#5a5a56]">Total Price</span>
+                        <span className="text-lg font-medium text-[#5a5a56]">£{SET_PRICE}</span>
                       </div>
                       <SlidingButton
-                        onClick={addCustomSetToCart}
+                        onClick={addSetFromPanelToCart}
                         variant="dark"
                         duration={800}
-                        className="w-full py-3 text-sm"
+                        className="w-full py-3 text-sm font-light tracking-wider"
                       >
                         Add to Cart
                       </SlidingButton>
+                      <p className="text-xs text-[#5a5a56]/70 mt-2 text-center font-light">
+                        {SHIRT_COLORS[selectedShirt].name} Shirt &amp; {TROUSER_COLORS[selectedTrouser].name} Trousers
+                      </p>
                     </div>
                   </div>
                 </div>
               </div>
-
-              {/* Suggested Combinations */}
-              <h3 className="font-mulish text-xl font-light tracking-wider uppercase text-[#5a5a56] mb-6 text-center">
-                Suggested Combinations
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                {SUGGESTED_COMBINATIONS.map((combo, index) => (
-                  <div key={index} className="bg-[#f9f8f5] border border-[#5a5a56]/10 shadow-sm overflow-hidden group">
-                    <div className="aspect-square bg-[#f9f8f5] relative border-b border-[#5a5a56]/10">
-                      <div className="grid grid-cols-2 h-full">
-                        <div className="relative">
-                          <Image
-                            src={SHIRT_COLORS[combo.shirt].image || "/placeholder.svg"}
-                            alt={`${SHIRT_COLORS[combo.shirt].name} Shirt`}
-                            fill
-                            style={{ objectFit: "contain" }}
-                          />
-                        </div>
-                        <div className="relative">
-                          <Image
-                            src={TROUSER_COLORS[combo.trouser].image || "/placeholder.svg"}
-                            alt={`${TROUSER_COLORS[combo.trouser].name} Trousers`}
-                            fill
-                            style={{ objectFit: "contain" }}
-                          />
-                        </div>
-                      </div>
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
-                        <button
-                          onClick={() => selectSuggestedCombination(combo)}
-                          className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-md text-sm uppercase tracking-wider text-[#5a5a56] hover:bg-white transition-all duration-200"
-                        >
-                          Try This Combination
-                        </button>
-                      </div>
-                    </div>
-                    <div className="p-6 bg-white">
-                      <h3 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-2">
-                        {combo.name}
-                      </h3>
-                      <p className="text-sm text-[#5a5a56]/70 mb-4">
-                        {SHIRT_COLORS[combo.shirt].name} Shirt + {TROUSER_COLORS[combo.trouser].name} Trousers
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-medium text-[#5a5a56]">£{combo.price}</span>
-                        <SlidingButton
-                          onClick={() => addToCart({ type: "set", setIndex: index, quantity: 1 })}
-                          variant="dark"
-                          duration={600}
-                          className="px-4 py-2 text-xs"
-                        >
-                          Add to Cart
-                        </SlidingButton>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           )}
 
-          {/* Shirts Carousel */}
           {viewMode === "shirts" && (
             <div className="mb-16">
-              <h3 className="font-mulish text-xl font-light tracking-wider uppercase text-[#5a5a56] mb-2 md:mb-8 text-center">
-                Our Shirt Collection
-              </h3>
-              <ProductCarousel products={SHIRT_COLORS} type="shirt" />
+              <ProductCarousel products={SHIRT_COLORS} type="shirt" onAddToCart={addIndividualItemToCart} />
             </div>
           )}
-
-          {/* Trousers Carousel */}
           {viewMode === "trousers" && (
             <div className="mb-16">
-              <h3 className="font-mulish text-xl font-light tracking-wider uppercase text-[#5a5a56] mb-2 md:mb-8 text-center">
-                Our Trouser Collection
-              </h3>
-              <ProductCarousel products={TROUSER_COLORS} type="trouser" />
+              <ProductCarousel products={TROUSER_COLORS} type="trouser" onAddToCart={addIndividualItemToCart} />
             </div>
           )}
 
-          {/* Cart Summary */}
           {cart.length > 0 && (
-            <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 shadow-sm p-6 mb-8 max-w-7xl mx-auto px-4">
-              <h3 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-4">
-                Cart Summary
-              </h3>
+            <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 shadow-sm p-6 md:p-8 mb-8 max-w-7xl mx-auto">
+              <h3 className="font-light text-lg tracking-[0.1em] uppercase text-[#5a5a56] mb-4">Cart Summary</h3>
               <div className="flex items-center justify-between mb-4">
-                <span className="text-[#5a5a56]">{getTotalItems()} item(s)</span>
+                <span className="font-light text-sm text-[#5a5a56]">{getTotalItems()} item(s)</span>
                 <span className="text-lg font-medium text-[#5a5a56]">£{getTotalPrice()}</span>
               </div>
               <SlidingButton
                 onClick={proceedToCustomization}
                 variant="dark"
                 duration={800}
-                className="w-full py-3 text-sm"
+                className="w-full py-3 text-sm font-light tracking-wider"
               >
                 Proceed to Customization
               </SlidingButton>

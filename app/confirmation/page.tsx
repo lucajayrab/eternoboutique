@@ -3,7 +3,9 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import EternoLogo from "@/components/eterno-logo"
 import MobileMenu from "@/components/main-menu"
+import SlidingButton from "@/components/sliding-button"
 import { useIsMobile } from "@/hooks/use-mobile"
+import { useRouter } from "next/navigation"
 
 // Constants
 const LOGO_SIZE = "45mm"
@@ -19,6 +21,8 @@ export default function ConfirmationPage() {
   const [videoAttempts, setVideoAttempts] = useState(0)
   const [fallbackActive, setFallbackActive] = useState(false)
   const [videoPlaying, setVideoPlaying] = useState(false)
+  const router = useRouter()
+  const [countdown, setCountdown] = useState(10)
 
   const videoRef = useRef<HTMLVideoElement>(null)
   const attemptTimersRef = useRef<NodeJS.Timeout[]>([])
@@ -139,6 +143,7 @@ export default function ConfirmationPage() {
     return () => {
       // Clean up all timers
       attemptTimersRef.current.forEach((timer) => clearTimeout(timer))
+      clearTimeout(messageTimer)
     }
   }, [forceVideoPlay, isMobile])
 
@@ -233,6 +238,20 @@ export default function ConfirmationPage() {
     }
   }, [forceVideoPlay, isMobile])
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          router.push("/")
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [router])
+
   return (
     <main
       className="relative flex min-h-screen flex-col items-center justify-center p-4 bg-black text-white overflow-hidden"
@@ -286,13 +305,34 @@ export default function ConfirmationPage() {
           <EternoLogo width={LOGO_SIZE} inverted={true} className="mx-auto mb-8" />
         </div>
 
-        <p
-          className={`font-mulish text-white text-base font-light leading-relaxed tracking-wide transition-all duration-500 ease-out ${
-            showMessage ? "opacity-100 transform-none" : "opacity-0 translate-y-8"
-          }`}
-        >
-          We'll be in touch when the time is right
-        </p>
+        <div className="pt-[70px]">
+          <div className="min-h-[calc(100vh-70px)] flex items-center justify-center px-4">
+            <div className="max-w-2xl mx-auto text-center space-y-8">
+              <div className="space-y-4">
+                <h1 className="text-3xl md:text-4xl font-light tracking-[0.1em] uppercase text-[#5a5a56]">Thank You</h1>
+                <p className="text-lg md:text-xl font-light text-[#5a5a56]/80 leading-relaxed">
+                  Your enquiry has been successfully submitted. We will be in touch with you shortly to discuss your
+                  bespoke tailoring requirements.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <p className="text-sm font-light text-[#5a5a56]/60">
+                  Redirecting to homepage in {countdown} seconds...
+                </p>
+
+                <SlidingButton
+                  onClick={() => router.push("/")}
+                  variant="dark"
+                  duration={800}
+                  className="px-8 py-3 text-sm font-light tracking-wider"
+                >
+                  Return to Homepage
+                </SlidingButton>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   )

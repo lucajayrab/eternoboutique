@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import NavigationMenu from "@/components/navigation-menu"
 import SectionedRegistrationForm from "@/components/sectioned-registration-form"
 import StickyBanner from "@/components/sticky-banner"
 import MobileMenu from "@/components/main-menu"
@@ -27,24 +28,21 @@ export default function RegisterPage() {
   }, [])
 
   return (
-    <>
+    <div className="min-h-screen bg-white">
       {/* Sticky Banner for all devices */}
       <StickyBanner logoWidth={LOGO_SIZE} alwaysVisible={true} />
 
       {/* Mobile Menu - only visible on mobile */}
       <MobileMenu />
 
-      <main className="flex min-h-screen flex-col items-center justify-start pt-28 md:pt-32 p-4 bg-[#f5f4f1]">
+      <NavigationMenu logoWidth="45mm" />
+      <div className={`pt-[70px] transition-all duration-1000 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}>
         <div
-          className={`w-full max-w-xl transition-all duration-1000 ease-out ${isLoaded ? "opacity-100" : "opacity-0"}`}
+          className={`transition-all duration-1000 ease-out ${showForm ? "opacity-100 transform-none" : "opacity-0 translate-y-8"}`}
         >
-          <div
-            className={`transition-all duration-1000 ease-out ${showForm ? "opacity-100 transform-none" : "opacity-0 translate-y-8"}`}
-          >
-            <SectionedRegistrationForm />
-          </div>
+          <SectionedRegistrationForm />
         </div>
-      </main>
-    </>
+      </div>
+    </div>
   )
 }

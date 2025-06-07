@@ -10,6 +10,11 @@ import EternoManifestoSection from "@/components/eterno-manifesto-section"
 import OurCollectionSection from "@/components/our-collection-section"
 import SlidingButton from "@/components/sliding-button"
 import DesktopNavigation from "@/components/desktop-navigation"
+import NavigationMenu from "@/components/navigation-menu"
+import InteractiveButtonArea from "@/components/interactive-button-area"
+import ProcessSteps from "@/components/process-steps"
+import EternoWorldCarousel from "@/components/eterno-world-carousel"
+import { useVideoBackground } from "@/hooks/use-video-background"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -18,11 +23,11 @@ const LOGO_SIZE = "45mm"
 const FALLBACK_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
 
-export default function Home() {
+export default function HomePage() {
   const router = useRouter()
-  const [videoLoaded, setVideoLoaded] = useState(false)
+  const { videoUrl, isLoading } = useVideoBackground()
+  const [isMounted, setIsMounted] = useState(false)
   const [isVideoError, setIsVideoError] = useState(false)
-  const [videoUrl, setVideoUrl] = useState("")
   const [isMobile, setIsMobile] = useState(false)
   const [isArrowClicked, setIsArrowClicked] = useState(false)
   const [hasTouched, setHasTouched] = useState(false)
@@ -43,17 +48,6 @@ export default function Home() {
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
-
-  // Get the video URL from environment variable
-  useEffect(() => {
-    const envUrl = process.env.NEXT_PUBLIC_VIDEO_URL
-
-    if (envUrl) {
-      setVideoUrl(envUrl)
-    } else {
-      setVideoUrl(FALLBACK_VIDEO_URL)
-    }
-  }, [])
 
   // Force video play on mobile devices and track touch for button visibility
   useEffect(() => {
@@ -130,17 +124,16 @@ export default function Home() {
     }
   }, [isMobile])
 
-  // Video event handlers
-  const handleVideoLoaded = useCallback(() => {
-    setVideoLoaded(true)
+  useEffect(() => {
+    setIsMounted(true)
   }, [])
 
-  const handleVideoError = useCallback(() => {
-    setIsVideoError(true)
-  }, [])
+  if (!isMounted) {
+    return null
+  }
 
   return (
-    <div className="relative">
+    <div className="relative min-h-screen bg-white">
       {/* Sticky Banner (visible on all devices) */}
       <StickyBanner logoWidth={LOGO_SIZE} />
 
@@ -150,17 +143,23 @@ export default function Home() {
       {/* Desktop Navigation (only visible on desktop) */}
       <DesktopNavigation />
 
+      {/* Navigation Menu */}
+      <NavigationMenu logoWidth="45mm" />
+
       {/* HERO SECTION - Video Background */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">
         {/* Fallback background while video loads or if video fails */}
-        {(!videoLoaded || isVideoError) && (
-          <div className="absolute inset-0 z-0 bg-black flex items-center justify-center">
+        {(isLoading || !videoUrl) && (
+          <div
+            className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/images/hero.jpg')", filter: "brightness(0.8)" }}
+          >
             {isVideoError && <p className="text-white/50 text-sm">Video loading failed. Please check the video URL.</p>}
           </div>
         )}
 
         {/* Background Video with optimized loading */}
-        {videoUrl && (
+        {!isLoading && videoUrl && (
           <video
             ref={videoRef}
             muted
@@ -170,79 +169,16 @@ export default function Home() {
             preload="auto"
             disablePictureInPicture
             disableRemotePlayback
-            className={`absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-700 ${
-              videoLoaded ? "opacity-100" : "opacity-0"
-            }`}
-            onLoadedData={handleVideoLoaded}
-            onError={handleVideoError}
-            style={{ objectFit: "cover" }}
+            className="absolute inset-0 w-full h-full object-cover z-0 transition-opacity duration-700 opacity-100"
+            style={{ objectFit: "cover", filter: "brightness(0.8)" }}
           >
             <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         )}
 
-        {/* Scroll down indicator - Only visible on desktop */}
-        {!isMobile && (
-          <div
-            className={`absolute sm:bottom-6 bottom-10 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
-            onClick={handleScrollDown}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="arrow-icon"
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-          </div>
-        )}
-
-        {/* Scroll down indicator - Mobile version that goes to From the Yarn */}
-        {isMobile && (
-          <div
-            className={`absolute bottom-24 left-1/2 transform -translate-x-1/2 z-20 cursor-pointer arrow-container ${isArrowClicked ? "arrow-clicked" : ""}`}
-            onClick={() => {
-              setIsArrowClicked(true)
-              setTimeout(() => setIsArrowClicked(false), 300)
-
-              // Navigate to From the Yarn section with proper mobile offset
-              const targetElement = document.getElementById("from-the-yarn")
-              if (targetElement) {
-                const stickyHeaderHeight = 70
-                const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
-                const scrollOffset = stickyHeaderHeight
-
-                window.scrollTo({
-                  top: offsetTop - scrollOffset,
-                  behavior: "smooth",
-                })
-              }
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="white"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="arrow-icon"
-            >
-              <path d="M12 5v14M5 12l7 7 7-7" />
-            </svg>
-          </div>
-        )}
+        {/* Interactive Button Area */}
+        <InteractiveButtonArea />
       </section>
 
       {/* ROW 1: FROM THE YARN SECTION - Added extra padding with matching background */}
@@ -292,6 +228,16 @@ export default function Home() {
       {/* ROW 4: ETERNO MANIFESTO - Added extra padding with matching background */}
       <div className="md:pt-0 pt-6 bg-[#eeeeec]">
         <EternoManifestoSection />
+      </div>
+
+      {/* ROW 5: PROCESS STEPS */}
+      <div className="md:pt-0 pt-6 bg-[#f9f8f5]">
+        <ProcessSteps />
+      </div>
+
+      {/* ROW 6: ETERNO WORLD CAROUSEL */}
+      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
+        <EternoWorldCarousel />
       </div>
 
       {/* FINAL CTA SECTION - Added extra padding with matching background */}
