@@ -10,44 +10,60 @@ import SlidingButton from "@/components/sliding-button"
 
 // Product data
 const SHIRT_COLORS = [
-  { name: "White", color: "#f5f5f5", image: "/white-linen-shirt-final.png", price: 350 },
-  { name: "Black", color: "#2a2a33", image: "/black-linen-shirt-final.png", price: 350 },
-  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-shirt-final.png", price: 350 },
-  { name: "Sky Blue", color: "#c9d7e8", image: "/sky-blue-linen-shirt-final.png", price: 350 },
-  { name: "Pink", color: "#e7d0d3", image: "/pink-linen-shirt-updated.png", price: 350 },
-  { name: "Sage", color: "#9ca594", image: "/sage-linen-shirt-final.png", price: 350 },
+  { name: "White", color: "#f5f5f5", image: "/images/shirts/new-white-linen-shirt.png", price: 325 },
+  { name: "Black", color: "#2a2a33", image: "/images/shirts/new-black-linen-shirt.png", price: 325 },
+  { name: "Navy", color: "#2d2a3e", image: "/images/shirts/new-navy-linen-shirt.png", price: 325 },
+  { name: "Sky Blue", color: "#c9d7e8", image: "/images/shirts/new-sky-blue-linen-shirt.png", price: 325 },
+  { name: "Pink", color: "#e7d0d3", image: "/images/shirts/new-pink-linen-shirt.png", price: 325 },
+  { name: "Sage", color: "#9ca594", image: "/images/shirts/new-sage-linen-shirt.png", price: 325 },
 ]
 
 const TROUSER_COLORS = [
-  { name: "Natural", color: "#eae7d9", image: "/cream-linen-trousers-new.png", price: 350 },
-  { name: "White", color: "#f5f5f5", image: "/white-linen-trousers.png", price: 350 },
-  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-trousers-new.png", price: 350 },
-  { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png", price: 350 },
+  { name: "Natural", color: "#eae7d9", image: "/cream-linen-trousers-new.png", price: 325 },
+  { name: "White", color: "#f5f5f5", image: "/white-linen-trousers.png", price: 325 },
+  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-trousers-new.png", price: 325 },
+  { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png", price: 325 },
 ]
 
 export default function ProductPage() {
   const router = useRouter()
   const params = useParams()
   const [product, setProduct] = useState<any>(null)
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0)
   const [selectedSize, setSelectedSize] = useState("M")
+  const [productType, setProductType] = useState<"shirt" | "trouser">("shirt")
 
   useEffect(() => {
     const { type, id } = params
     const productId = Number.parseInt(id as string)
 
     if (type === "shirt" && productId >= 0 && productId < SHIRT_COLORS.length) {
+      setProductType("shirt")
+      setSelectedColorIndex(productId)
       setProduct({ ...SHIRT_COLORS[productId], type: "shirt", id: productId })
     } else if (type === "trouser" && productId >= 0 && productId < TROUSER_COLORS.length) {
+      setProductType("trouser")
+      setSelectedColorIndex(productId)
       setProduct({ ...TROUSER_COLORS[productId], type: "trouser", id: productId })
     } else {
-      router.push("/shop")
+      router.push("/")
     }
   }, [params, router])
+
+  const handleColorChange = (colorIndex: number) => {
+    setSelectedColorIndex(colorIndex)
+    const colors = productType === "shirt" ? SHIRT_COLORS : TROUSER_COLORS
+    setProduct({ ...colors[colorIndex], type: productType, id: colorIndex })
+
+    // Update URL without page reload
+    const newUrl = `/product/${productType}/${colorIndex}`
+    window.history.replaceState({}, "", newUrl)
+  }
 
   const addToCart = () => {
     const cartItem = {
       type: product.type,
-      [`${product.type}Index`]: product.id,
+      [`${product.type}Index`]: selectedColorIndex,
       quantity: 1,
       size: selectedSize,
     }
@@ -73,6 +89,7 @@ export default function ProductPage() {
   }
 
   const sizes = ["XS", "S", "M", "L", "XL"]
+  const colors = productType === "shirt" ? SHIRT_COLORS : TROUSER_COLORS
 
   if (!product) {
     return (
@@ -99,20 +116,9 @@ export default function ProductPage() {
       {/* Main Content */}
       <div className="pt-[70px]">
         <div className="container mx-auto px-8 sm:px-12 md:px-16 lg:px-20 max-w-7xl py-12">
-          {/* Back Button */}
-          <button
-            onClick={() => router.back()}
-            className="flex items-center text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors mb-8"
-          >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            Back to Collection
-          </button>
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Product Image */}
-            <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-8">
+            <div className="bg-[#f9f8f5] p-8">
               <div className="aspect-square relative">
                 <Image
                   src={product.image || "/placeholder.svg"}
@@ -128,7 +134,7 @@ export default function ProductPage() {
             <div className="flex flex-col justify-center space-y-6">
               <div>
                 <h1 className="font-mulish text-2xl md:text-3xl font-light tracking-widest uppercase text-[#5a5a56] mb-2">
-                  {product.name} {product.type.charAt(0).toUpperCase() + product.type.slice(1)}
+                  {product.name}
                 </h1>
                 <p className="text-lg font-medium text-[#5a5a56]">£{product.price}</p>
               </div>
@@ -148,6 +154,28 @@ export default function ProductPage() {
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-[#5a5a56]">Care Instructions</p>
                   <p className="text-sm text-[#5a5a56]/70">Dry clean recommended. Machine wash cold if needed.</p>
+                </div>
+              </div>
+
+              {/* Color Selection */}
+              <div className="space-y-3">
+                <p className="text-sm font-medium text-[#5a5a56]">Color</p>
+                <div className="flex gap-3 flex-wrap">
+                  {colors.map((color, index) => (
+                    <div key={index} className="flex flex-col items-center">
+                      <button
+                        onClick={() => handleColorChange(index)}
+                        className={`w-8 h-8 rounded-full transition-all duration-200 ${
+                          selectedColorIndex === index
+                            ? "ring-2 ring-[#5a5a56] ring-offset-2 scale-110"
+                            : "hover:scale-105"
+                        }`}
+                        style={{ backgroundColor: color.color }}
+                        aria-label={`Select ${color.name}`}
+                      />
+                      <span className="text-xs mt-1 text-[#5a5a56]">{color.name}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 

@@ -8,8 +8,6 @@ import EternoManifestoSection from "@/components/eterno-manifesto-section"
 import OurCollectionSection from "@/components/our-collection-section"
 import SlidingButton from "@/components/sliding-button"
 import NavigationMenu from "@/components/navigation-menu"
-import ProcessSteps from "@/components/process-steps"
-import EternoWorldCarousel from "@/components/eterno-world-carousel"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -147,12 +145,14 @@ export default function HomePage() {
 
     if (!aboutSectionRef.current) return
 
-    const stickyHeaderHeight = 70
-    const targetPosition = aboutSectionRef.current.getBoundingClientRect().top + window.pageYOffset
-    const scrollOffset = stickyHeaderHeight
+    // Calculate the scroll position to ensure the sticky banner becomes colored
+    // The sticky banner becomes colored when we scroll past the hero section
+    const heroHeight = window.innerHeight
+    const stickyBannerActivationPoint = heroHeight - 50 // 50px before the end of hero section
 
+    // Scroll to this position to activate the colored sticky banner
     window.scrollTo({
-      top: targetPosition - scrollOffset,
+      top: stickyBannerActivationPoint,
       behavior: "smooth",
     })
   }, [])
@@ -263,14 +263,6 @@ export default function HomePage() {
         <EternoManifestoSection />
       </div>
 
-      <div className="bg-[#f9f8f5]">
-        <ProcessSteps />
-      </div>
-
-      <div className="bg-[#eeeeec]">
-        <EternoWorldCarousel />
-      </div>
-
       {/* Footer */}
       <div ref={contentRef} className="bg-eterno-sand">
         <section className="w-full py-8 md:py-12 bg-eterno-sand border-t border-[#e0ddd2]">
@@ -280,15 +272,15 @@ export default function HomePage() {
                 Contact Eterno
               </h2>
 
-              <div className="space-y-3">
-                <a
-                  href="mailto:enquiries@eternotailoring.com"
-                  className="block text-base sm:text-lg font-mulish font-light text-[#5a5a56] hover:text-[#5a5a56]/80 transition-colors"
+              <div className="py-4 max-w-xs mx-auto">
+                <SlidingButton
+                  onClick={() => (window.location.href = "mailto:enquiries@eternotailoring.com")}
+                  variant="dark"
+                  duration={1000}
+                  className="w-full py-4 text-sm"
                 >
-                  enquiries@eternotailoring.com
-                </a>
-
-                <p className="text-sm sm:text-base font-mulish text-[#5a5a56]/70">Clifford Street, London, W1S 4JY</p>
+                  ENQUIRE
+                </SlidingButton>
               </div>
 
               <div className="pt-4 mt-6 border-t border-[#e0ddd2] text-xs text-[#5a5a56]/50 font-mulish">
