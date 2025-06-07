@@ -10,7 +10,7 @@ const SHIRT_COLORS = [
   { name: "Black", color: "#2a2a33", image: "/black-linen-shirt-final.png" },
   { name: "Navy", color: "#2d2a3e", image: "/navy-linen-shirt-final.png" },
   { name: "Sky Blue", color: "#c9d7e8", image: "/sky-blue-linen-shirt-final.png" },
-  { name: "Pink", color: "#e7d0d3", image: "/pink-linen-shirt-final.png" },
+  { name: "Pink", color: "#e7d0d3", image: "/pink-linen-shirt-updated.png" },
   { name: "Sage", color: "#9ca594", image: "/sage-linen-shirt-final.png" },
 ]
 

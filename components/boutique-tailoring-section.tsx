@@ -88,7 +88,7 @@ export default function BoutiqueTailoringSection() {
   ]
 
   return (
-    <section id="boutique-tailoring" className="w-full bg-[#eeeeec] py-8 sm:py-12 md:py-16 lg:py-16">
+    <section id="boutique-tailoring" className="w-full bg-[#f9f8f5] py-8 sm:py-12 md:py-16 lg:py-16">
       <div className="w-full">
         <div className="w-full px-8 sm:px-12 md:px-16 lg:px-20 mb-8 md:mb-12"></div>
         {/* Mobile Toggle Buttons - Only visible on mobile */}

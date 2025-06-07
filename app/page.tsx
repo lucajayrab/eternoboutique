@@ -8,6 +8,7 @@ import FromTheYarnSection from "@/components/from-the-yarn-section"
 import BoutiqueTailoringSection from "@/components/boutique-tailoring-section"
 import EternoManifestoSection from "@/components/eterno-manifesto-section"
 import OurCollectionSection from "@/components/our-collection-section"
+import StyleCombinationsSection from "@/components/style-combinations-section"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -250,13 +251,18 @@ export default function Home() {
         <OurCollectionSection />
       </div>
 
-      {/* ROW 3: BOUTIQUE LINEN TAILORING - Added extra padding with matching background */}
+      {/* ROW 2.5: STYLE COMBINATIONS SECTION - New section */}
       <div className="md:pt-0 pt-6 bg-[#eeeeec]">
+        <StyleCombinationsSection />
+      </div>
+
+      {/* ROW 3: BOUTIQUE LINEN TAILORING - Added extra padding with matching background */}
+      <div className="md:pt-0 pt-6 bg-[#f9f8f5]">
         <BoutiqueTailoringSection />
       </div>
 
       {/* ROW 4: ETERNO MANIFESTO - Added extra padding with matching background */}
-      <div className="md:pt-0 pt-6 bg-[#f9f8f5]">
+      <div className="md:pt-0 pt-6 bg-[#eeeeec]">
         <EternoManifestoSection />
       </div>
 

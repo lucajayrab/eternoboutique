@@ -26,7 +26,7 @@ export default function EternoManifestoSection() {
   }
 
   return (
-    <section className="w-full bg-[#f9f8f5]" id="manifesto">
+    <section className="w-full bg-[#eeeeec]" id="manifesto">
       <div className="w-full">
         <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
           {/* Image Section - Left on desktop, top on mobile */}
