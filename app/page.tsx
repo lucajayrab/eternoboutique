@@ -2,16 +2,12 @@
 
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef, useCallback } from "react"
-import StickyBanner from "@/components/sticky-banner"
-import MobileMenu from "@/components/main-menu"
 import FromTheYarnSection from "@/components/from-the-yarn-section"
 import BoutiqueTailoringSection from "@/components/boutique-tailoring-section"
 import EternoManifestoSection from "@/components/eterno-manifesto-section"
 import OurCollectionSection from "@/components/our-collection-section"
 import SlidingButton from "@/components/sliding-button"
-import DesktopNavigation from "@/components/desktop-navigation"
 import NavigationMenu from "@/components/navigation-menu"
-import InteractiveButtonArea from "@/components/interactive-button-area"
 import ProcessSteps from "@/components/process-steps"
 import EternoWorldCarousel from "@/components/eterno-world-carousel"
 import { useVideoBackground } from "@/hooks/use-video-background"
@@ -134,20 +130,11 @@ export default function HomePage() {
 
   return (
     <div className="relative min-h-screen bg-white">
-      {/* Sticky Banner (visible on all devices) */}
-      <StickyBanner logoWidth={LOGO_SIZE} />
-
-      {/* Mobile Menu (only visible on mobile) */}
-      <MobileMenu />
-
-      {/* Desktop Navigation (only visible on desktop) */}
-      <DesktopNavigation />
-
       {/* Navigation Menu */}
       <NavigationMenu logoWidth="45mm" />
 
       {/* HERO SECTION - Video Background */}
-      <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black pt-[70px]" id="home">
+      <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black" id="home">
         {/* Fallback background while video loads or if video fails */}
         {(isLoading || !videoUrl) && (
           <div
@@ -177,8 +164,24 @@ export default function HomePage() {
           </video>
         )}
 
-        {/* Interactive Button Area */}
-        <InteractiveButtonArea />
+        {/* Down Arrow Button */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+          <button
+            onClick={handleScrollDown}
+            className={`arrow-container ${isArrowClicked ? "arrow-clicked" : ""} p-4 hover:bg-white/10 rounded-full transition-all duration-300`}
+            aria-label="Scroll down to content"
+          >
+            <svg
+              className="arrow-icon w-6 h-6 text-white"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+          </button>
+        </div>
       </section>
 
       {/* ROW 1: FROM THE YARN SECTION - Added extra padding with matching background */}

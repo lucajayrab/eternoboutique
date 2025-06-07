@@ -4,25 +4,28 @@ import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import EternoLogo from "./eterno-logo"
+import { Menu } from "lucide-react"
 
 interface StickyBannerProps {
-  threshold?: number // Scroll threshold in pixels
-  logoWidth?: string // Logo width
-  alwaysVisible?: boolean // Option to always show the banner
+  threshold?: number
+  logoWidth?: string
+  alwaysVisible?: boolean
+  onMenuClick?: () => void
 }
 
 export default function StickyBanner({
   threshold = 100,
   logoWidth = "45mm",
   alwaysVisible = false,
+  onMenuClick,
 }: StickyBannerProps) {
-  const [isVisible, setIsVisible] = useState(true) // Always visible by default now
+  const [isVisible, setIsVisible] = useState(true)
   const [isTransparent, setIsTransparent] = useState(false)
   const pathname = usePathname()
   const [isMobile, setIsMobile] = useState(false)
 
-  // Check if we're on the register page
-  const isRegisterPage = pathname === "/register"
+  // Check if we're on the home page
+  const isHomePage = pathname === "/"
 
   // Check if we're on mobile
   useEffect(() => {
@@ -30,71 +33,62 @@ export default function StickyBanner({
       setIsMobile(window.innerWidth < 768)
     }
 
-    // Initial check
     checkMobile()
-
-    // Add resize listener
     window.addEventListener("resize", checkMobile)
-
-    return () => {
-      window.removeEventListener("resize", checkMobile)
-    }
+    return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
   useEffect(() => {
-    // If alwaysVisible is true or we're on the register page, always show the banner with background
-    if (alwaysVisible || isRegisterPage) {
-      setIsVisible(true)
-      setIsTransparent(false)
-      return
-    }
+    // Always show the banner
+    setIsVisible(true)
 
-    const handleScroll = () => {
-      // Always show the banner
-      setIsVisible(true)
-
-      // Only on homepage, make it transparent when at the top
-      if (pathname === "/") {
+    // Only make transparent on homepage when at the top
+    if (isHomePage && !alwaysVisible) {
+      const handleScroll = () => {
         setIsTransparent(window.scrollY < window.innerHeight - 50)
-      } else {
-        setIsTransparent(false)
       }
+
+      window.addEventListener("scroll", handleScroll)
+      handleScroll() // Initial check
+
+      return () => window.removeEventListener("scroll", handleScroll)
+    } else {
+      setIsTransparent(false)
     }
-
-    // Add scroll event listener
-    window.addEventListener("scroll", handleScroll)
-
-    // Initial check
-    handleScroll()
-
-    // Clean up
-    return () => {
-      window.removeEventListener("scroll", handleScroll)
-    }
-  }, [threshold, alwaysVisible, isRegisterPage, pathname])
+  }, [threshold, alwaysVisible, isHomePage])
 
   // Calculate proportional logo size for mobile
-  // Desktop is 45mm, for mobile we'll use a proportional size based on screen width ratio
-  const mobileLogoWidth = "36mm" // Balanced size for mobile that won't get cut off
+  const mobileLogoWidth = "36mm"
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 h-[60px] md:h-[70px] flex items-center justify-center transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 h-[60px] md:h-[70px] flex items-center justify-between px-4 md:px-8 transition-all duration-500 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
-      } ${isTransparent ? "bg-transparent" : "bg-eterno-sand shadow-md"}`}
+      } ${isTransparent ? "bg-transparent" : "bg-[#d8d3c2] shadow-md"}`}
     >
-      <div className="w-full h-full flex items-center justify-center py-2">
-        <Link href="/" className="flex items-center justify-center w-full">
-          <div className="flex justify-center items-center w-full">
-            <EternoLogo
-              width={isMobile ? mobileLogoWidth : logoWidth}
-              inverted={true}
-              className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
-              fixedSize={true} // New prop to ensure size doesn't change
-            />
-          </div>
+      {/* Left spacer for centering */}
+      <div className="w-10 md:w-12"></div>
+
+      {/* Centered Logo */}
+      <div className="flex-1 flex justify-center">
+        <Link href="/" className="flex items-center justify-center">
+          <EternoLogo
+            width={isMobile ? mobileLogoWidth : logoWidth}
+            inverted={false} // Always use dark logo since background is beige
+            className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
+            fixedSize={true}
+          />
         </Link>
       </div>
+
+      {/* Menu Button */}
+      <button
+        onClick={onMenuClick}
+        className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center hover:bg-black/5 rounded transition-colors"
+        aria-label="Open menu"
+      >
+        <Menu size={20} className="text-[#5a5a56]" />
+      </button>
     </div>
   )
 }
