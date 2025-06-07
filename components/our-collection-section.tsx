@@ -125,18 +125,18 @@ export default function OurCollectionSection() {
                 {/* Navigation arrows */}
                 <button
                   onClick={() => navigateShirt("prev")}
-                  className="absolute left-4 z-10 bg-white/80 hover:bg-white rounded-full p-1 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute left-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
                   aria-label="Previous shirt color"
                 >
-                  <ChevronLeft className="w-5 h-5 text-[#5a5a56]" />
+                  <ChevronLeft className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
 
                 <button
                   onClick={() => navigateShirt("next")}
-                  className="absolute right-4 z-10 bg-white/80 hover:bg-white rounded-full p-1 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute right-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
                   aria-label="Next shirt color"
                 >
-                  <ChevronRight className="w-5 h-5 text-[#5a5a56]" />
+                  <ChevronRight className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
 
                 {/* Image container */}
@@ -247,18 +247,18 @@ export default function OurCollectionSection() {
                 {/* Navigation arrows */}
                 <button
                   onClick={() => navigateTrouser("prev")}
-                  className="absolute left-4 z-10 bg-white/80 hover:bg-white rounded-full p-1 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute left-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
                   aria-label="Previous trouser color"
                 >
-                  <ChevronLeft className="w-5 h-5 text-[#5a5a56]" />
+                  <ChevronLeft className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
 
                 <button
                   onClick={() => navigateTrouser("next")}
-                  className="absolute right-4 z-10 bg-white/80 hover:bg-white rounded-full p-1 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  className="absolute right-4 z-10 rounded-full p-1 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
                   aria-label="Next trouser color"
                 >
-                  <ChevronRight className="w-5 h-5 text-[#5a5a56]" />
+                  <ChevronRight className="w-5 h-5 text-[#5a5a56] drop-shadow-sm" />
                 </button>
 
                 {/* Image container */}
