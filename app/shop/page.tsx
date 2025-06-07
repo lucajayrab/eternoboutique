@@ -59,44 +59,58 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
   const [currentIndex, setCurrentIndex] = useState(products.length >= 3 ? 1 : 0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const carouselRef = useRef<HTMLDivElement>(null)
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Increased dimensions for better visibility
-  const ITEM_WIDTH_CENTER = 500
-  const ITEM_HEIGHT_CENTER = 667
-  const ITEM_WIDTH_SIDE = 400 // Increased from 375 for better visibility
-  const ITEM_HEIGHT_SIDE = 533 // Increased proportionally
-  const ITEM_GAP = 40 // Increased gap for better spacing
-  const TRANSITION_DURATION = 600
-  const SMOOTH_EASING = "cubic-bezier(0.645, 0.045, 0.355, 1)"
+  // Enhanced dimensions and spacing for smoother experience
+  const ITEM_WIDTH_CENTER = 520
+  const ITEM_HEIGHT_CENTER = 693
+  const ITEM_WIDTH_SIDE = 416
+  const ITEM_HEIGHT_SIDE = 555
+  const ITEM_GAP = 48
+  const TRANSITION_DURATION = 800 // Increased for smoother feel
+  const SMOOTH_EASING = "cubic-bezier(0.25, 0.46, 0.45, 0.94)" // More fluid easing
+
+  // Auto-play with pause on hover
+  const startAutoPlay = () => {
+    if (autoPlayRef.current) clearInterval(autoPlayRef.current)
+    autoPlayRef.current = setInterval(() => {
+      if (!isTransitioning) {
+        changeSlide((currentIndex + 1) % products.length)
+      }
+    }, 4500)
+  }
+
+  const stopAutoPlay = () => {
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current)
+      autoPlayRef.current = null
+    }
+  }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isTransitioning) {
-        setIsTransitioning(true)
-        setCurrentIndex((prev) => (prev + 1) % products.length)
-        setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION)
-      }
-    }, 4000) // Slightly longer interval
-    return () => clearInterval(interval)
-  }, [products.length, isTransitioning])
+    startAutoPlay()
+    return () => stopAutoPlay()
+  }, [currentIndex, isTransitioning, products.length])
+
+  const changeSlide = (newIndex: number) => {
+    if (isTransitioning || newIndex === currentIndex) return
+
+    setIsTransitioning(true)
+    setCurrentIndex(newIndex)
+
+    // Use requestAnimationFrame for smoother transitions
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        setIsTransitioning(false)
+      }, TRANSITION_DURATION)
+    })
+  }
 
   const handleProductClick = (index: number) => {
     if (index === currentIndex) {
       router.push(`/product/${type}/${index}`)
     } else {
-      if (!isTransitioning) {
-        setIsTransitioning(true)
-        setCurrentIndex(index)
-        setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION)
-      }
-    }
-  }
-
-  const changeSlide = (newIndex: number) => {
-    if (!isTransitioning) {
-      setIsTransitioning(true)
-      setCurrentIndex(newIndex)
-      setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION)
+      changeSlide(index)
     }
   }
 
@@ -105,7 +119,7 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
     const containerWidth = carouselRef.current.offsetWidth
     let offsetToCenterOfCurrentItem = 0
 
-    // Calculate offset to center the current item
+    // Calculate offset to center the current item with smooth positioning
     for (let i = 0; i < currentIndex; i++) {
       offsetToCenterOfCurrentItem += ITEM_WIDTH_SIDE + ITEM_GAP
     }
@@ -115,9 +129,14 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
   }
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto py-12 overflow-hidden" ref={carouselRef}>
+    <div
+      className="relative w-full max-w-7xl mx-auto py-12 overflow-hidden"
+      ref={carouselRef}
+      onMouseEnter={stopAutoPlay}
+      onMouseLeave={startAutoPlay}
+    >
       <div
-        className="flex items-center"
+        className="flex items-center will-change-transform"
         style={{
           transform: `translateX(${calculateOffset()}px)`,
           transitionProperty: "transform",
@@ -127,21 +146,25 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
       >
         {products.map((product, index) => {
           const isCenter = index === currentIndex
-          const scale = isCenter ? "scale-100" : "scale-90" // Less dramatic scaling
-          const opacity = isCenter ? "opacity-100" : "opacity-80" // Higher opacity for side items
-          const zIndex = isCenter ? "z-20" : "z-10"
+          const distance = Math.abs(index - currentIndex)
+
+          // Enhanced scaling and opacity for smoother visual hierarchy
+          const scale = isCenter ? 1 : Math.max(0.85, 1 - distance * 0.1)
+          const opacity = isCenter ? 1 : Math.max(0.7, 1 - distance * 0.15)
+          const zIndex = isCenter ? 20 : Math.max(1, 10 - distance)
+
           const itemWidth = isCenter ? ITEM_WIDTH_CENTER : ITEM_WIDTH_SIDE
           const itemHeight = isCenter ? ITEM_HEIGHT_CENTER : ITEM_HEIGHT_SIDE
 
           return (
             <div
-              key={product.image}
-              className={`relative flex-shrink-0 transform cursor-pointer flex items-center justify-center`}
+              key={`${product.image}-${index}`}
+              className="relative flex-shrink-0 cursor-pointer flex items-center justify-center will-change-transform"
               style={{
                 width: `${itemWidth}px`,
                 height: `${itemHeight}px`,
                 marginRight: `${ITEM_GAP}px`,
-                transform: `${scale}`,
+                transform: `scale(${scale})`,
                 opacity: opacity,
                 zIndex: zIndex,
                 transitionProperty: "transform, opacity",
@@ -151,34 +174,71 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
               onClick={() => handleProductClick(index)}
             >
               <div className="relative w-full h-full">
-                <Image
-                  src={product.image || `/placeholder.svg?width=${itemWidth}&height=${itemHeight}&query=linen+product`}
-                  alt={`${product.name} Linen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
-                  fill
-                  style={{ objectFit: "contain" }}
-                  className="transition-transform duration-300 hover:scale-105"
-                  priority={isCenter}
-                  sizes={`(max-width: 768px) 100vw, ${itemWidth}px`}
-                />
+                <div className={`transition-all duration-300 ${isCenter ? "hover:scale-105" : "hover:scale-102"}`}>
+                  <Image
+                    src={
+                      product.image || `/placeholder.svg?width=${itemWidth}&height=${itemHeight}&query=linen+product`
+                    }
+                    alt={`${product.name} Linen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+                    fill
+                    style={{ objectFit: "contain" }}
+                    className="transition-transform duration-500 ease-out"
+                    priority={isCenter || distance <= 1}
+                    sizes={`(max-width: 768px) 100vw, ${itemWidth}px`}
+                  />
+                </div>
+
+                {/* Enhanced visual feedback for center item */}
+                {isCenter && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 transition-opacity duration-300 hover:opacity-100" />
+                  </div>
+                )}
               </div>
             </div>
           )
         })}
       </div>
 
-      {/* Pagination dots */}
-      <div className="flex justify-center space-x-2 mt-8 md:mt-12">
+      {/* Enhanced pagination dots with smooth transitions */}
+      <div className="flex justify-center space-x-3 mt-8 md:mt-12">
         {products.map((_, index) => (
           <button
             key={index}
             onClick={() => changeSlide(index)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              index === currentIndex ? "bg-[#5a5a56] w-8" : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50"
+            disabled={isTransitioning}
+            className={`transition-all duration-500 ease-out rounded-full ${
+              index === currentIndex
+                ? "bg-[#5a5a56] w-10 h-3 shadow-sm"
+                : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50 w-3 h-3 hover:scale-110"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
+
+      {/* Optional: Add subtle navigation arrows for manual control */}
+      <button
+        onClick={() => changeSlide((currentIndex - 1 + products.length) % products.length)}
+        disabled={isTransitioning}
+        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 disabled:opacity-50 z-30"
+        aria-label="Previous product"
+      >
+        <svg className="w-5 h-5 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+
+      <button
+        onClick={() => changeSlide((currentIndex + 1) % products.length)}
+        disabled={isTransitioning}
+        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/80 hover:bg-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 disabled:opacity-50 z-30"
+        aria-label="Next product"
+      >
+        <svg className="w-5 h-5 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </button>
     </div>
   )
 }
@@ -272,14 +332,41 @@ export default function ShopPage() {
         quantity: 1,
       }
     }
+
+    // Add to cart
     addItemToCart(itemToAdd)
+
+    // Redirect to shirt customization for the set
+    localStorage.setItem(
+      "pendingShirtCustomization",
+      JSON.stringify({
+        type: "set",
+        shirtIndex: selectedShirt,
+        setData: itemToAdd,
+      }),
+    )
+    router.push("/customize-shirt")
   }
 
   const addIndividualItemToCart = (type: "shirt" | "trouser", index: number) => {
     const itemToAdd: CartItem = { type, quantity: 1 }
     if (type === "shirt") itemToAdd.shirtIndex = index
     if (type === "trouser") itemToAdd.trouserIndex = index
+
+    // Add to cart
     addItemToCart(itemToAdd)
+
+    // If it's a shirt, redirect to shirt customization
+    if (type === "shirt") {
+      localStorage.setItem(
+        "pendingShirtCustomization",
+        JSON.stringify({
+          type: "individual",
+          shirtIndex: index,
+        }),
+      )
+      router.push("/customize-shirt")
+    }
   }
 
   const getTotalItems = () => cart.reduce((total, item) => total + item.quantity, 0)
