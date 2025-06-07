@@ -4,14 +4,14 @@ import { useState, useEffect, useCallback } from "react"
 import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-// Color swatches data
+// Color swatches data - Updated with all 6 final shirt colors
 const SHIRT_COLORS = [
-  { name: "White", color: "#f5f5f5" },
-  { name: "Black", color: "#2a2a33" },
-  { name: "Navy", color: "#2d2a3e" },
-  { name: "Sky Blue", color: "#c9d7e8" },
-  { name: "Pink", color: "#e7d0d3" },
-  { name: "Sage", color: "#9ca594" },
+  { name: "White", color: "#f5f5f5", image: "/white-linen-shirt-final.png" },
+  { name: "Black", color: "#2a2a33", image: "/black-linen-shirt-final.png" },
+  { name: "Navy", color: "#2d2a3e", image: "/navy-linen-shirt-final.png" },
+  { name: "Sky Blue", color: "#c9d7e8", image: "/sky-blue-linen-shirt-final.png" },
+  { name: "Pink", color: "#e7d0d3", image: "/pink-linen-shirt-final.png" },
+  { name: "Sage", color: "#9ca594", image: "/sage-linen-shirt-final.png" },
 ]
 
 const TROUSER_COLORS = [
@@ -25,8 +25,12 @@ export default function OurCollectionSection() {
   const [isMobile, setIsMobile] = useState(false)
   const [shirtImageLoaded, setShirtImageLoaded] = useState(false)
   const [trouserImageLoaded, setTrouserImageLoaded] = useState(false)
+  const [currentShirtIndex, setCurrentShirtIndex] = useState(0)
   const [currentTrouserIndex, setCurrentTrouserIndex] = useState(0)
+  const [isShirtTransitioning, setIsShirtTransitioning] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [shirtImageError, setShirtImageError] = useState(false)
+  const [trouserImageError, setTrouserImageError] = useState(false)
 
   // Check if device is mobile
   const checkMobile = useCallback(() => {
@@ -40,12 +44,47 @@ export default function OurCollectionSection() {
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
 
+  // Reset image loaded state when shirt index changes
+  useEffect(() => {
+    setShirtImageLoaded(false)
+    setShirtImageError(false)
+  }, [currentShirtIndex])
+
+  // Reset image loaded state when trouser index changes
+  useEffect(() => {
+    setTrouserImageLoaded(false)
+    setTrouserImageError(false)
+  }, [currentTrouserIndex])
+
+  // Handle shirt navigation
+  const navigateShirt = (direction: "next" | "prev") => {
+    if (isShirtTransitioning) return
+
+    setIsShirtTransitioning(true)
+    setShirtImageLoaded(false)
+    setShirtImageError(false)
+
+    const totalShirts = SHIRT_COLORS.length
+
+    if (direction === "next") {
+      setCurrentShirtIndex((prev) => (prev + 1) % totalShirts)
+    } else {
+      setCurrentShirtIndex((prev) => (prev - 1 + totalShirts) % totalShirts)
+    }
+
+    // Reset transition state after animation completes
+    setTimeout(() => {
+      setIsShirtTransitioning(false)
+    }, 300)
+  }
+
   // Handle trouser navigation
   const navigateTrouser = (direction: "next" | "prev") => {
     if (isTransitioning) return
 
     setIsTransitioning(true)
     setTrouserImageLoaded(false)
+    setTrouserImageError(false)
 
     const totalTrousers = TROUSER_COLORS.length
 
@@ -61,21 +100,17 @@ export default function OurCollectionSection() {
     }, 300)
   }
 
-  // Render a color swatch
-  const renderSwatch = (swatch: { name: string; color: string }, index: number) => (
-    <div key={index} className="flex flex-col items-center">
-      <div
-        className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border border-[#ddd]"
-        style={{ backgroundColor: swatch.color }}
-      ></div>
-      <span className="text-[10px] sm:text-xs mt-1">{swatch.name}</span>
-    </div>
-  )
+  // Handle image loading errors with better error handling
+  const handleShirtImageError = () => {
+    console.warn(`Failed to load shirt image: ${SHIRT_COLORS[currentShirtIndex].image}`)
+    setShirtImageError(true)
+    setShirtImageLoaded(true) // Set to true to stop loading spinner
+  }
 
-  // Handle image loading errors
-  const handleImageError = (imageType: string) => {
-    console.error(`Failed to load ${imageType} image`)
-    // You could set a state to show a fallback image here
+  const handleTrouserImageError = () => {
+    console.warn(`Failed to load trouser image: ${TROUSER_COLORS[currentTrouserIndex].image}`)
+    setTrouserImageError(true)
+    setTrouserImageLoaded(true) // Set to true to stop loading spinner
   }
 
   return (
@@ -86,20 +121,64 @@ export default function OurCollectionSection() {
           <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
             {/* Image Section - Left */}
             <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-16 px-8 sm:px-12 md:px-16 lg:px-20">
-              <div className="w-full h-full bg-[#eeeeec] flex items-center justify-center min-h-[400px] md:min-h-[500px]">
-                {/* Using next/image for better performance and error handling */}
+              <div className="w-full h-full bg-[#eeeeec] flex items-center justify-center min-h-[400px] md:min-h-[500px] relative">
+                {/* Navigation arrows */}
+                <button
+                  onClick={() => navigateShirt("prev")}
+                  className="absolute left-4 z-10 bg-white/80 hover:bg-white rounded-full p-1 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  aria-label="Previous shirt color"
+                >
+                  <ChevronLeft className="w-5 h-5 text-[#5a5a56]" />
+                </button>
+
+                <button
+                  onClick={() => navigateShirt("next")}
+                  className="absolute right-4 z-10 bg-white/80 hover:bg-white rounded-full p-1 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20"
+                  aria-label="Next shirt color"
+                >
+                  <ChevronRight className="w-5 h-5 text-[#5a5a56]" />
+                </button>
+
+                {/* Image container */}
                 <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
-                  <Image
-                    src="/white-linen-shirt-new.png"
-                    alt="ETERNO White Linen Shirt"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    style={{ objectFit: "contain", objectPosition: "center" }}
-                    onLoad={() => setShirtImageLoaded(true)}
-                    onError={() => handleImageError("shirt")}
-                    priority
-                  />
-                  {!shirtImageLoaded && (
+                  {/* Show image if loaded successfully and no error */}
+                  {!shirtImageError && (
+                    <div
+                      className={`transition-opacity duration-300 ${shirtImageLoaded ? "opacity-100" : "opacity-0"}`}
+                    >
+                      <Image
+                        src={SHIRT_COLORS[currentShirtIndex].image || "/placeholder.svg"}
+                        alt={`ETERNO ${SHIRT_COLORS[currentShirtIndex].name} Linen Shirt`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        style={{ objectFit: "contain", objectPosition: "center" }}
+                        onLoad={() => setShirtImageLoaded(true)}
+                        onError={handleShirtImageError}
+                        priority
+                      />
+                    </div>
+                  )}
+
+                  {/* Error state - show placeholder */}
+                  {shirtImageError && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#eeeeec]">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-[#5a5a56]/10 rounded-full flex items-center justify-center mb-2">
+                          <svg className="w-8 h-8 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-xs text-[#5a5a56]/70">{SHIRT_COLORS[currentShirtIndex].name} Shirt</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Loading state */}
+                  {!shirtImageLoaded && !shirtImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#eeeeec]">
                       <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
                     </div>
@@ -126,11 +205,28 @@ export default function OurCollectionSection() {
                 </p>
               </div>
 
-              {/* Colorways */}
+              {/* Colorways with active indicator */}
               <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs text-[#5a5a56] mb-2 sm:mb-3">Available to view in 6 colorways:</p>
                 <div className={`flex flex-wrap gap-3 sm:gap-4 ${isMobile ? "justify-center" : "justify-start"}`}>
-                  {SHIRT_COLORS.map(renderSwatch)}
+                  {SHIRT_COLORS.map((swatch, index) => (
+                    <div key={index} className="flex flex-col items-center">
+                      <div
+                        className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border cursor-pointer transition-all duration-200 ${index === currentShirtIndex ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20" : "border-[#ddd] hover:border-[#5a5a56]/50"}`}
+                        style={{ backgroundColor: swatch.color }}
+                        onClick={() => {
+                          if (!isShirtTransitioning) {
+                            setIsShirtTransitioning(true)
+                            setShirtImageLoaded(false)
+                            setShirtImageError(false)
+                            setCurrentShirtIndex(index)
+                            setTimeout(() => setIsShirtTransitioning(false), 300)
+                          }
+                        }}
+                      ></div>
+                      <span className="text-[10px] sm:text-xs mt-1">{swatch.name}</span>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Price */}
@@ -165,23 +261,46 @@ export default function OurCollectionSection() {
                   <ChevronRight className="w-5 h-5 text-[#5a5a56]" />
                 </button>
 
-                {/* Using next/image for better performance and error handling */}
+                {/* Image container */}
                 <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px]">
-                  <div
-                    className={`transition-opacity duration-300 ${trouserImageLoaded ? "opacity-100" : "opacity-0"}`}
-                  >
-                    <Image
-                      src={TROUSER_COLORS[currentTrouserIndex].image || "/placeholder.svg"}
-                      alt={`ETERNO ${TROUSER_COLORS[currentTrouserIndex].name} Linen Trousers`}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      style={{ objectFit: "contain", objectPosition: "center" }}
-                      onLoad={() => setTrouserImageLoaded(true)}
-                      onError={() => handleImageError("trouser")}
-                      priority
-                    />
-                  </div>
-                  {!trouserImageLoaded && (
+                  {/* Show image if loaded successfully and no error */}
+                  {!trouserImageError && (
+                    <div
+                      className={`transition-opacity duration-300 ${trouserImageLoaded ? "opacity-100" : "opacity-0"}`}
+                    >
+                      <Image
+                        src={TROUSER_COLORS[currentTrouserIndex].image || "/placeholder.svg"}
+                        alt={`ETERNO ${TROUSER_COLORS[currentTrouserIndex].name} Linen Trousers`}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        style={{ objectFit: "contain", objectPosition: "center" }}
+                        onLoad={() => setTrouserImageLoaded(true)}
+                        onError={handleTrouserImageError}
+                        priority
+                      />
+                    </div>
+                  )}
+
+                  {/* Error state - show placeholder */}
+                  {trouserImageError && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#f9f8f5]">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-[#5a5a56]/10 rounded-full flex items-center justify-center mb-2">
+                          <svg className="w-8 h-8 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
+                            <path
+                              fillRule="evenodd"
+                              d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <p className="text-xs text-[#5a5a56]/70">{TROUSER_COLORS[currentTrouserIndex].name} Trousers</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Loading state */}
+                  {!trouserImageLoaded && !trouserImageError && (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#f9f8f5]">
                       <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
                     </div>
@@ -223,6 +342,7 @@ export default function OurCollectionSection() {
                           if (!isTransitioning) {
                             setIsTransitioning(true)
                             setTrouserImageLoaded(false)
+                            setTrouserImageError(false)
                             setCurrentTrouserIndex(index)
                             setTimeout(() => setIsTransitioning(false), 300)
                           }
