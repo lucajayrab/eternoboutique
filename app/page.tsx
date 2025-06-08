@@ -16,7 +16,6 @@ const DESKTOP_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515854_Coast_Drone_Sea_Sailing_By_Rassvet_Production_Artlist_HD-uw4AaTh1KevOivO73xbrOF3i1cte8P.mp4"
 const MOBILE_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515853_Drone_Boat_Sea_Woman_By_Rassvet_Production_Artlist_HD-B2SQbV0HHByE9dgxaCSk5cNPOnmAIA.mp4"
-const FALLBACK_IMAGE = "/images/hero.jpg"
 
 export default function HomePage() {
   const router = useRouter()
@@ -251,29 +250,26 @@ export default function HomePage() {
           onLoadedData={handleVideoLoaded}
           onCanPlay={handleVideoCanPlay}
           onError={handleVideoError}
-          poster={FALLBACK_IMAGE}
         >
           <source src={isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
-        {/* Fallback image for when video fails or is loading */}
-        {(isVideoError || (!isVideoLoaded && isMobile)) && (
-          <div
-            className="absolute inset-0 w-full h-full bg-cover bg-center z-5"
-            style={{
-              backgroundImage: `url(${FALLBACK_IMAGE})`,
-              filter: "brightness(0.7)",
-            }}
-          />
-        )}
-
-        {/* Loading indicator for mobile */}
-        {isMobile && !isVideoLoaded && !isVideoError && (
-          <div className="absolute inset-0 z-20 bg-black/50 flex items-center justify-center">
+        {/* Loading indicator - only show while video is loading */}
+        {!isVideoLoaded && !isVideoError && (
+          <div className="absolute inset-0 z-20 bg-black flex items-center justify-center">
             <div className="text-white/70 text-center">
               <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
-              <p className="text-sm">Loading video...</p>
+              <p className="text-sm">Loading...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Error state - only show if video completely fails */}
+        {isVideoError && (
+          <div className="absolute inset-0 z-15 bg-black flex items-center justify-center">
+            <div className="text-white/70 text-center">
+              <p className="text-sm">Unable to load video</p>
             </div>
           </div>
         )}
