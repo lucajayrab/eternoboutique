@@ -38,36 +38,21 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
     if (href.startsWith("#")) {
       // Handle anchor links
       if (pathname !== "/") {
-        // If not on homepage, navigate to homepage with anchor
         router.push(`/${href}`)
       } else {
-        // If on homepage, scroll to section
         const targetElement = document.getElementById(href.replace("#", ""))
         if (targetElement) {
           const stickyHeaderHeight = 70
           const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
 
-          // Section-specific offsets for better positioning
-          let scrollOffset = stickyHeaderHeight
-          const targetId = href.replace("#", "")
-
-          if (targetId === "from-the-yarn") {
-            scrollOffset = stickyHeaderHeight + 12
-          }
-
           window.scrollTo({
-            top: offsetTop - scrollOffset,
+            top: offsetTop - stickyHeaderHeight,
             behavior: "smooth",
           })
         }
       }
     } else {
-      // Handle regular page navigation
       router.push(href)
-      // Ensure page loads at top
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" })
-      }, 100)
     }
   }
 

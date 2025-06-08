@@ -144,19 +144,20 @@ export default function HomePage() {
 
     if (!aboutSectionRef.current) return
 
-    // For mobile, ensure we scroll fully to the "From The Yarn" section
+    // For mobile, ensure we scroll fully to the "From The Yarn" section with extra offset
     if (isMobile) {
       const fromTheYarnSection = document.getElementById("from-the-yarn")
       if (fromTheYarnSection) {
         // Get the position of the section
         const sectionTop = fromTheYarnSection.getBoundingClientRect().top + window.pageYOffset
 
-        // Calculate the sticky header height
+        // Calculate the sticky header height and add extra offset to ensure video is completely hidden
         const stickyHeaderHeight = 70
+        const extraOffset = 100 // Additional offset to ensure video is completely out of view
 
-        // Scroll to the section with offset for the sticky header
+        // Scroll to the section with offset for the sticky header plus extra offset
         window.scrollTo({
-          top: sectionTop - stickyHeaderHeight,
+          top: sectionTop - stickyHeaderHeight + extraOffset,
           behavior: "smooth",
         })
       }
@@ -214,7 +215,7 @@ export default function HomePage() {
         )}
 
         {/* Down Arrow Button - Higher position on mobile */}
-        <div className={`absolute ${isMobile ? "bottom-24" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
+        <div className={`absolute ${isMobile ? "bottom-16" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
           <button
             onClick={handleScrollDown}
             className={`arrow-container ${isArrowClicked ? "arrow-clicked" : ""} p-4 hover:bg-white/10 rounded-full transition-all duration-300`}

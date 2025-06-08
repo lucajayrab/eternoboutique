@@ -85,38 +85,33 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
         return
       }
 
-      if (href.startsWith("#")) {
-        // Handle anchor links
-        if (pathname !== "/") {
-          // If not on homepage, navigate to homepage with anchor
-          router.push(`/${href}`)
+      const targetElement = document.getElementById(targetId)
+      if (targetElement) {
+        // For mobile, add section-specific offset
+        const stickyHeaderHeight = 70 // Height of sticky banner
+        const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
+
+        // Section-specific offsets
+        let scrollOffset = 0
+
+        if (targetId === "from-the-yarn") {
+          // For "From The Yarn" section, make sure the sticky banner is visible
+          // and positioned at the top of the section content
+          scrollOffset = stickyHeaderHeight
         } else {
-          // If on homepage, scroll to section
-          const targetElement = document.getElementById(targetId)
-          if (targetElement) {
-            const stickyHeaderHeight = 70
-            const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
-
-            // Section-specific offsets
-            let scrollOffset = stickyHeaderHeight
-
-            if (targetId === "from-the-yarn") {
-              scrollOffset = stickyHeaderHeight + 12
-            }
-
-            window.scrollTo({
-              top: offsetTop - scrollOffset,
-              behavior: "smooth",
-            })
-          }
+          // For other sections, position the sticky banner to cover the color transition
+          // This places the sticky banner on top of the added margin (pt-6 = 24px)
+          scrollOffset = stickyHeaderHeight + 12 // Half of the padding to position banner in the middle
         }
+
+        // Scroll with calculated offset
+        window.scrollTo({
+          top: offsetTop - scrollOffset,
+          behavior: "smooth",
+        })
       } else {
-        // Handle regular page navigation
+        // If element not found, just navigate to the href
         router.push(href)
-        // Ensure page loads at top
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" })
-        }, 100)
       }
     }
 
