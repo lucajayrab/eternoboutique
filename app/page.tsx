@@ -11,11 +11,11 @@ import NavigationMenu from "@/components/navigation-menu"
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
 
-// Video URLs - using different quality for mobile
+// Video URLs - using the new video for both desktop and mobile
 const DESKTOP_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_4K-8VStwETVo6CUgQ4TKH5JbWMigUc53g.mp4"
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515854_Coast_Drone_Sea_Sailing_By_Rassvet_Production_Artlist_HD-uw4AaTh1KevOivO73xbrOF3i1cte8P.mp4"
 const MOBILE_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_HD-K76mJKem8ZBUjscwppFegs0RJxNhwO.mp4"
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515854_Coast_Drone_Sea_Sailing_By_Rassvet_Production_Artlist_HD-uw4AaTh1KevOivO73xbrOF3i1cte8P.mp4"
 const FALLBACK_IMAGE = "/images/hero.jpg"
 
 export default function HomePage() {
