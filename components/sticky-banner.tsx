@@ -42,8 +42,8 @@ export default function StickyBanner({
     // Always show the banner
     setIsVisible(true)
 
-    // Only make transparent on homepage when at the top
-    if (isHomePage && !alwaysVisible) {
+    // Only make transparent on homepage when at the top, but NOT on mobile
+    if (isHomePage && !alwaysVisible && !isMobile) {
       const handleScroll = () => {
         setIsTransparent(window.scrollY < window.innerHeight - 50)
       }
@@ -53,9 +53,10 @@ export default function StickyBanner({
 
       return () => window.removeEventListener("scroll", handleScroll)
     } else {
+      // On mobile or non-homepage, always keep it colored (non-transparent)
       setIsTransparent(false)
     }
-  }, [threshold, alwaysVisible, isHomePage])
+  }, [threshold, alwaysVisible, isHomePage, isMobile])
 
   // Mobile-optimized logo size
   const mobileLogoWidth = "28mm"

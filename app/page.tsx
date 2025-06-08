@@ -11,11 +11,11 @@ import NavigationMenu from "@/components/navigation-menu"
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
 
-// Video URLs - using the new video for both desktop and mobile
+// Video URLs - using different videos for desktop and mobile
 const DESKTOP_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515854_Coast_Drone_Sea_Sailing_By_Rassvet_Production_Artlist_HD-uw4AaTh1KevOivO73xbrOF3i1cte8P.mp4"
 const MOBILE_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515854_Coast_Drone_Sea_Sailing_By_Rassvet_Production_Artlist_HD-uw4AaTh1KevOivO73xbrOF3i1cte8P.mp4"
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515853_Drone_Boat_Sea_Woman_By_Rassvet_Production_Artlist_HD-B2SQbV0HHByE9dgxaCSk5cNPOnmAIA.mp4"
 const FALLBACK_IMAGE = "/images/hero.jpg"
 
 export default function HomePage() {
@@ -26,6 +26,7 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
   const [isArrowClicked, setIsArrowClicked] = useState(false)
   const [videoAttempts, setVideoAttempts] = useState(0)
+  const [userInteracted, setUserInteracted] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -49,42 +50,75 @@ export default function HomePage() {
   // Video loading and playback logic
   const attemptVideoPlay = useCallback(async () => {
     const video = videoRef.current
-    if (!video || isVideoError || videoAttempts > 3) return
+    if (!video || isVideoError || videoAttempts > 2) return
 
     try {
+      // Reset video state
+      video.currentTime = 0
+
       // Set video properties for mobile optimization
       video.muted = true
       video.playsInline = true
       video.autoplay = true
       video.loop = true
-      video.preload = "auto"
+      video.preload = "metadata"
+      video.controls = false
 
       // Mobile-specific attributes
       if (isMobile) {
-        video.setAttribute("playsinline", "")
-        video.setAttribute("webkit-playsinline", "")
-        video.setAttribute("x5-playsinline", "")
+        video.setAttribute("playsinline", "true")
+        video.setAttribute("webkit-playsinline", "true")
+        video.setAttribute("x5-playsinline", "true")
+        video.setAttribute("x5-video-player-type", "h5")
+        video.setAttribute("x5-video-player-fullscreen", "false")
       }
 
-      // Load the appropriate video source immediately
+      // Load the appropriate video source
       const videoUrl = isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL
-      video.src = videoUrl
-      video.load()
+      if (video.src !== videoUrl) {
+        video.src = videoUrl
+        video.load()
+      }
 
-      // Attempt to play immediately
+      // Wait for video to be ready
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => reject(new Error("Video load timeout")), 10000)
+
+        video.addEventListener(
+          "loadeddata",
+          () => {
+            clearTimeout(timeout)
+            resolve(true)
+          },
+          { once: true },
+        )
+
+        video.addEventListener(
+          "error",
+          () => {
+            clearTimeout(timeout)
+            reject(new Error("Video load error"))
+          },
+          { once: true },
+        )
+      })
+
+      // Attempt to play
       const playPromise = video.play()
       if (playPromise !== undefined) {
         await playPromise
         setIsVideoLoaded(true)
+        setIsVideoError(false)
       }
     } catch (error) {
-      console.warn("Video play attempt failed:", error)
+      console.warn(`Video play attempt ${videoAttempts + 1} failed:`, error)
       setVideoAttempts((prev) => prev + 1)
 
-      // Retry with exponential backoff
-      if (videoAttempts < 3) {
-        setTimeout(attemptVideoPlay, 500 * Math.pow(2, videoAttempts))
+      // Retry with exponential backoff, but only a few times
+      if (videoAttempts < 2) {
+        setTimeout(attemptVideoPlay, 1000 * Math.pow(2, videoAttempts))
       } else {
+        console.error("Video failed to load after multiple attempts")
         setIsVideoError(true)
       }
     }
@@ -94,20 +128,24 @@ export default function HomePage() {
   useEffect(() => {
     setIsMounted(true)
 
-    // Small delay to ensure DOM is ready
+    // Delay to ensure DOM is ready
     const timer = setTimeout(() => {
       attemptVideoPlay()
-    }, 100)
+    }, 500)
 
     return () => clearTimeout(timer)
   }, [attemptVideoPlay])
 
   // Handle user interactions for mobile autoplay restrictions
   useEffect(() => {
-    if (!isMobile || isVideoLoaded) return
+    if (!isMobile || isVideoLoaded || userInteracted) return
 
     const handleUserInteraction = () => {
-      attemptVideoPlay()
+      setUserInteracted(true)
+      // Small delay to ensure the interaction is registered
+      setTimeout(() => {
+        attemptVideoPlay()
+      }, 100)
     }
 
     // Add event listeners for user interaction
@@ -121,7 +159,7 @@ export default function HomePage() {
         document.removeEventListener(event, handleUserInteraction)
       })
     }
-  }, [isMobile, isVideoLoaded, attemptVideoPlay])
+  }, [isMobile, isVideoLoaded, userInteracted, attemptVideoPlay])
 
   // Video event handlers
   const handleVideoLoaded = useCallback(() => {
@@ -129,11 +167,25 @@ export default function HomePage() {
     setIsVideoError(false)
   }, [])
 
-  const handleVideoError = useCallback(() => {
-    console.error("Video failed to load")
+  const handleVideoError = useCallback((e) => {
+    console.error("Video error:", e)
     setIsVideoError(true)
     setIsVideoLoaded(false)
   }, [])
+
+  const handleVideoCanPlay = useCallback(() => {
+    const video = videoRef.current
+    if (video && !isVideoLoaded) {
+      video
+        .play()
+        .then(() => {
+          setIsVideoLoaded(true)
+        })
+        .catch((error) => {
+          console.warn("Video play failed in canplay handler:", error)
+        })
+    }
+  }, [isVideoLoaded])
 
   const handleScrollDown = useCallback(() => {
     setIsArrowClicked(true)
@@ -190,25 +242,38 @@ export default function HomePage() {
           loop
           playsInline
           autoPlay
-          preload="auto"
+          preload="metadata"
           disablePictureInPicture
           disableRemotePlaybook
+          controls={false}
           className="absolute inset-0 w-full h-full object-cover z-10"
           style={{ objectFit: "cover", filter: "brightness(0.7)" }}
           onLoadedData={handleVideoLoaded}
-          onCanPlay={handleVideoLoaded}
+          onCanPlay={handleVideoCanPlay}
           onError={handleVideoError}
+          poster={FALLBACK_IMAGE}
         >
           <source src={isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
-        {/* Only show loading on mobile if video hasn't loaded yet */}
+        {/* Fallback image for when video fails or is loading */}
+        {(isVideoError || (!isVideoLoaded && isMobile)) && (
+          <div
+            className="absolute inset-0 w-full h-full bg-cover bg-center z-5"
+            style={{
+              backgroundImage: `url(${FALLBACK_IMAGE})`,
+              filter: "brightness(0.7)",
+            }}
+          />
+        )}
+
+        {/* Loading indicator for mobile */}
         {isMobile && !isVideoLoaded && !isVideoError && (
-          <div className="absolute inset-0 z-20 bg-black flex items-center justify-center">
+          <div className="absolute inset-0 z-20 bg-black/50 flex items-center justify-center">
             <div className="text-white/70 text-center">
               <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
-              <p className="text-sm">Loading...</p>
+              <p className="text-sm">Loading video...</p>
             </div>
           </div>
         )}
