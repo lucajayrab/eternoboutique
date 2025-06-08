@@ -133,12 +133,13 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
   const handleProductClick = (index: number) => {
     if (isTransitioning) return
 
-    // On mobile, always navigate to the product page
+    // On mobile, always navigate to the product page when any item is clicked
     if (isMobile) {
       router.push(`/product/${type}/${index}`)
       return
     }
 
+    // On desktop, only navigate if clicking the center item, otherwise just change slide
     if (index === currentIndex) {
       router.push(`/product/${type}/${index}`)
     } else {
