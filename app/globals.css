@@ -83,7 +83,7 @@ body {
 
   /* Improve spacing for mobile */
   .mobile-spacing > * {
-    margin-bottom: 16px;
+    margin-bottom: 12px; /* Reduced from 16px */
   }
 
   /* Better mobile form inputs */
@@ -201,13 +201,49 @@ video {
 /* Mobile typography adjustments */
 @media (max-width: 767px) {
   .eterno-title {
-    font-size: 1.25rem;
-    letter-spacing: 0.1em;
+    font-size: 1rem; /* Reduced from 1.25rem */
+    letter-spacing: 0.08em; /* Reduced from 0.1em */
   }
 
   .eterno-body {
+    font-size: 0.75rem; /* Reduced from 0.875rem */
+    line-height: 1.6; /* Reduced from 1.7 */
+  }
+
+  /* Reduce section padding on mobile */
+  section {
+    padding-left: 0.75rem; /* Reduced from 1rem */
+    padding-right: 0.75rem;
+  }
+
+  /* Smaller mobile buttons while maintaining touch targets */
+  .eterno-button {
+    font-size: 0.625rem; /* 10px */
+    padding: 0.5rem 1rem;
+    min-height: 44px; /* Maintain accessibility */
+  }
+
+  /* Reduce mobile spacing */
+  .mobile-spacing > * {
+    margin-bottom: 12px; /* Reduced from 16px */
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+  .eterno-title {
     font-size: 0.875rem;
-    line-height: 1.7;
+    letter-spacing: 0.06em;
+  }
+
+  .eterno-body {
+    font-size: 0.6875rem; /* 11px */
+    line-height: 1.5;
+  }
+
+  section {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
   }
 }
 

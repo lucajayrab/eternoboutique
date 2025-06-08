@@ -77,9 +77,9 @@ export default function StyleCombinationsSection() {
   const totalPrice = 350 + 350 // £350 each
 
   return (
-    <section className="w-full bg-[#eeeeec] py-12 sm:py-16 md:py-20" id="style-combinations">
+    <section className="w-full bg-[#eeeeec] py-8 sm:py-12 md:py-16" id="style-combinations">
       {/* Use consistent container width like other sections */}
-      <div className="container mx-auto px-8 sm:px-12 md:px-16 lg:px-20 max-w-7xl">
+      <div className="container mx-auto px-4 sm:px-8 md:px-16 lg:px-20 max-w-7xl">
         {/* Clickable Section Header */}
         <div className={`mb-8 md:mb-12 text-center cursor-pointer`} onClick={toggleExpanded}>
           <div className="flex items-center justify-center gap-2 mb-2">
@@ -99,10 +99,10 @@ export default function StyleCombinationsSection() {
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
-          <h2 className="font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56]">
+          <h2 className="font-mulish text-base sm:text-lg md:text-xl font-light tracking-widest uppercase text-[#5a5a56]">
             Style Combinations
           </h2>
-          <p className="font-mulish font-light text-[#5a5a56]/80 text-xs sm:text-sm mt-4 max-w-2xl mx-auto">
+          <p className="font-mulish font-light text-[#5a5a56]/80 text-[10px] sm:text-xs mt-4 max-w-2xl mx-auto">
             Explore how our signature pieces work together. Mix and match colors to create your perfect ensemble.
           </p>
         </div>
@@ -115,15 +115,15 @@ export default function StyleCombinationsSection() {
         >
           {/* Suggested Combinations - Now at the top as prominent cards */}
           <div className="mb-8 md:mb-12">
-            <h3 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-6 text-center font-light">
+            <h3 className="text-xs uppercase tracking-wider text-[#5a5a56] mb-6 text-center font-light">
               Curated Combinations
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 md:gap-3">
               {SUGGESTED_COMBINATIONS.map((combo, index) => (
                 <button
                   key={index}
                   onClick={() => selectCombination(combo)}
-                  className={`p-3 md:p-4 rounded transition-all duration-200 text-center ${
+                  className={`p-2 md:p-3 rounded transition-all duration-200 text-center ${
                     selectedShirt === combo.shirt && selectedTrouser === combo.trouser
                       ? "bg-[#5a5a56]/10 border-2 border-[#5a5a56]/30"
                       : "bg-[#f9f8f5] hover:bg-[#5a5a56]/5 border-2 border-transparent"
@@ -131,16 +131,16 @@ export default function StyleCombinationsSection() {
                 >
                   <div className="flex justify-center space-x-1 mb-2">
                     <div
-                      className="w-4 h-4 md:w-5 md:h-5 rounded-full border border-[#ddd]"
+                      className="w-3 h-3 md:w-4 md:h-4 rounded-full border border-[#ddd]"
                       style={{ backgroundColor: SHIRT_COLORS[combo.shirt].color }}
                     />
                     <div
-                      className="w-4 h-4 md:w-5 md:h-5 rounded-full border border-[#ddd]"
+                      className="w-3 h-3 md:w-4 md:h-4 rounded-full border border-[#ddd]"
                       style={{ backgroundColor: TROUSER_COLORS[combo.trouser].color }}
                     />
                   </div>
-                  <p className="text-[10px] md:text-xs font-medium text-[#5a5a56] mb-1">{combo.name}</p>
-                  <p className="text-[8px] md:text-[10px] text-[#5a5a56]/70 leading-tight">
+                  <p className="text-[8px] md:text-[10px] font-medium text-[#5a5a56] mb-1">{combo.name}</p>
+                  <p className="text-[7px] md:text-[8px] text-[#5a5a56]/70 leading-tight">
                     {SHIRT_COLORS[combo.shirt].name} + {TROUSER_COLORS[combo.trouser].name}
                   </p>
                 </button>
@@ -152,10 +152,10 @@ export default function StyleCombinationsSection() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
             {/* Left Column - Outfit Visualization (spans 2 columns on large screens) */}
             <div className="lg:col-span-2">
-              <div className="bg-[#f9f8f5] p-6 md:p-8 lg:p-10">
+              <div className="bg-[#f9f8f5] p-4 md:p-6 lg:p-8">
                 {/* Current Selection Header */}
                 <div className="text-center mb-6">
-                  <h3 className="text-sm uppercase tracking-wider text-[#5a5a56] font-light mb-2">Current Selection</h3>
+                  <h3 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light mb-2">Current Selection</h3>
                   <p className="text-xs text-[#5a5a56]/70">
                     {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name} Trousers
                   </p>
@@ -166,7 +166,7 @@ export default function StyleCombinationsSection() {
                   {/* Shirt Display */}
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] font-light">
+                      <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
                         {SHIRT_COLORS[selectedShirt].name} Shirt
                       </h4>
                       <span className="text-xs text-[#5a5a56]/70">£350</span>
@@ -217,7 +217,7 @@ export default function StyleCombinationsSection() {
                   {/* Trouser Display */}
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between mb-4">
-                      <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] font-light">
+                      <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
                         {TROUSER_COLORS[selectedTrouser].name} Trousers
                       </h4>
                       <span className="text-xs text-[#5a5a56]/70">£350</span>
@@ -277,11 +277,11 @@ export default function StyleCombinationsSection() {
             {/* Right Column - Color Selectors (more compact and organized) */}
             <div className="space-y-8">
               {/* Shirt Color Selector */}
-              <div className="bg-[#f9f8f5] p-6 rounded">
-                <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
+              <div className="bg-[#f9f8f5] p-4 rounded">
+                <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                   Shirt Colors
                 </h4>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-2">
                   {SHIRT_COLORS.map((color, index) => (
                     <button
                       key={index}
@@ -291,7 +291,7 @@ export default function StyleCombinationsSection() {
                       }`}
                     >
                       <div
-                        className={`w-8 h-8 rounded-full border-2 mb-2 ${
+                        className={`w-6 h-6 rounded-full border-2 mb-2 ${
                           selectedShirt === index ? "border-[#5a5a56]" : "border-[#ddd]"
                         }`}
                         style={{ backgroundColor: color.color }}
@@ -303,11 +303,11 @@ export default function StyleCombinationsSection() {
               </div>
 
               {/* Trouser Color Selector */}
-              <div className="bg-[#f9f8f5] p-6 rounded">
-                <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
+              <div className="bg-[#f9f8f5] p-4 rounded">
+                <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                   Trouser Colors
                 </h4>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   {TROUSER_COLORS.map((color, index) => (
                     <button
                       key={index}
@@ -317,7 +317,7 @@ export default function StyleCombinationsSection() {
                       }`}
                     >
                       <div
-                        className={`w-8 h-8 rounded-full border-2 mb-2 ${
+                        className={`w-6 h-6 rounded-full border-2 mb-2 ${
                           selectedTrouser === index ? "border-[#5a5a56]" : "border-[#ddd]"
                         }`}
                         style={{ backgroundColor: color.color }}
@@ -329,8 +329,8 @@ export default function StyleCombinationsSection() {
               </div>
 
               {/* Quick Info */}
-              <div className="bg-[#f9f8f5] p-6 rounded text-center">
-                <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-3 font-light">About This Set</h4>
+              <div className="bg-[#f9f8f5] p-4 rounded text-center">
+                <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] mb-3 font-light">About This Set</h4>
                 <p className="text-xs text-[#5a5a56]/80 leading-relaxed">
                   Both pieces are handcrafted in Italy from premium linen. Perfect for Mediterranean summers and
                   sophisticated casual occasions.

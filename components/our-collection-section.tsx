@@ -51,10 +51,10 @@ export default function OurCollectionSection() {
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-0 min-h-[500px] md:min-h-[600px]">
             {/* Image Container - Mobile optimised with shadow */}
-            <div className="w-full md:w-1/2 flex items-center justify-center py-6 md:py-16 px-4 sm:px-6 md:px-16 lg:px-20">
-              <div className="w-full h-full flex items-center justify-center min-h-[350px] sm:min-h-[400px] md:min-h-[500px] relative">
+            <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-12 px-3 sm:px-4 md:px-16 lg:px-20">
+              <div className="w-full h-full flex items-center justify-center min-h-[280px] sm:min-h-[320px] md:min-h-[500px] relative">
                 <div
-                  className="relative w-full h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px] cursor-pointer"
+                  className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] lg:h-[500px] cursor-pointer"
                   onClick={handleShirtClick}
                 >
                   {!shirtImageError ? (
@@ -99,7 +99,7 @@ export default function OurCollectionSection() {
                             />
                           </svg>
                         </div>
-                        <p className="text-xs text-[#5a5a56]/70">White Shirt</p>
+                        <p className="text-[10px] text-[#5a5a56]/70">White Shirt</p>
                       </div>
                     </div>
                   )}
@@ -114,16 +114,16 @@ export default function OurCollectionSection() {
             </div>
 
             {/* Text Content - Mobile optimised */}
-            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 sm:px-6 md:px-16 lg:px-20 flex flex-col justify-center py-6 md:py-16">
+            <div className="w-full md:w-1/2 space-y-3 md:space-y-4 px-3 sm:px-4 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-12">
               <div className={`space-y-2 ${isMobile ? "text-center" : "text-left"}`}>
-                <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
-                <h3 className="text-[#5a5a56] font-normal text-base sm:text-lg md:text-xl uppercase tracking-wider">
+                <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
+                <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider">
                   SHIRT
                 </h3>
               </div>
 
               <div
-                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm sm:text-base max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
+                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
               >
                 <p>
                   Our signature shirt captures the spirit of Southern Italy through thoughtful tailoring and refined
@@ -133,7 +133,7 @@ export default function OurCollectionSection() {
               </div>
 
               <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center mx-auto" : "text-left"}`}>
-                <p className="text-sm text-[#5a5a56]">Available in an array of colourways</p>
+                <p className="text-xs text-[#5a5a56]">Available in an array of colourways</p>
               </div>
             </div>
           </div>
@@ -145,10 +145,10 @@ export default function OurCollectionSection() {
         <div className="w-full">
           <div className="flex flex-col md:flex-row-reverse gap-0 min-h-[500px] md:min-h-[600px]">
             {/* Image Container - Mobile optimised with shadow */}
-            <div className="w-full md:w-1/2 flex items-center justify-center py-6 md:py-16 px-4 sm:px-6 md:px-16 lg:px-20">
-              <div className="w-full h-full flex items-center justify-center min-h-[350px] sm:min-h-[400px] md:min-h-[500px] relative">
+            <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-12 px-3 sm:px-4 md:px-16 lg:px-20">
+              <div className="w-full h-full flex items-center justify-center min-h-[280px] sm:min-h-[320px] md:min-h-[500px] relative">
                 <div
-                  className="relative w-full h-[300px] sm:h-[350px] md:h-[450px] lg:h-[500px] cursor-pointer"
+                  className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] lg:h-[500px] cursor-pointer"
                   onClick={handleTrouserClick}
                 >
                   {!trouserImageError ? (
@@ -193,7 +193,7 @@ export default function OurCollectionSection() {
                             />
                           </svg>
                         </div>
-                        <p className="text-xs text-[#5a5a56]/70">Natural Trousers</p>
+                        <p className="text-[10px] text-[#5a5a56]/70">Natural Trousers</p>
                       </div>
                     </div>
                   )}
@@ -208,16 +208,16 @@ export default function OurCollectionSection() {
             </div>
 
             {/* Text Content - Mobile optimised */}
-            <div className="w-full md:w-1/2 space-y-4 md:space-y-6 px-4 sm:px-6 md:px-16 lg:px-20 flex flex-col justify-center py-6 md:py-16">
+            <div className="w-full md:w-1/2 space-y-3 md:space-y-4 px-3 sm:px-4 md:px-16 lg:px-20 flex flex-col justify-center py-4 md:py-12">
               <div className={`space-y-2 ${isMobile ? "text-center" : "text-left"}`}>
-                <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
-                <h3 className="text-[#5a5a56] font-normal text-base sm:text-lg md:text-xl uppercase tracking-wider">
+                <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70">SIGNATURE PIECE</p>
+                <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider">
                   TROUSER
                 </h3>
               </div>
 
               <div
-                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm sm:text-base max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
+                className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-[550px] ${isMobile ? "text-center mx-auto" : "text-left"}`}
               >
                 <p>
                   Our pleated linen trousers are a quiet study in refinement. A single forward pleat introduces movement
@@ -227,7 +227,7 @@ export default function OurCollectionSection() {
               </div>
 
               <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center mx-auto" : "text-left"}`}>
-                <p className="text-sm text-[#5a5a56]">Available in an array of colourways</p>
+                <p className="text-xs text-[#5a5a56]">Available in an array of colourways</p>
               </div>
             </div>
           </div>

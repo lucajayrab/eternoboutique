@@ -76,7 +76,7 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
     <>
       {/* Mobile Header - Now just contains the menu button */}
       <div
-        className={`md:hidden fixed top-0 right-0 z-50 h-[70px] flex items-center justify-end px-4 transition-all duration-300 pointer-events-none`}
+        className={`md:hidden fixed top-0 right-0 z-50 h-[50px] flex items-center justify-end px-4 transition-all duration-300 pointer-events-none`}
       >
         <button
           onClick={toggleMenu}
@@ -91,44 +91,51 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
       <div
         className={`fixed inset-0 bg-eterno-sand z-40 md:hidden transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
-        } pt-[70px]`}
+        } pt-[50px]`}
       >
-        <div className="flex flex-col items-center justify-center h-full p-8 space-y-8">
-          <nav className="flex flex-col items-center space-y-6 mb-8">
+        <div className="flex flex-col items-center justify-center h-full p-8 space-y-6">
+          <nav className="flex flex-col items-center space-y-4 mb-8">
             <a
               href="/"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              className="text-white text-base uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               HOME
             </a>
             <a
               href="#tailoring"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              className="text-white text-base uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               ABOUT
             </a>
             <a
               href="#collection"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              className="text-white text-base uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               COLLECTION
             </a>
             <a
               href="#process"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              className="text-white text-base uppercase tracking-widest font-light hover:text-white/70 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               PROCESS
             </a>
             <a
-              href="#boutique-tailoring"
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors"
-              onClick={() => setIsOpen(false)}
+              href="/shop"
+              className="text-white text-base uppercase tracking-widest font-light hover:text-white/70 transition-colors"
+              onClick={(e) => {
+                e.preventDefault()
+                router.push("/shop")
+                setIsOpen(false)
+                setTimeout(() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" })
+                }, 100)
+              }}
             >
-              SHOP NOW
+              SHOP
             </a>
           </nav>
 
@@ -137,7 +144,7 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
               onClick={handleRegisterClick}
               variant="light"
               duration={1000}
-              className="w-full py-4 text-base"
+              className="w-full py-3 text-sm"
             >
               ENQUIRE
             </SlidingButton>

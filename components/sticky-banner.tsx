@@ -58,11 +58,11 @@ export default function StickyBanner({
   }, [threshold, alwaysVisible, isHomePage])
 
   // Mobile-optimized logo size
-  const mobileLogoWidth = "32mm"
+  const mobileLogoWidth = "28mm"
 
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 h-[60px] md:h-[70px] flex items-center justify-between px-4 md:px-8 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 h-[50px] md:h-[60px] flex items-center justify-between px-3 md:px-6 transition-all duration-500 ${
         isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full"
       } ${isTransparent ? "bg-transparent" : "bg-[#d8d3c2] shadow-md"}`}
     >
@@ -84,11 +84,11 @@ export default function StickyBanner({
       {/* Menu Button - Mobile optimized */}
       <button
         onClick={onMenuClick}
-        className="w-8 h-8 md:w-12 md:h-12 flex items-center justify-center hover:bg-black/5 rounded transition-colors touch-manipulation"
+        className="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center hover:bg-black/5 rounded transition-colors touch-manipulation"
         aria-label="Open menu"
         style={{ touchAction: "manipulation" }}
       >
-        <Menu size={isMobile ? 18 : 20} className="text-[#5a5a56]" />
+        <Menu size={isMobile ? 16 : 18} className="text-[#5a5a56]" />
       </button>
     </div>
   )

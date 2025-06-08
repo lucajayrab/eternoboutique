@@ -26,7 +26,7 @@ export default function DesktopNavigation() {
       } else {
         const targetElement = document.getElementById(href.replace("#", ""))
         if (targetElement) {
-          const stickyHeaderHeight = 70
+          const stickyHeaderHeight = 60
           const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
           const scrollOffset = stickyHeaderHeight
 
@@ -38,49 +38,55 @@ export default function DesktopNavigation() {
       }
     } else {
       router.push(href)
+      // Ensure page loads at top for non-anchor links
+      if (href === "/shop") {
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" })
+        }, 100)
+      }
     }
   }
 
   return (
     <nav
-      className={`hidden md:flex fixed top-0 right-0 z-40 h-[70px] items-center pr-8 transition-all duration-300 ${
+      className={`hidden md:flex fixed top-0 right-0 z-40 h-[60px] items-center pr-8 transition-all duration-300 ${
         isScrolled ? "bg-white/95 backdrop-blur-sm shadow-sm" : ""
       }`}
     >
       <div className="flex items-center space-x-8">
         <button
           onClick={() => handleNavClick("/")}
-          className="text-sm uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
+          className="text-xs uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
         >
           Home
         </button>
         <button
           onClick={() => handleNavClick("#from-the-yarn")}
-          className="text-sm uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
+          className="text-xs uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
         >
           From The Yarn
         </button>
         <button
           onClick={() => handleNavClick("#collection")}
-          className="text-sm uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
+          className="text-xs uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
         >
           Collection
         </button>
         <button
           onClick={() => handleNavClick("/shop")}
-          className="text-sm uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
+          className="text-xs uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
         >
           Shop
         </button>
         <button
           onClick={() => handleNavClick("#boutique-tailoring")}
-          className="text-sm uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
+          className="text-xs uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
         >
           Tailoring
         </button>
         <button
           onClick={() => handleNavClick("#manifesto")}
-          className="text-sm uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
+          className="text-xs uppercase tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors font-light"
         >
           Philosophy
         </button>
@@ -90,7 +96,7 @@ export default function DesktopNavigation() {
             onClick={() => router.push("/register")}
             variant="dark"
             duration={800}
-            className="px-6 py-2 text-xs"
+            className="px-4 py-1.5 text-[10px]"
           >
             ENQUIRE
           </SlidingButton>

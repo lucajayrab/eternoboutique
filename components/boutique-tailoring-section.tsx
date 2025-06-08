@@ -43,8 +43,10 @@ export default function BoutiqueTailoringSection() {
         <table className="w-full min-w-[180px] border-collapse">
           <thead>
             <tr>
-              <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">Size</th>
-              <th className="py-1 px-2 border-b border-[#e0ddd2] text-left text-[10px] sm:text-xs font-normal">
+              <th className="py-0.5 px-1.5 border-b border-[#e0ddd2] text-left text-[8px] sm:text-[10px] font-normal">
+                Size
+              </th>
+              <th className="py-0.5 px-1.5 border-b border-[#e0ddd2] text-left text-[8px] sm:text-[10px] font-normal">
                 {title.includes("Shirt") ? "Neck" : "Waist"}
               </th>
             </tr>
@@ -53,12 +55,12 @@ export default function BoutiqueTailoringSection() {
             {sizes.map((item, index) => (
               <tr key={index}>
                 <td
-                  className={`py-1 px-2 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] sm:text-xs`}
+                  className={`py-0.5 px-1.5 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[8px] sm:text-[10px]`}
                 >
                   {item.size}
                 </td>
                 <td
-                  className={`py-1 px-2 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] sm:text-xs`}
+                  className={`py-0.5 px-1.5 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[8px] sm:text-[10px]`}
                 >
                   {item.measurement}
                 </td>
@@ -88,16 +90,16 @@ export default function BoutiqueTailoringSection() {
   ]
 
   return (
-    <section id="boutique-tailoring" className="w-full bg-[#f9f8f5] py-8 sm:py-12 md:py-16 lg:py-16">
+    <section id="boutique-tailoring" className="w-full bg-[#f9f8f5] py-6 sm:py-8 md:py-12 lg:py-16">
       <div className="w-full">
-        <div className="w-full px-8 sm:px-12 md:px-16 lg:px-20 mb-8 md:mb-12"></div>
+        <div className="w-full px-8 sm:px-12 md:px-16 lg:px-20 mb-6 md:mb-8"></div>
         {/* Mobile Toggle Buttons - Only visible on mobile */}
         {isMobile && (
-          <div className="flex justify-center mb-8 px-8">
+          <div className="flex justify-center mb-6 px-4">
             <div className="grid grid-cols-2 w-full max-w-[300px] border border-[#e0ddd2]">
               <button
                 onClick={() => handleSectionChange("in-person")}
-                className={`py-2 px-4 text-xs uppercase tracking-wider font-light transition-colors ${
+                className={`py-1.5 px-3 text-xs uppercase tracking-wider font-light transition-colors ${
                   activeSection === "in-person" ? "bg-[#5a5a56] text-white" : "bg-[#eeeeec] text-[#5a5a56]"
                 }`}
               >
@@ -105,7 +107,7 @@ export default function BoutiqueTailoringSection() {
               </button>
               <button
                 onClick={() => handleSectionChange("online")}
-                className={`py-2 px-4 text-xs uppercase tracking-wider font-light transition-colors ${
+                className={`py-1.5 px-3 text-xs uppercase tracking-wider font-light transition-colors ${
                   activeSection === "online" ? "bg-[#5a5a56] text-white" : "bg-[#eeeeec] text-[#5a5a56]"
                 }`}
               >
@@ -125,7 +127,7 @@ export default function BoutiqueTailoringSection() {
               <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6 text-center md:text-left">
                 IN-PERSON
               </h3>
-              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm mb-6 sm:mb-10 max-w-[550px]">
+              <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-[10px] sm:text-xs mb-6 sm:mb-10 max-w-[550px]">
                 <p>
                   Our showroom in the heart of Mayfair offers a refined setting for your personal tailoring experience.
                   Here, we provide in-person boutique tailoring appointments for clients who wish to have their items
@@ -194,7 +196,7 @@ export default function BoutiqueTailoringSection() {
                   <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6 text-center md:text-left">
                     ONLINE
                   </h3>
-                  <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm text-left">
+                  <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-[10px] sm:text-xs text-left">
                     <p>
                       For clients who prefer to order remotely, we offer the option to place standard orders from our
                       capsule collection through our Register Interest form. After submitting your details, one of our
@@ -224,16 +226,16 @@ export default function BoutiqueTailoringSection() {
 
         {/* Mobile Layout - Tab-based content (only visible on mobile) */}
         {isMobile && (
-          <div className="px-8">
+          <div className="px-4">
             {/* In-Person Content */}
             {activeSection === "in-person" && (
               <div className="text-center">
                 {/* Shop Now header above In-Person for mobile */}
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1 text-center">SHOP NOW</p>
-                <h3 className="text-[#5a5a56] font-normal text-base uppercase tracking-wider mb-6 text-center">
+                <h3 className="text-[#5a5a56] font-normal text-sm uppercase tracking-wider mb-6 text-center">
                   IN-PERSON
                 </h3>
-                <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs mb-8 max-w-[550px] mx-auto text-center">
+                <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-[10px] mb-8 max-w-[550px] mx-auto text-center">
                   <p>
                     Our showroom in the heart of Mayfair offers a refined setting for your personal tailoring
                     experience. Here, we provide in-person boutique tailoring appointments for clients who wish to have
@@ -283,7 +285,7 @@ export default function BoutiqueTailoringSection() {
                       onClick={handleRegisterClick}
                       variant="dark"
                       duration={1000}
-                      className="min-w-[180px] py-3 text-xs"
+                      className="min-w-[140px] py-2 text-[10px]"
                     >
                       ENQUIRE
                     </SlidingButton>
@@ -300,10 +302,8 @@ export default function BoutiqueTailoringSection() {
               <div className="text-center">
                 {/* Shop Now header above Online for mobile */}
                 <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1 text-center">SHOP NOW</p>
-                <h3 className="text-[#5a5a56] font-normal text-base uppercase tracking-wider mb-6 text-center">
-                  ONLINE
-                </h3>
-                <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs mb-8 max-w-[550px] mx-auto text-center">
+                <h3 className="text-[#5a5a56] font-normal text-sm uppercase tracking-wider mb-6 text-center">ONLINE</h3>
+                <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-[10px] mb-8 max-w-[550px] mx-auto text-center">
                   <p>
                     For clients who prefer to order remotely, we offer the option to place standard orders from our
                     capsule collection through our Register Interest form. After submitting your details, one of our
@@ -328,10 +328,10 @@ export default function BoutiqueTailoringSection() {
                       <table className="w-full min-w-[180px] border-collapse mx-auto">
                         <thead>
                           <tr>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-center text-[10px] font-normal">
+                            <th className="py-0.5 px-1.5 border-b border-[#e0ddd2] text-center text-[8px] sm:text-[10px] font-normal">
                               Size
                             </th>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-center text-[10px] font-normal">
+                            <th className="py-0.5 px-1.5 border-b border-[#e0ddd2] text-center text-[8px] sm:text-[10px] font-normal">
                               Neck
                             </th>
                           </tr>
@@ -340,12 +340,12 @@ export default function BoutiqueTailoringSection() {
                           {shirtSizes.map((item, index) => (
                             <tr key={index}>
                               <td
-                                className={`py-1 px-2 ${index < shirtSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                                className={`py-0.5 px-1.5 ${index < shirtSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[8px] sm:text-[10px] text-center`}
                               >
                                 {item.size}
                               </td>
                               <td
-                                className={`py-1 px-2 ${index < shirtSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                                className={`py-0.5 px-1.5 ${index < shirtSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[8px] sm:text-[10px] text-center`}
                               >
                                 {item.measurement}
                               </td>
@@ -365,10 +365,10 @@ export default function BoutiqueTailoringSection() {
                       <table className="w-full min-w-[180px] border-collapse mx-auto">
                         <thead>
                           <tr>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-center text-[10px] font-normal">
+                            <th className="py-0.5 px-1.5 border-b border-[#e0ddd2] text-center text-[8px] sm:text-[10px] font-normal">
                               Size
                             </th>
-                            <th className="py-1 px-2 border-b border-[#e0ddd2] text-center text-[10px] font-normal">
+                            <th className="py-0.5 px-1.5 border-b border-[#e0ddd2] text-center text-[8px] sm:text-[10px] font-normal">
                               Waist
                             </th>
                           </tr>
@@ -377,12 +377,12 @@ export default function BoutiqueTailoringSection() {
                           {trouserSizes.map((item, index) => (
                             <tr key={index}>
                               <td
-                                className={`py-1 px-2 ${index < trouserSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                                className={`py-0.5 px-1.5 ${index < trouserSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[8px] sm:text-[10px] text-center`}
                               >
                                 {item.size}
                               </td>
                               <td
-                                className={`py-1 px-2 ${index < trouserSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[10px] text-center`}
+                                className={`py-0.5 px-1.5 ${index < trouserSizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-[8px] sm:text-[10px] text-center`}
                               >
                                 {item.measurement}
                               </td>
@@ -401,7 +401,7 @@ export default function BoutiqueTailoringSection() {
                       onClick={handleRegisterClick}
                       variant="dark"
                       duration={1000}
-                      className="min-w-[180px] py-3 text-xs"
+                      className="min-w-[140px] py-2 text-[10px]"
                     >
                       ENQUIRE
                     </SlidingButton>

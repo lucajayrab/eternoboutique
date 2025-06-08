@@ -84,8 +84,20 @@ export default function ProductPage() {
 
     localStorage.setItem("eternoCart", JSON.stringify(existingCart))
 
-    // Show success message or redirect
-    alert("Added to cart!")
+    // If it's a shirt, redirect to shirt customization
+    if (product.type === "shirt") {
+      localStorage.setItem(
+        "pendingShirtCustomization",
+        JSON.stringify({
+          type: "individual",
+          shirtIndex: selectedColorIndex,
+        }),
+      )
+      router.push("/customize-shirt")
+    } else {
+      // Show success message for trousers and stay on page
+      router.push("/shop")
+    }
   }
 
   const sizes = ["XS", "S", "M", "L", "XL"]
