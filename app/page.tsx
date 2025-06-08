@@ -11,11 +11,12 @@ import NavigationMenu from "@/components/navigation-menu"
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
 
-// Video URLs - using different videos for desktop and mobile
+// Video URLs - using the new video for both desktop and mobile
 const DESKTOP_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515854_Coast_Drone_Sea_Sailing_By_Rassvet_Production_Artlist_HD-uw4AaTh1KevOivO73xbrOF3i1cte8P.mp4"
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515853_Drone_Boat_Sea_Woman_By_Rassvet_Production_Artlist_HD-uyfJr0lWhMqJwG1BWUM1LdnraoMdxe.mov"
 const MOBILE_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515853_Drone_Boat_Sea_Woman_By_Rassvet_Production_Artlist_HD-B2SQbV0HHByE9dgxaCSk5cNPOnmAIA.mp4"
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515853_Drone_Boat_Sea_Woman_By_Rassvet_Production_Artlist_HD-uyfJr0lWhMqJwG1BWUM1LdnraoMdxe.mov"
+const FALLBACK_IMAGE = "/images/hero.jpg"
 
 export default function HomePage() {
   const router = useRouter()
@@ -25,7 +26,6 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
   const [isArrowClicked, setIsArrowClicked] = useState(false)
   const [videoAttempts, setVideoAttempts] = useState(0)
-  const [userInteracted, setUserInteracted] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -49,75 +49,42 @@ export default function HomePage() {
   // Video loading and playback logic
   const attemptVideoPlay = useCallback(async () => {
     const video = videoRef.current
-    if (!video || isVideoError || videoAttempts > 2) return
+    if (!video || isVideoError || videoAttempts > 3) return
 
     try {
-      // Reset video state
-      video.currentTime = 0
-
       // Set video properties for mobile optimization
       video.muted = true
       video.playsInline = true
       video.autoplay = true
       video.loop = true
-      video.preload = "metadata"
-      video.controls = false
+      video.preload = "auto"
 
       // Mobile-specific attributes
       if (isMobile) {
-        video.setAttribute("playsinline", "true")
-        video.setAttribute("webkit-playsinline", "true")
-        video.setAttribute("x5-playsinline", "true")
-        video.setAttribute("x5-video-player-type", "h5")
-        video.setAttribute("x5-video-player-fullscreen", "false")
+        video.setAttribute("playsinline", "")
+        video.setAttribute("webkit-playsinline", "")
+        video.setAttribute("x5-playsinline", "")
       }
 
-      // Load the appropriate video source
+      // Load the appropriate video source immediately
       const videoUrl = isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL
-      if (video.src !== videoUrl) {
-        video.src = videoUrl
-        video.load()
-      }
+      video.src = videoUrl
+      video.load()
 
-      // Wait for video to be ready
-      await new Promise((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error("Video load timeout")), 10000)
-
-        video.addEventListener(
-          "loadeddata",
-          () => {
-            clearTimeout(timeout)
-            resolve(true)
-          },
-          { once: true },
-        )
-
-        video.addEventListener(
-          "error",
-          () => {
-            clearTimeout(timeout)
-            reject(new Error("Video load error"))
-          },
-          { once: true },
-        )
-      })
-
-      // Attempt to play
+      // Attempt to play immediately
       const playPromise = video.play()
       if (playPromise !== undefined) {
         await playPromise
         setIsVideoLoaded(true)
-        setIsVideoError(false)
       }
     } catch (error) {
-      console.warn(`Video play attempt ${videoAttempts + 1} failed:`, error)
+      console.warn("Video play attempt failed:", error)
       setVideoAttempts((prev) => prev + 1)
 
-      // Retry with exponential backoff, but only a few times
-      if (videoAttempts < 2) {
-        setTimeout(attemptVideoPlay, 1000 * Math.pow(2, videoAttempts))
+      // Retry with exponential backoff
+      if (videoAttempts < 3) {
+        setTimeout(attemptVideoPlay, 500 * Math.pow(2, videoAttempts))
       } else {
-        console.error("Video failed to load after multiple attempts")
         setIsVideoError(true)
       }
     }
@@ -127,24 +94,20 @@ export default function HomePage() {
   useEffect(() => {
     setIsMounted(true)
 
-    // Delay to ensure DOM is ready
+    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       attemptVideoPlay()
-    }, 500)
+    }, 100)
 
     return () => clearTimeout(timer)
   }, [attemptVideoPlay])
 
   // Handle user interactions for mobile autoplay restrictions
   useEffect(() => {
-    if (!isMobile || isVideoLoaded || userInteracted) return
+    if (!isMobile || isVideoLoaded) return
 
     const handleUserInteraction = () => {
-      setUserInteracted(true)
-      // Small delay to ensure the interaction is registered
-      setTimeout(() => {
-        attemptVideoPlay()
-      }, 100)
+      attemptVideoPlay()
     }
 
     // Add event listeners for user interaction
@@ -158,7 +121,7 @@ export default function HomePage() {
         document.removeEventListener(event, handleUserInteraction)
       })
     }
-  }, [isMobile, isVideoLoaded, userInteracted, attemptVideoPlay])
+  }, [isMobile, isVideoLoaded, attemptVideoPlay])
 
   // Video event handlers
   const handleVideoLoaded = useCallback(() => {
@@ -166,25 +129,11 @@ export default function HomePage() {
     setIsVideoError(false)
   }, [])
 
-  const handleVideoError = useCallback((e) => {
-    console.error("Video error:", e)
+  const handleVideoError = useCallback(() => {
+    console.error("Video failed to load")
     setIsVideoError(true)
     setIsVideoLoaded(false)
   }, [])
-
-  const handleVideoCanPlay = useCallback(() => {
-    const video = videoRef.current
-    if (video && !isVideoLoaded) {
-      video
-        .play()
-        .then(() => {
-          setIsVideoLoaded(true)
-        })
-        .catch((error) => {
-          console.warn("Video play failed in canplay handler:", error)
-        })
-    }
-  }, [isVideoLoaded])
 
   const handleScrollDown = useCallback(() => {
     setIsArrowClicked(true)
@@ -241,22 +190,21 @@ export default function HomePage() {
           loop
           playsInline
           autoPlay
-          preload="metadata"
+          preload="auto"
           disablePictureInPicture
           disableRemotePlaybook
-          controls={false}
           className="absolute inset-0 w-full h-full object-cover z-10"
           style={{ objectFit: "cover", filter: "brightness(0.7)" }}
           onLoadedData={handleVideoLoaded}
-          onCanPlay={handleVideoCanPlay}
+          onCanPlay={handleVideoLoaded}
           onError={handleVideoError}
         >
           <source src={isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
-        {/* Loading indicator - only show while video is loading */}
-        {!isVideoLoaded && !isVideoError && (
+        {/* Only show loading on mobile if video hasn't loaded yet */}
+        {isMobile && !isVideoLoaded && !isVideoError && (
           <div className="absolute inset-0 z-20 bg-black flex items-center justify-center">
             <div className="text-white/70 text-center">
               <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
@@ -265,24 +213,15 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Error state - only show if video completely fails */}
-        {isVideoError && (
-          <div className="absolute inset-0 z-15 bg-black flex items-center justify-center">
-            <div className="text-white/70 text-center">
-              <p className="text-sm">Unable to load video</p>
-            </div>
-          </div>
-        )}
-
-        {/* Down Arrow Button - Higher position on mobile */}
+        {/* Down Arrow Button - Higher position on mobile with black arrow */}
         <div className={`absolute ${isMobile ? "bottom-20" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
           <button
             onClick={handleScrollDown}
-            className={`arrow-container ${isArrowClicked ? "arrow-clicked" : ""} p-4 hover:bg-white/10 rounded-full transition-all duration-300`}
+            className={`arrow-container ${isArrowClicked ? "arrow-clicked" : ""} p-4 hover:bg-black/10 rounded-full transition-all duration-300`}
             aria-label="Scroll down to content"
           >
             <svg
-              className="arrow-icon w-6 h-6 text-white"
+              className="arrow-icon w-6 h-6 text-black"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
