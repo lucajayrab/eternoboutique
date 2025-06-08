@@ -160,25 +160,35 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
     return containerWidth / 2 - offsetToCenterOfCurrentItem
   }
 
-  // Touch handling for mobile swipe
+  // Touch handling for mobile swipe and tap
   const touchStartX = useRef(0)
   const touchEndX = useRef(0)
+  const touchStartTime = useRef(0)
+  const isDragging = useRef(false)
 
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX
+    touchStartTime.current = Date.now()
+    isDragging.current = false
   }
 
   const handleTouchMove = (e: React.TouchEvent) => {
     touchEndX.current = e.touches[0].clientX
+    const diff = Math.abs(touchStartX.current - touchEndX.current)
+    if (diff > 10) {
+      isDragging.current = true
+    }
   }
 
   const handleTouchEnd = () => {
     if (isTransitioning) return
 
     const diff = touchStartX.current - touchEndX.current
+    const timeDiff = Date.now() - touchStartTime.current
     const threshold = 50 // Minimum swipe distance
 
-    if (Math.abs(diff) > threshold) {
+    // Only handle swipe if it was a significant movement and not a quick tap
+    if (isDragging.current && Math.abs(diff) > threshold && timeDiff > 100) {
       if (diff > 0) {
         // Swipe left, go to next
         changeSlide((currentIndex + 1) % products.length)
@@ -187,6 +197,30 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
         changeSlide((currentIndex - 1 + products.length) % products.length)
       }
     }
+  }
+
+  // Handle individual item touch for mobile
+  const handleItemTouch = (index: number, e: React.TouchEvent) => {
+    e.stopPropagation()
+
+    const startX = e.touches[0].clientX
+    const startTime = Date.now()
+
+    const handleTouchEnd = (endEvent: TouchEvent) => {
+      const endX = endEvent.changedTouches[0].clientX
+      const endTime = Date.now()
+      const distance = Math.abs(startX - endX)
+      const duration = endTime - startTime
+
+      // If it's a quick tap (not a drag), navigate to product page
+      if (distance < 10 && duration < 300) {
+        router.push(`/product/${type}/${index}`)
+      }
+
+      document.removeEventListener("touchend", handleTouchEnd)
+    }
+
+    document.addEventListener("touchend", handleTouchEnd)
   }
 
   return (
@@ -231,6 +265,7 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
                 transitionProperty: "transform, opacity",
               }}
               onClick={() => handleProductClick(index)}
+              onTouchStart={isMobile ? (e) => handleItemTouch(index, e) : undefined}
             >
               <div className="relative w-full h-full">
                 <Image
@@ -688,6 +723,7 @@ export default function ShopPage() {
                                 Size Chart
                               </button>
                             </div>
+
                             <div className="flex gap-1">
                               {sizes.map((size) => (
                                 <button

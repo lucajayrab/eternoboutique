@@ -35,8 +35,8 @@ export default function EternoManifestoSection() {
               {/* Using next/image for better performance and error handling */}
               <div className="relative w-full h-full">
                 <Image
-                  src="/celebration-party-bw.jpeg"
-                  alt="Black and white vintage photo of people celebrating and dancing at a party"
+                  src="/vintage-party-celebration.jpeg"
+                  alt="Vintage photo of people celebrating and dancing at a summer party"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   style={{ objectFit: "cover", objectPosition: "center" }}
