@@ -39,11 +39,9 @@ export default function DesktopNavigation() {
     } else {
       router.push(href)
       // Ensure page loads at top for non-anchor links
-      if (href === "/shop") {
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: "smooth" })
-        }, 100)
-      }
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" })
+      }, 100)
     }
   }
 

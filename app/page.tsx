@@ -144,17 +144,33 @@ export default function HomePage() {
 
     if (!aboutSectionRef.current) return
 
-    // Calculate the scroll position to ensure the sticky banner becomes colored
-    // The sticky banner becomes colored when we scroll past the hero section
-    const heroHeight = window.innerHeight
-    const stickyBannerActivationPoint = heroHeight - 50 // 50px before the end of hero section
+    // For mobile, ensure we scroll fully to the "From The Yarn" section
+    if (isMobile) {
+      const fromTheYarnSection = document.getElementById("from-the-yarn")
+      if (fromTheYarnSection) {
+        // Get the position of the section
+        const sectionTop = fromTheYarnSection.getBoundingClientRect().top + window.pageYOffset
 
-    // Scroll to this position to activate the colored sticky banner
-    window.scrollTo({
-      top: stickyBannerActivationPoint,
-      behavior: "smooth",
-    })
-  }, [])
+        // Calculate the sticky header height
+        const stickyHeaderHeight = 70
+
+        // Scroll to the section with offset for the sticky header
+        window.scrollTo({
+          top: sectionTop - stickyHeaderHeight,
+          behavior: "smooth",
+        })
+      }
+    } else {
+      // Desktop behavior - just enough to make the sticky banner colored
+      const heroHeight = window.innerHeight
+      const stickyBannerActivationPoint = heroHeight - 50
+
+      window.scrollTo({
+        top: stickyBannerActivationPoint,
+        behavior: "smooth",
+      })
+    }
+  }, [isMobile])
 
   if (!isMounted) {
     return null
@@ -198,7 +214,7 @@ export default function HomePage() {
         )}
 
         {/* Down Arrow Button - Higher position on mobile */}
-        <div className={`absolute ${isMobile ? "bottom-16" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
+        <div className={`absolute ${isMobile ? "bottom-24" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
           <button
             onClick={handleScrollDown}
             className={`arrow-container ${isArrowClicked ? "arrow-clicked" : ""} p-4 hover:bg-white/10 rounded-full transition-all duration-300`}

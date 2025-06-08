@@ -567,7 +567,7 @@ export default function ShopPage() {
         >
           {viewMode === "sets" && (
             <div
-              className={`flex-1 max-w-7xl mx-auto px-3 sm:px-4 w-full ${isMobile ? "overflow-auto" : "overflow-hidden"}`}
+              className={`flex-1 max-w-7xl mx-auto px-3 sm:px-4 w-full ${isMobile ? "overflow-auto" : "overflow-hidden h-full"}`}
             >
               <div className={`bg-white shadow-sm ${isMobile ? "min-h-full" : "overflow-hidden h-full"}`}>
                 <div className="p-3 sm:p-4 border-b border-[#5a5a56]/10">
@@ -1094,8 +1094,8 @@ export default function ShopPage() {
           )}
         </div>
 
-        {/* Cart Summary - Fixed at Bottom - Only show on desktop */}
-        {cart.length > 0 && !isMobile && (
+        {/* Cart Summary - Only show on mobile */}
+        {cart.length > 0 && isMobile && (
           <div className="flex-shrink-0 bg-[#f9f8f5] border-t border-[#5a5a56]/10 shadow-sm p-4 mx-4 mb-4">
             <div className="max-w-7xl mx-auto">
               <div className="flex items-center justify-between mb-3">
