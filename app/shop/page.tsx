@@ -133,6 +133,12 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
   const handleProductClick = (index: number) => {
     if (isTransitioning) return
 
+    // On mobile, always navigate to the product page
+    if (isMobile) {
+      router.push(`/product/${type}/${index}`)
+      return
+    }
+
     if (index === currentIndex) {
       router.push(`/product/${type}/${index}`)
     } else {
@@ -1152,7 +1158,7 @@ export default function ShopPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {sizeChartData[showSizeChart].measurements.map((measurement) => (
+                  {Object.entries(sizeChartData[showSizeChart]).map((measurement) => (
                     <tr key={measurement.size} className="border-b border-[#5a5a56]/5">
                       <td className="py-2 text-[#5a5a56]">{measurement.size}</td>
                       {showSizeChart === "shirt" ? (
