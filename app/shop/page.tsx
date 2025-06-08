@@ -526,7 +526,9 @@ export default function ShopPage() {
   }
 
   return (
-    <div className="h-screen bg-white font-mulish flex flex-col overflow-hidden">
+    <div
+      className={`${isMobile && (viewMode === "sets" || viewMode === "tailoring") ? "min-h-screen" : "h-screen"} bg-white font-mulish flex flex-col overflow-hidden`}
+    >
       <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
 
       <div className="flex-1 flex flex-col pt-[70px] overflow-hidden">
@@ -560,21 +562,25 @@ export default function ShopPage() {
         </div>
 
         {/* Main Content Area - Flexible Height */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div
+          className={`flex-1 flex flex-col ${isMobile && (viewMode === "sets" || viewMode === "tailoring") ? "overflow-auto" : "overflow-hidden"}`}
+        >
           {viewMode === "sets" && (
-            <div className="flex-1 max-w-7xl mx-auto px-3 sm:px-4 w-full overflow-hidden">
-              <div className="bg-white shadow-sm overflow-hidden h-full">
+            <div
+              className={`flex-1 max-w-7xl mx-auto px-3 sm:px-4 w-full ${isMobile ? "overflow-auto" : "overflow-hidden"}`}
+            >
+              <div className={`bg-white shadow-sm ${isMobile ? "min-h-full" : "overflow-hidden h-full"}`}>
                 <div className="p-3 sm:p-4 border-b border-[#5a5a56]/10">
                   <h3 className="font-light text-sm sm:text-lg tracking-[0.1em] uppercase text-[#5a5a56]">
                     Create Your Set
                   </h3>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 h-full">
+                <div className={`grid grid-cols-1 lg:grid-cols-3 gap-0 ${isMobile ? "min-h-full" : "h-full"}`}>
                   {/* Mobile-optimized layout for sets view */}
                   {isMobile ? (
-                    <div className="flex flex-col h-full">
-                      {/* Image section - takes 40% of height on mobile */}
-                      <div className="h-2/5 p-3 flex items-center justify-center">
+                    <div className="flex flex-col min-h-full pb-6">
+                      {/* Image section - flexible height on mobile */}
+                      <div className="flex-shrink-0 p-4 flex items-center justify-center">
                         <div className="aspect-[4/3] relative w-full max-w-xs">
                           <div className="grid grid-cols-2 h-full gap-2">
                             <div className="relative">
@@ -601,9 +607,9 @@ export default function ShopPage() {
                         </div>
                       </div>
 
-                      {/* Controls section - takes 60% of height on mobile */}
-                      <div className="h-3/5 border-t border-[#5a5a56]/10 flex flex-col">
-                        <div className="p-3 space-y-3 flex-1 overflow-y-auto">
+                      {/* Controls section - flexible height on mobile */}
+                      <div className="flex-1 border-t border-[#5a5a56]/10 flex flex-col">
+                        <div className="p-4 space-y-4 flex-1">
                           <div>
                             <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-1">
                               Select Shirt:{" "}
@@ -741,8 +747,8 @@ export default function ShopPage() {
                           </div>
 
                           {/* Enhanced Price and Add to Cart Section */}
-                          <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-3 mt-2">
-                            <div className="text-center mb-2">
+                          <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-4 mt-4">
+                            <div className="text-center mb-3">
                               <div className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-1">
                                 Complete Set
                               </div>
@@ -757,7 +763,7 @@ export default function ShopPage() {
                               onClick={addSetFromPanelToCart}
                               variant="dark"
                               duration={800}
-                              className="w-full py-2 text-xs font-light tracking-wider mb-1"
+                              className="w-full py-3 text-xs font-light tracking-wider mb-2"
                             >
                               Add Complete Set to Cart
                             </SlidingButton>
@@ -984,12 +990,18 @@ export default function ShopPage() {
             </div>
           )}
           {viewMode === "tailoring" && (
-            <div className="flex-1 overflow-hidden">
-              <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-2 sm:pt-4 pb-6 sm:pb-8 h-full">
+            <div className={`flex-1 ${isMobile ? "overflow-auto" : "overflow-hidden"}`}>
+              <div
+                className={`max-w-6xl mx-auto px-4 sm:px-8 pt-2 sm:pt-4 pb-6 sm:pb-8 ${isMobile ? "min-h-full" : "h-full"}`}
+              >
                 {/* Main Content Grid - Equal Height Sections */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 h-full items-start">
+                <div
+                  className={`grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 ${isMobile ? "min-h-full" : "h-full items-start"}`}
+                >
                   {/* Image Section */}
-                  <div className="flex items-start justify-center lg:justify-end pt-4">
+                  <div
+                    className={`flex ${isMobile ? "justify-center" : "items-start justify-center lg:justify-end"} pt-4`}
+                  >
                     <div className="relative w-full max-w-md lg:max-w-lg">
                       <Image
                         src="/images/vintage-italian-family-new.jpg"
@@ -1004,13 +1016,17 @@ export default function ShopPage() {
                   </div>
 
                   {/* Content Section - All text content as one cohesive box */}
-                  <div className="flex flex-col items-start text-center lg:text-left pt-4">
+                  <div
+                    className={`flex flex-col ${isMobile ? "items-center text-center" : "items-start text-center lg:text-left"} pt-4 pb-6`}
+                  >
                     {/* BOUTIQUE TAILORING Header - now part of the content box */}
                     <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6">
                       BOUTIQUE TAILORING
                     </h2>
 
-                    <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0">
+                    <div
+                      className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm mb-6 sm:mb-8 max-w-2xl ${isMobile ? "mx-auto text-center" : "mx-auto lg:mx-0"}`}
+                    >
                       <p className="mb-3 sm:mb-4">
                         Our showroom in the heart of Mayfair offers a refined setting for your personal tailoring
                         experience. Here, we provide in-person boutique tailoring appointments for clients who wish to
@@ -1029,7 +1045,7 @@ export default function ShopPage() {
                       href="https://maps.google.com/?q=Mayfair,+London,+UK"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block bg-[#eeeeec] p-4 sm:p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#e8e4d9] transition-colors duration-300 border border-[#e0ddd2] mb-6 mx-auto lg:mx-0"
+                      className={`inline-block bg-[#eeeeec] p-4 sm:p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#e8e4d9] transition-colors duration-300 border border-[#e0ddd2] mb-6 ${isMobile ? "mx-auto" : "mx-auto lg:mx-0"}`}
                     >
                       <h4 className="text-[#5a5a56] font-normal mb-2 sm:mb-3 text-xs sm:text-sm uppercase tracking-wider text-center">
                         LOCATE US
@@ -1054,8 +1070,8 @@ export default function ShopPage() {
                     </Link>
 
                     {/* Register Interest Button */}
-                    <div className="max-w-[550px] mx-auto lg:mx-0">
-                      <div className="flex justify-center lg:justify-start">
+                    <div className={`max-w-[550px] ${isMobile ? "mx-auto" : "mx-auto lg:mx-0"}`}>
+                      <div className={`flex ${isMobile ? "justify-center" : "justify-center lg:justify-start"}`}>
                         <SlidingButton
                           onClick={() => router.push("/register")}
                           variant="dark"
@@ -1065,7 +1081,9 @@ export default function ShopPage() {
                           ENQUIRE
                         </SlidingButton>
                       </div>
-                      <p className="text-[10px] sm:text-xs mt-3 text-[#5a5a56]/70 text-center lg:text-left max-w-[400px] mx-auto lg:mx-0">
+                      <p
+                        className={`text-[10px] sm:text-xs mt-3 text-[#5a5a56]/70 ${isMobile ? "text-center" : "text-center lg:text-left"} max-w-[400px] ${isMobile ? "mx-auto" : "mx-auto lg:mx-0"}`}
+                      >
                         Submit an enquiry and our team will contact you to discuss your order details.
                       </p>
                     </div>

@@ -197,8 +197,8 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Down Arrow Button */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30">
+        {/* Down Arrow Button - Higher position on mobile */}
+        <div className={`absolute ${isMobile ? "bottom-16" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
           <button
             onClick={handleScrollDown}
             className={`arrow-container ${isArrowClicked ? "arrow-clicked" : ""} p-4 hover:bg-white/10 rounded-full transition-all duration-300`}
