@@ -1,11 +1,14 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import NavigationMenu from "@/components/navigation-menu"
 import SlidingButton from "@/components/sliding-button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 // Product data
 const SHIRT_PRICE = 325
@@ -61,16 +64,17 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
   const carouselRef = useRef<HTMLDivElement>(null)
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null)
   const [viewportHeight, setViewportHeight] = useState(0)
+  const isMobile = useIsMobile()
 
   // Calculate available height for carousel
   useEffect(() => {
     const updateViewportHeight = () => {
       const headerHeight = 70
-      const titleSectionHeight = 120 // Title + description
-      const tabsHeight = 80 // Tab navigation
+      const titleSectionHeight = isMobile ? 80 : 120 // Smaller on mobile
+      const tabsHeight = isMobile ? 60 : 80 // Smaller on mobile
       const paginationHeight = 60 // Dots + spacing
-      const cartSummaryHeight = 120 // Estimated cart summary height
-      const padding = 40 // Additional padding
+      const cartSummaryHeight = isMobile ? 0 : 120 // No cart summary on mobile
+      const padding = isMobile ? 20 : 40 // Less padding on mobile
 
       const availableHeight =
         window.innerHeight -
@@ -80,20 +84,20 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
         paginationHeight -
         cartSummaryHeight -
         padding
-      setViewportHeight(Math.max(400, availableHeight)) // Minimum 400px
+      setViewportHeight(Math.max(isMobile ? 300 : 400, availableHeight))
     }
 
     updateViewportHeight()
     window.addEventListener("resize", updateViewportHeight)
     return () => window.removeEventListener("resize", updateViewportHeight)
-  }, [])
+  }, [isMobile])
 
   // Optimized dimensions based on viewport
-  const ITEM_WIDTH_CENTER = Math.min(420, viewportHeight * 0.6)
-  const ITEM_HEIGHT_CENTER = viewportHeight * 0.85
-  const ITEM_WIDTH_SIDE = ITEM_WIDTH_CENTER * 0.8
-  const ITEM_HEIGHT_SIDE = ITEM_HEIGHT_CENTER * 0.8
-  const ITEM_GAP = 24
+  const ITEM_WIDTH_CENTER = Math.min(isMobile ? 280 : 420, viewportHeight * (isMobile ? 0.5 : 0.6))
+  const ITEM_HEIGHT_CENTER = viewportHeight * (isMobile ? 0.75 : 0.85)
+  const ITEM_WIDTH_SIDE = ITEM_WIDTH_CENTER * (isMobile ? 0.7 : 0.8)
+  const ITEM_HEIGHT_SIDE = ITEM_HEIGHT_CENTER * (isMobile ? 0.7 : 0.8)
+  const ITEM_GAP = isMobile ? 16 : 24
   const TRANSITION_DURATION = 500
   const AUTO_PLAY_INTERVAL = 6000
 
@@ -145,11 +149,43 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
     return containerWidth / 2 - offsetToCenterOfCurrentItem
   }
 
+  // Touch handling for mobile swipe
+  const touchStartX = useRef(0)
+  const touchEndX = useRef(0)
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = () => {
+    if (isTransitioning) return
+
+    const diff = touchStartX.current - touchEndX.current
+    const threshold = 50 // Minimum swipe distance
+
+    if (Math.abs(diff) > threshold) {
+      if (diff > 0) {
+        // Swipe left, go to next
+        changeSlide((currentIndex + 1) % products.length)
+      } else {
+        // Swipe right, go to previous
+        changeSlide((currentIndex - 1 + products.length) % products.length)
+      }
+    }
+  }
+
   return (
     <div
       className="relative w-full max-w-7xl mx-auto overflow-hidden"
       ref={carouselRef}
       style={{ height: `${viewportHeight}px` }}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
     >
       <div
         className="flex items-center transition-transform ease-out h-full"
@@ -209,21 +245,23 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
             onClick={() => changeSlide(index)}
             disabled={isTransitioning}
             className={`transition-all duration-300 rounded-full ${
-              index === currentIndex ? "bg-[#5a5a56] w-8 h-3" : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50 w-3 h-3"
+              index === currentIndex
+                ? "bg-[#5a5a56] w-6 sm:w-8 h-2 sm:h-3"
+                : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50 w-2 sm:w-3 h-2 sm:h-3"
             }`}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}
       </div>
 
-      {/* Navigation arrows */}
+      {/* Navigation arrows - slightly smaller on mobile */}
       <button
         onClick={() => changeSlide((currentIndex - 1 + products.length) % products.length)}
         disabled={isTransitioning}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 disabled:opacity-50 z-30"
+        className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-8 sm:w-10 h-8 sm:h-10 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 disabled:opacity-50 z-30"
         aria-label="Previous product"
       >
-        <svg className="w-4 h-4 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </button>
@@ -231,10 +269,10 @@ function ProductCarousel({ products, type, onAddToCart }: ProductCarouselProps) 
       <button
         onClick={() => changeSlide((currentIndex + 1) % products.length)}
         disabled={isTransitioning}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 disabled:opacity-50 z-30"
+        className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-8 sm:w-10 h-8 sm:h-10 bg-white/90 hover:bg-white rounded-full shadow-md flex items-center justify-center transition-all duration-200 disabled:opacity-50 z-30"
         aria-label="Next product"
       >
-        <svg className="w-4 h-4 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-3 h-3 sm:w-4 sm:h-4 text-[#5a5a56]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>
@@ -250,6 +288,7 @@ export default function ShopPage() {
   const [selectedShirt, setSelectedShirt] = useState(0)
   const [selectedTrouser, setSelectedTrouser] = useState(3)
   const [selectedCombinationId, setSelectedCombinationId] = useState<string>("")
+  const isMobile = useIsMobile()
 
   // Ensure page loads at top
   useEffect(() => {
@@ -439,28 +478,28 @@ export default function ShopPage() {
 
   return (
     <div className="h-screen bg-white font-mulish flex flex-col overflow-hidden">
-      <NavigationMenu logoWidth="45mm" />
+      <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
 
       <div className="flex-1 flex flex-col pt-[70px] overflow-hidden">
         {/* Header Section - Fixed Height */}
-        <div className="flex-shrink-0 px-4 sm:px-8 md:px-12 lg:px-16 py-6">
-          <div className="text-center mb-6">
-            <h1 className="text-lg sm:text-xl md:text-2xl font-light tracking-[0.15em] uppercase text-[#5a5a56] mb-2">
+        <div className="flex-shrink-0 px-3 sm:px-8 md:px-12 lg:px-16 py-4 sm:py-6">
+          <div className="text-center mb-4 sm:mb-6">
+            <h1 className="text-base sm:text-lg md:text-2xl font-light tracking-[0.15em] uppercase text-[#5a5a56] mb-1 sm:mb-2">
               COLLECTION
             </h1>
-            <p className="font-light text-[#5a5a56]/80 text-sm md:text-base max-w-2xl mx-auto">
+            <p className="font-light text-[#5a5a56]/80 text-xs sm:text-sm md:text-base max-w-2xl mx-auto">
               Handcrafted Italian linen pieces designed for the modern gentleman.
             </p>
           </div>
 
           {/* Tab Navigation - Fixed Height */}
           <div className="flex justify-center">
-            <div className="border-b border-[#5a5a56]/20 flex space-x-4 md:space-x-8">
+            <div className="border-b border-[#5a5a56]/20 flex space-x-3 sm:space-x-4 md:space-x-8">
               {["shirts", "trousers", "sets"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => handleTabChange(tab as ViewMode)}
-                  className={`px-3 md:px-4 py-3 text-xs md:text-sm font-light uppercase tracking-wider transition-colors duration-300 relative ${
+                  className={`px-2 sm:px-3 md:px-4 py-2 sm:py-3 text-[10px] sm:text-xs md:text-sm font-light uppercase tracking-wider transition-colors duration-300 relative ${
                     activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
                   }`}
                 >
@@ -477,140 +516,291 @@ export default function ShopPage() {
         {/* Main Content Area - Flexible Height */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {viewMode === "sets" && (
-            <div className="flex-1 max-w-7xl mx-auto px-4 w-full overflow-hidden">
+            <div className="flex-1 max-w-7xl mx-auto px-3 sm:px-4 w-full overflow-hidden">
               <div className="bg-white shadow-sm overflow-hidden h-full">
-                <div className="p-4 border-b border-[#5a5a56]/10">
-                  <h3 className="font-light text-lg tracking-[0.1em] uppercase text-[#5a5a56]">Create Your Set</h3>
+                <div className="p-3 sm:p-4 border-b border-[#5a5a56]/10">
+                  <h3 className="font-light text-sm sm:text-lg tracking-[0.1em] uppercase text-[#5a5a56]">
+                    Create Your Set
+                  </h3>
                 </div>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-0 h-full">
-                  <div className="lg:col-span-2 p-4 flex items-center justify-center">
-                    <div className="aspect-[4/3] relative w-full max-w-2xl">
-                      <div className="grid grid-cols-2 h-full gap-2">
-                        <div className="relative">
-                          <Image
-                            src={SHIRT_COLORS[selectedShirt].image || "/placeholder.svg"}
-                            alt={`${SHIRT_COLORS[selectedShirt].name} Shirt`}
-                            fill
-                            style={{ objectFit: "contain" }}
-                            priority
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 30vw"
-                          />
-                        </div>
-                        <div className="relative">
-                          <Image
-                            src={TROUSER_COLORS[selectedTrouser].image || "/placeholder.svg"}
-                            alt={`${TROUSER_COLORS[selectedTrouser].name} Trousers`}
-                            fill
-                            style={{ objectFit: "contain" }}
-                            priority
-                            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 30vw"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="lg:border-l lg:border-[#5a5a56]/10 flex flex-col">
-                    <div className="p-4 space-y-4 flex-1">
-                      <div>
-                        <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
-                          Select Shirt:{" "}
-                          <span className="font-normal text-[#5a5a56]">{SHIRT_COLORS[selectedShirt].name}</span>
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {SHIRT_COLORS.map((shirt, index) => (
-                            <button
-                              key={shirt.name}
-                              onClick={() => {
-                                setSelectedShirt(index)
-                                const csId =
-                                  SUGGESTED_COMBINATIONS.find((c) => c.shirt === index && c.trouser === selectedTrouser)
-                                    ?.id || ""
-                                setSelectedCombinationId(csId)
-                              }}
-                              className={`w-6 h-6 rounded-full transition-all duration-200 border-2 ${
-                                selectedShirt === index
-                                  ? "ring-2 ring-offset-1 ring-[#5a5a56] border-transparent"
-                                  : "border-gray-300/70 hover:border-[#5a5a56]/50"
-                              }`}
-                              style={{ backgroundColor: shirt.color }}
-                              aria-label={`${shirt.name} shirt color`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
-                          Select Trouser:{" "}
-                          <span className="font-normal text-[#5a5a56]">{TROUSER_COLORS[selectedTrouser].name}</span>
-                        </h4>
-                        <div className="flex flex-wrap gap-2">
-                          {TROUSER_COLORS.map((trouser, index) => (
-                            <button
-                              key={trouser.name}
-                              onClick={() => {
-                                setSelectedTrouser(index)
-                                const csId =
-                                  SUGGESTED_COMBINATIONS.find((c) => c.shirt === selectedShirt && c.trouser === index)
-                                    ?.id || ""
-                                setSelectedCombinationId(csId)
-                              }}
-                              className={`w-6 h-6 rounded-full transition-all duration-200 border-2 ${
-                                selectedTrouser === index
-                                  ? "ring-2 ring-offset-1 ring-[#5a5a56] border-transparent"
-                                  : "border-gray-300/70 hover:border-[#5a5a56]/50"
-                              }`}
-                              style={{ backgroundColor: trouser.color }}
-                              aria-label={`${trouser.name} trouser color`}
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
-                          Suggested Sets:
-                        </label>
-                        <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
-                          <SelectTrigger className="w-full bg-transparent border-gray-300/70 text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 rounded-none">
-                            <SelectValue placeholder="Select a combination..." className="font-light" />
-                          </SelectTrigger>
-                          <SelectContent className="font-mulish rounded-none">
-                            {SUGGESTED_COMBINATIONS.map((combo) => (
-                              <SelectItem key={combo.id} value={combo.id} className="font-light text-sm">
-                                {combo.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      {/* Enhanced Price and Add to Cart Section */}
-                      <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-4 mt-4">
-                        <div className="text-center mb-3">
-                          <div className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1">Complete Set</div>
-                          <div className="text-2xl font-light text-[#5a5a56] mb-1">£{SET_PRICE}</div>
-                          <div className="text-xs text-[#5a5a56]/60">
-                            {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name} Trousers
+                  {/* Mobile-optimized layout for sets view */}
+                  {isMobile ? (
+                    <div className="flex flex-col h-full">
+                      {/* Image section - takes 50% of height on mobile */}
+                      <div className="h-1/2 p-3 flex items-center justify-center">
+                        <div className="aspect-[4/3] relative w-full max-w-xs">
+                          <div className="grid grid-cols-2 h-full gap-2">
+                            <div className="relative">
+                              <Image
+                                src={SHIRT_COLORS[selectedShirt].image || "/placeholder.svg"}
+                                alt={`${SHIRT_COLORS[selectedShirt].name} Shirt`}
+                                fill
+                                style={{ objectFit: "contain" }}
+                                priority
+                                sizes="50vw"
+                              />
+                            </div>
+                            <div className="relative">
+                              <Image
+                                src={TROUSER_COLORS[selectedTrouser].image || "/placeholder.svg"}
+                                alt={`${TROUSER_COLORS[selectedTrouser].name} Trousers`}
+                                fill
+                                style={{ objectFit: "contain" }}
+                                priority
+                                sizes="50vw"
+                              />
+                            </div>
                           </div>
                         </div>
+                      </div>
 
-                        <SlidingButton
-                          onClick={addSetFromPanelToCart}
-                          variant="dark"
-                          duration={800}
-                          className="w-full py-3 text-sm font-light tracking-wider mb-2"
-                        >
-                          Add Complete Set to Cart
-                        </SlidingButton>
+                      {/* Controls section - takes 50% of height on mobile */}
+                      <div className="h-1/2 border-t border-[#5a5a56]/10 flex flex-col">
+                        <div className="p-3 space-y-3 flex-1 overflow-y-auto">
+                          <div>
+                            <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-1">
+                              Select Shirt:{" "}
+                              <span className="font-normal text-[#5a5a56]">{SHIRT_COLORS[selectedShirt].name}</span>
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {SHIRT_COLORS.map((shirt, index) => (
+                                <button
+                                  key={shirt.name}
+                                  onClick={() => {
+                                    setSelectedShirt(index)
+                                    const csId =
+                                      SUGGESTED_COMBINATIONS.find(
+                                        (c) => c.shirt === index && c.trouser === selectedTrouser,
+                                      )?.id || ""
+                                    setSelectedCombinationId(csId)
+                                  }}
+                                  className={`w-5 h-5 rounded-full transition-all duration-200 border-2 ${
+                                    selectedShirt === index
+                                      ? "ring-1 ring-offset-1 ring-[#5a5a56] border-transparent"
+                                      : "border-gray-300/70 hover:border-[#5a5a56]/50"
+                                  }`}
+                                  style={{ backgroundColor: shirt.color }}
+                                  aria-label={`${shirt.name} shirt color`}
+                                />
+                              ))}
+                            </div>
+                          </div>
 
-                        <div className="text-xs text-center text-[#5a5a56]/50">
-                          Save £{SHIRT_PRICE + TROUSER_PRICE - SET_PRICE} vs individual items
+                          <div>
+                            <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-1">
+                              Select Trouser:{" "}
+                              <span className="font-normal text-[#5a5a56]">{TROUSER_COLORS[selectedTrouser].name}</span>
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {TROUSER_COLORS.map((trouser, index) => (
+                                <button
+                                  key={trouser.name}
+                                  onClick={() => {
+                                    setSelectedTrouser(index)
+                                    const csId =
+                                      SUGGESTED_COMBINATIONS.find(
+                                        (c) => c.shirt === selectedShirt && c.trouser === index,
+                                      )?.id || ""
+                                    setSelectedCombinationId(csId)
+                                  }}
+                                  className={`w-5 h-5 rounded-full transition-all duration-200 border-2 ${
+                                    selectedTrouser === index
+                                      ? "ring-1 ring-offset-1 ring-[#5a5a56] border-transparent"
+                                      : "border-gray-300/70 hover:border-[#5a5a56]/50"
+                                  }`}
+                                  style={{ backgroundColor: trouser.color }}
+                                  aria-label={`${trouser.name} trouser color`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-1">
+                              Suggested Sets:
+                            </label>
+                            <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
+                              <SelectTrigger className="w-full bg-transparent border-gray-300/70 text-[#5a5a56] text-xs font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 rounded-none h-9">
+                                <SelectValue placeholder="Select a combination..." className="font-light" />
+                              </SelectTrigger>
+                              <SelectContent className="font-mulish rounded-none">
+                                {SUGGESTED_COMBINATIONS.map((combo) => (
+                                  <SelectItem key={combo.id} value={combo.id} className="font-light text-xs">
+                                    {combo.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {/* Enhanced Price and Add to Cart Section */}
+                          <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-3 mt-2">
+                            <div className="text-center mb-2">
+                              <div className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-1">
+                                Complete Set
+                              </div>
+                              <div className="text-xl font-light text-[#5a5a56] mb-1">£{SET_PRICE}</div>
+                              <div className="text-[10px] text-[#5a5a56]/60">
+                                {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name}{" "}
+                                Trousers
+                              </div>
+                            </div>
+
+                            <SlidingButton
+                              onClick={addSetFromPanelToCart}
+                              variant="dark"
+                              duration={800}
+                              className="w-full py-2 text-xs font-light tracking-wider mb-1"
+                            >
+                              Add Complete Set to Cart
+                            </SlidingButton>
+
+                            <div className="text-[10px] text-center text-[#5a5a56]/50">
+                              Save £{SHIRT_PRICE + TROUSER_PRICE - SET_PRICE} vs individual items
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    // Desktop layout remains unchanged
+                    <>
+                      <div className="lg:col-span-2 p-4 flex items-center justify-center">
+                        <div className="aspect-[4/3] relative w-full max-w-2xl">
+                          <div className="grid grid-cols-2 h-full gap-2">
+                            <div className="relative">
+                              <Image
+                                src={SHIRT_COLORS[selectedShirt].image || "/placeholder.svg"}
+                                alt={`${SHIRT_COLORS[selectedShirt].name} Shirt`}
+                                fill
+                                style={{ objectFit: "contain" }}
+                                priority
+                                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 30vw"
+                              />
+                            </div>
+                            <div className="relative">
+                              <Image
+                                src={TROUSER_COLORS[selectedTrouser].image || "/placeholder.svg"}
+                                alt={`${TROUSER_COLORS[selectedTrouser].name} Trousers`}
+                                fill
+                                style={{ objectFit: "contain" }}
+                                priority
+                                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 30vw"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="lg:border-l lg:border-[#5a5a56]/10 flex flex-col">
+                        <div className="p-4 space-y-4 flex-1">
+                          <div>
+                            <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
+                              Select Shirt:{" "}
+                              <span className="font-normal text-[#5a5a56]">{SHIRT_COLORS[selectedShirt].name}</span>
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {SHIRT_COLORS.map((shirt, index) => (
+                                <button
+                                  key={shirt.name}
+                                  onClick={() => {
+                                    setSelectedShirt(index)
+                                    const csId =
+                                      SUGGESTED_COMBINATIONS.find(
+                                        (c) => c.shirt === index && c.trouser === selectedTrouser,
+                                      )?.id || ""
+                                    setSelectedCombinationId(csId)
+                                  }}
+                                  className={`w-6 h-6 rounded-full transition-all duration-200 border-2 ${
+                                    selectedShirt === index
+                                      ? "ring-2 ring-offset-1 ring-[#5a5a56] border-transparent"
+                                      : "border-gray-300/70 hover:border-[#5a5a56]/50"
+                                  }`}
+                                  style={{ backgroundColor: shirt.color }}
+                                  aria-label={`${shirt.name} shirt color`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
+                              Select Trouser:{" "}
+                              <span className="font-normal text-[#5a5a56]">{TROUSER_COLORS[selectedTrouser].name}</span>
+                            </h4>
+                            <div className="flex flex-wrap gap-2">
+                              {TROUSER_COLORS.map((trouser, index) => (
+                                <button
+                                  key={trouser.name}
+                                  onClick={() => {
+                                    setSelectedTrouser(index)
+                                    const csId =
+                                      SUGGESTED_COMBINATIONS.find(
+                                        (c) => c.shirt === selectedShirt && c.trouser === index,
+                                      )?.id || ""
+                                    setSelectedCombinationId(csId)
+                                  }}
+                                  className={`w-6 h-6 rounded-full transition-all duration-200 border-2 ${
+                                    selectedTrouser === index
+                                      ? "ring-2 ring-offset-1 ring-[#5a5a56] border-transparent"
+                                      : "border-gray-300/70 hover:border-[#5a5a56]/50"
+                                  }`}
+                                  style={{ backgroundColor: trouser.color }}
+                                  aria-label={`${trouser.name} trouser color`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
+                              Suggested Sets:
+                            </label>
+                            <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
+                              <SelectTrigger className="w-full bg-transparent border-gray-300/70 text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 rounded-none">
+                                <SelectValue placeholder="Select a combination..." className="font-light" />
+                              </SelectTrigger>
+                              <SelectContent className="font-mulish rounded-none">
+                                {SUGGESTED_COMBINATIONS.map((combo) => (
+                                  <SelectItem key={combo.id} value={combo.id} className="font-light text-sm">
+                                    {combo.name}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+
+                          {/* Enhanced Price and Add to Cart Section */}
+                          <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-4 mt-4">
+                            <div className="text-center mb-3">
+                              <div className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1">
+                                Complete Set
+                              </div>
+                              <div className="text-2xl font-light text-[#5a5a56] mb-1">£{SET_PRICE}</div>
+                              <div className="text-xs text-[#5a5a56]/60">
+                                {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name}{" "}
+                                Trousers
+                              </div>
+                            </div>
+
+                            <SlidingButton
+                              onClick={addSetFromPanelToCart}
+                              variant="dark"
+                              duration={800}
+                              className="w-full py-3 text-sm font-light tracking-wider mb-2"
+                            >
+                              Add Complete Set to Cart
+                            </SlidingButton>
+
+                            <div className="text-xs text-center text-[#5a5a56]/50">
+                              Save £{SHIRT_PRICE + TROUSER_PRICE - SET_PRICE} vs individual items
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
@@ -629,8 +819,8 @@ export default function ShopPage() {
           )}
         </div>
 
-        {/* Cart Summary - Fixed at Bottom */}
-        {cart.length > 0 && (
+        {/* Cart Summary - Fixed at Bottom - Only show on desktop or when not on trousers tab on mobile */}
+        {cart.length > 0 && !isMobile && (
           <div className="flex-shrink-0 bg-[#f9f8f5] border-t border-[#5a5a56]/10 shadow-sm p-4 mx-4 mb-4">
             <div className="max-w-7xl mx-auto">
               <div className="flex items-center justify-between mb-3">
