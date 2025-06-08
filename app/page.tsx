@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef, useCallback } from "react"
 import FromTheYarnSection from "@/components/from-the-yarn-section"
-import BoutiqueTailoringSection from "@/components/boutique-tailoring-section"
 import EternoManifestoSection from "@/components/eterno-manifesto-section"
 import OurCollectionSection from "@/components/our-collection-section"
 import SlidingButton from "@/components/sliding-button"
@@ -232,11 +231,10 @@ export default function HomePage() {
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
               <div className="mb-6">
-                <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-2">COMPLETE THE LOOK</p>
-                <h2 className="font-mulish text-lg sm:text-xl md:text-2xl font-light tracking-widest uppercase text-[#5a5a56] mb-4">
+                <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4">
                   Explore Our Collection
                 </h2>
-                <p className="font-mulish font-light text-[#5a5a56]/80 text-sm sm:text-base max-w-2xl mx-auto mb-8">
+                <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-2xl mx-auto mb-8">
                   Discover our curated selection of handcrafted linen pieces. Mix and match colors, add personal
                   touches, and create your perfect ensemble.
                 </p>
@@ -255,12 +253,11 @@ export default function HomePage() {
         </section>
       </div>
 
-      <div className="bg-[#f9f8f5]">
-        <BoutiqueTailoringSection />
-      </div>
-
-      <div className="bg-[#eeeeec]">
-        <EternoManifestoSection />
+      {/* Our Philosophy Section - Warm Cream Background */}
+      <div className="bg-[#faf9f7]">
+        <div className="[&>section]:!bg-[#faf9f7]">
+          <EternoManifestoSection />
+        </div>
       </div>
 
       {/* Footer */}

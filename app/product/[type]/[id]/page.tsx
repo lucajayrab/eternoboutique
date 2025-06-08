@@ -25,6 +25,99 @@ const TROUSER_COLORS = [
   { name: "Black", color: "#2a2a33", image: "/black-linen-trousers-new.png", price: 325 },
 ]
 
+// Size data
+const SHIRT_SIZES = [
+  { size: "XS", measurement: "14.5" },
+  { size: "S", measurement: "15" },
+  { size: "M", measurement: "15.5" },
+  { size: "L", measurement: "16.5" },
+  { size: "XL", measurement: "17.5" },
+]
+
+const TROUSER_SIZES = [
+  { size: "XS", measurement: "28–30" },
+  { size: "S", measurement: "30–32" },
+  { size: "M", measurement: "32–34" },
+  { size: "L", measurement: "34–36" },
+  { size: "XL", measurement: "36–38" },
+]
+
+interface SizeChartModalProps {
+  isOpen: boolean
+  onClose: () => void
+  productType: "shirt" | "trouser"
+}
+
+function SizeChartModal({ isOpen, onClose, productType }: SizeChartModalProps) {
+  const sizes = productType === "shirt" ? SHIRT_SIZES : TROUSER_SIZES
+  const measurementType = productType === "shirt" ? "Neck" : "Waist"
+
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-light uppercase tracking-wider text-[#5a5a56]">
+              {productType === "shirt" ? "Shirt" : "Trouser"} Size Guide
+            </h3>
+            <button
+              onClick={onClose}
+              className="text-[#5a5a56]/70 hover:text-[#5a5a56] transition-colors"
+              aria-label="Close size chart"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div className="bg-[#f9f8f5] p-4 rounded">
+            <h4 className="text-[#5a5a56] font-normal mb-3 text-sm uppercase tracking-wider text-center">
+              {productType === "shirt" ? "Shirts" : "Trousers"} ({measurementType} Size in Inches)
+            </h4>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr>
+                    <th className="py-2 px-3 border-b border-[#e0ddd2] text-center text-sm font-normal text-[#5a5a56]">
+                      Size
+                    </th>
+                    <th className="py-2 px-3 border-b border-[#e0ddd2] text-center text-sm font-normal text-[#5a5a56]">
+                      {measurementType}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sizes.map((item, index) => (
+                    <tr key={index}>
+                      <td
+                        className={`py-2 px-3 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-sm text-center text-[#5a5a56]`}
+                      >
+                        {item.size}
+                      </td>
+                      <td
+                        className={`py-2 px-3 ${index < sizes.length - 1 ? "border-b border-[#e0ddd2]" : ""} text-sm text-center text-[#5a5a56]`}
+                      >
+                        {item.measurement}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="mt-4 text-xs text-[#5a5a56]/70 text-center">
+            <p>All measurements are in inches. For custom fitting, please visit our Mayfair showroom.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function ProductPage() {
   const router = useRouter()
   const params = useParams()
@@ -32,6 +125,7 @@ export default function ProductPage() {
   const [selectedColorIndex, setSelectedColorIndex] = useState(0)
   const [selectedSize, setSelectedSize] = useState("M")
   const [productType, setProductType] = useState<"shirt" | "trouser">("shirt")
+  const [showSizeChart, setShowSizeChart] = useState(false)
 
   useEffect(() => {
     const { type, id } = params
@@ -125,6 +219,9 @@ export default function ProductPage() {
       {/* Desktop Navigation */}
       <DesktopNavigation />
 
+      {/* Size Chart Modal */}
+      <SizeChartModal isOpen={showSizeChart} onClose={() => setShowSizeChart(false)} productType={productType} />
+
       {/* Main Content */}
       <div className="pt-[70px]">
         <div className="container mx-auto px-8 sm:px-12 md:px-16 lg:px-20 max-w-7xl py-12">
@@ -193,7 +290,15 @@ export default function ProductPage() {
 
               {/* Size Selection */}
               <div className="space-y-3">
-                <p className="text-sm font-medium text-[#5a5a56]">Size</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm font-medium text-[#5a5a56]">Size</p>
+                  <button
+                    onClick={() => setShowSizeChart(true)}
+                    className="text-xs text-[#5a5a56]/70 hover:text-[#5a5a56] underline transition-colors"
+                  >
+                    Size Guide
+                  </button>
+                </div>
                 <div className="flex gap-2">
                   {sizes.map((size) => (
                     <button

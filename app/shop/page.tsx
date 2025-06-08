@@ -9,6 +9,7 @@ import NavigationMenu from "@/components/navigation-menu"
 import SlidingButton from "@/components/sliding-button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useIsMobile } from "@/hooks/use-mobile"
+import Link from "next/link"
 
 // Product data
 const SHIRT_PRICE = 325
@@ -40,7 +41,7 @@ const SUGGESTED_COMBINATIONS = [
   { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
 
-type ViewMode = "sets" | "shirts" | "trousers"
+type ViewMode = "sets" | "shirts" | "trousers" | "tailoring"
 type CartItem = {
   type: "shirt" | "trouser" | "set"
   shirtIndex?: number
@@ -49,6 +50,9 @@ type CartItem = {
   customSetShirtIndex?: number
   customSetTrouserIndex?: number
   quantity: number
+  shirtSize?: string
+  trouserSize?: string
+  size?: string // For individual items
 }
 
 interface ProductCarouselProps {
@@ -288,7 +292,10 @@ export default function ShopPage() {
   const [selectedShirt, setSelectedShirt] = useState(0)
   const [selectedTrouser, setSelectedTrouser] = useState(3)
   const [selectedCombinationId, setSelectedCombinationId] = useState<string>("")
+  const [selectedShirtSize, setSelectedShirtSize] = useState("M")
+  const [selectedTrouserSize, setSelectedTrouserSize] = useState("M")
   const isMobile = useIsMobile()
+  const [showSizeChart, setShowSizeChart] = useState<"shirt" | "trouser" | null>(null)
 
   // Ensure page loads at top
   useEffect(() => {
@@ -330,22 +337,31 @@ export default function ShopPage() {
       let existingItemIndex = -1
       if (itemToAdd.type === "set") {
         if (itemToAdd.setIndex !== undefined) {
-          existingItemIndex = prevCart.findIndex((item) => item.type === "set" && item.setIndex === itemToAdd.setIndex)
+          existingItemIndex = prevCart.findIndex(
+            (item) =>
+              item.type === "set" &&
+              item.setIndex === itemToAdd.setIndex &&
+              item.shirtSize === itemToAdd.shirtSize &&
+              item.trouserSize === itemToAdd.trouserSize,
+          )
         } else {
           existingItemIndex = prevCart.findIndex(
             (item) =>
               item.type === "set" &&
               item.customSetShirtIndex === itemToAdd.customSetShirtIndex &&
-              item.customSetTrouserIndex === itemToAdd.customSetTrouserIndex,
+              item.customSetTrouserIndex === itemToAdd.customSetTrouserIndex &&
+              item.shirtSize === itemToAdd.shirtSize &&
+              item.trouserSize === itemToAdd.trouserSize,
           )
         }
       } else if (itemToAdd.type === "shirt") {
         existingItemIndex = prevCart.findIndex(
-          (item) => item.type === "shirt" && item.shirtIndex === itemToAdd.shirtIndex,
+          (item) => item.type === "shirt" && item.shirtIndex === itemToAdd.shirtIndex && item.size === itemToAdd.size,
         )
       } else if (itemToAdd.type === "trouser") {
         existingItemIndex = prevCart.findIndex(
-          (item) => item.type === "trouser" && item.trouserIndex === itemToAdd.trouserIndex,
+          (item) =>
+            item.type === "trouser" && item.trouserIndex === itemToAdd.trouserIndex && item.size === itemToAdd.size,
         )
       }
 
@@ -366,13 +382,21 @@ export default function ShopPage() {
     let itemToAdd: CartItem
     if (matchedSuggestedCombo) {
       const setIndex = SUGGESTED_COMBINATIONS.findIndex((c) => c.id === matchedSuggestedCombo.id)
-      itemToAdd = { type: "set", setIndex, quantity: 1 }
+      itemToAdd = {
+        type: "set",
+        setIndex,
+        quantity: 1,
+        shirtSize: selectedShirtSize,
+        trouserSize: selectedTrouserSize,
+      }
     } else {
       itemToAdd = {
         type: "set",
         customSetShirtIndex: selectedShirt,
         customSetTrouserIndex: selectedTrouser,
         quantity: 1,
+        shirtSize: selectedShirtSize,
+        trouserSize: selectedTrouserSize,
       }
     }
 
@@ -394,7 +418,7 @@ export default function ShopPage() {
   }
 
   const addIndividualItemToCart = (type: "shirt" | "trouser", index: number) => {
-    const itemToAdd: CartItem = { type, quantity: 1 }
+    const itemToAdd: CartItem = { type, quantity: 1, size: "M" } // Default size for individual items
     if (type === "shirt") itemToAdd.shirtIndex = index
     if (type === "trouser") itemToAdd.trouserIndex = index
 
@@ -476,6 +500,31 @@ export default function ShopPage() {
     setViewMode(tab)
   }
 
+  const sizes = ["XS", "S", "M", "L", "XL"]
+
+  const sizeChartData = {
+    shirt: {
+      title: "Shirt Size Chart",
+      measurements: [
+        { size: "XS", chest: "34-36", length: "28", shoulder: "16.5" },
+        { size: "S", chest: "36-38", length: "29", shoulder: "17.5" },
+        { size: "M", chest: "38-40", length: "30", shoulder: "18.5" },
+        { size: "L", chest: "40-42", length: "31", shoulder: "19.5" },
+        { size: "XL", chest: "42-44", length: "32", shoulder: "20.5" },
+      ],
+    },
+    trouser: {
+      title: "Trouser Size Chart",
+      measurements: [
+        { size: "XS", waist: "28-30", inseam: "30", hip: "36" },
+        { size: "S", waist: "30-32", inseam: "31", hip: "38" },
+        { size: "M", waist: "32-34", inseam: "32", hip: "40" },
+        { size: "L", waist: "34-36", inseam: "33", hip: "42" },
+        { size: "XL", waist: "36-38", inseam: "34", hip: "44" },
+      ],
+    },
+  }
+
   return (
     <div className="h-screen bg-white font-mulish flex flex-col overflow-hidden">
       <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
@@ -484,18 +533,15 @@ export default function ShopPage() {
         {/* Header Section - Fixed Height */}
         <div className="flex-shrink-0 px-3 sm:px-8 md:px-12 lg:px-16 py-4 sm:py-6">
           <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-base sm:text-lg md:text-2xl font-light tracking-[0.15em] uppercase text-[#5a5a56] mb-1 sm:mb-2">
+            <h1 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4">
               COLLECTION
             </h1>
-            <p className="font-light text-[#5a5a56]/80 text-xs sm:text-sm md:text-base max-w-2xl mx-auto">
-              Handcrafted Italian linen pieces designed for the modern gentleman.
-            </p>
           </div>
 
           {/* Tab Navigation - Fixed Height */}
           <div className="flex justify-center">
             <div className="border-b border-[#5a5a56]/20 flex space-x-3 sm:space-x-4 md:space-x-8">
-              {["shirts", "trousers", "sets"].map((tab) => (
+              {["shirts", "trousers", "sets", "tailoring"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => handleTabChange(tab as ViewMode)}
@@ -527,8 +573,8 @@ export default function ShopPage() {
                   {/* Mobile-optimized layout for sets view */}
                   {isMobile ? (
                     <div className="flex flex-col h-full">
-                      {/* Image section - takes 50% of height on mobile */}
-                      <div className="h-1/2 p-3 flex items-center justify-center">
+                      {/* Image section - takes 40% of height on mobile */}
+                      <div className="h-2/5 p-3 flex items-center justify-center">
                         <div className="aspect-[4/3] relative w-full max-w-xs">
                           <div className="grid grid-cols-2 h-full gap-2">
                             <div className="relative">
@@ -555,8 +601,8 @@ export default function ShopPage() {
                         </div>
                       </div>
 
-                      {/* Controls section - takes 50% of height on mobile */}
-                      <div className="h-1/2 border-t border-[#5a5a56]/10 flex flex-col">
+                      {/* Controls section - takes 60% of height on mobile */}
+                      <div className="h-3/5 border-t border-[#5a5a56]/10 flex flex-col">
                         <div className="p-3 space-y-3 flex-1 overflow-y-auto">
                           <div>
                             <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-1">
@@ -616,6 +662,66 @@ export default function ShopPage() {
                             </div>
                           </div>
 
+                          {/* Size Selection for Shirt */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90">
+                                Shirt Size: <span className="font-normal text-[#5a5a56]">{selectedShirtSize}</span>
+                              </h4>
+                              <button
+                                onClick={() => setShowSizeChart("shirt")}
+                                className="text-[9px] text-[#5a5a56]/70 hover:text-[#5a5a56] underline"
+                              >
+                                Size Chart
+                              </button>
+                            </div>
+                            <div className="flex gap-1">
+                              {sizes.map((size) => (
+                                <button
+                                  key={size}
+                                  onClick={() => setSelectedShirtSize(size)}
+                                  className={`w-8 h-8 border text-xs transition-all duration-200 ${
+                                    selectedShirtSize === size
+                                      ? "border-[#5a5a56] bg-[#5a5a56] text-white"
+                                      : "border-[#5a5a56]/20 text-[#5a5a56] hover:border-[#5a5a56]/50"
+                                  }`}
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Size Selection for Trouser */}
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90">
+                                Trouser Size: <span className="font-normal text-[#5a5a56]">{selectedTrouserSize}</span>
+                              </h4>
+                              <button
+                                onClick={() => setShowSizeChart("trouser")}
+                                className="text-[9px] text-[#5a5a56]/70 hover:text-[#5a5a56] underline"
+                              >
+                                Size Chart
+                              </button>
+                            </div>
+                            <div className="flex gap-1">
+                              {sizes.map((size) => (
+                                <button
+                                  key={size}
+                                  onClick={() => setSelectedTrouserSize(size)}
+                                  className={`w-8 h-8 border text-xs transition-all duration-200 ${
+                                    selectedTrouserSize === size
+                                      ? "border-[#5a5a56] bg-[#5a5a56] text-white"
+                                      : "border-[#5a5a56]/20 text-[#5a5a56] hover:border-[#5a5a56]/50"
+                                  }`}
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
                           <div>
                             <label className="block font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-1">
                               Suggested Sets:
@@ -642,8 +748,8 @@ export default function ShopPage() {
                               </div>
                               <div className="text-xl font-light text-[#5a5a56] mb-1">£{SET_PRICE}</div>
                               <div className="text-[10px] text-[#5a5a56]/60">
-                                {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name}{" "}
-                                Trousers
+                                {SHIRT_COLORS[selectedShirt].name} Shirt ({selectedShirtSize}) +{" "}
+                                {TROUSER_COLORS[selectedTrouser].name} Trousers ({selectedTrouserSize})
                               </div>
                             </div>
 
@@ -664,9 +770,9 @@ export default function ShopPage() {
                       </div>
                     </div>
                   ) : (
-                    // Desktop layout remains unchanged
+                    // Desktop layout with size selection
                     <>
-                      <div className="lg:col-span-2 p-4 flex items-center justify-center">
+                      <div className="lg:col-span-2 p-4 flex items-start justify-center pt-8">
                         <div className="aspect-[4/3] relative w-full max-w-2xl">
                           <div className="grid grid-cols-2 h-full gap-2">
                             <div className="relative">
@@ -696,7 +802,7 @@ export default function ShopPage() {
                       <div className="lg:border-l lg:border-[#5a5a56]/10 flex flex-col">
                         <div className="p-4 space-y-4 flex-1">
                           <div>
-                            <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
+                            <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-2">
                               Select Shirt:{" "}
                               <span className="font-normal text-[#5a5a56]">{SHIRT_COLORS[selectedShirt].name}</span>
                             </h4>
@@ -725,7 +831,7 @@ export default function ShopPage() {
                           </div>
 
                           <div>
-                            <h4 className="font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
+                            <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-2">
                               Select Trouser:{" "}
                               <span className="font-normal text-[#5a5a56]">{TROUSER_COLORS[selectedTrouser].name}</span>
                             </h4>
@@ -753,8 +859,68 @@ export default function ShopPage() {
                             </div>
                           </div>
 
+                          {/* Size Selection for Shirt */}
                           <div>
-                            <label className="block font-light text-sm uppercase tracking-wider text-[#5a5a56]/90 mb-2">
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90">
+                                Shirt Size: <span className="font-normal text-[#5a5a56]">{selectedShirtSize}</span>
+                              </h4>
+                              <button
+                                onClick={() => setShowSizeChart("shirt")}
+                                className="text-[9px] text-[#5a5a56]/70 hover:text-[#5a5a56] underline"
+                              >
+                                Size Chart
+                              </button>
+                            </div>
+                            <div className="flex gap-2">
+                              {sizes.map((size) => (
+                                <button
+                                  key={size}
+                                  onClick={() => setSelectedShirtSize(size)}
+                                  className={`w-10 h-10 border text-xs transition-all duration-200 ${
+                                    selectedShirtSize === size
+                                      ? "border-[#5a5a56] bg-[#5a5a56] text-white"
+                                      : "border-[#5a5a56]/20 text-[#5a5a56] hover:border-[#5a5a56]/50"
+                                  }`}
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Size Selection for Trouser */}
+                          <div>
+                            <div className="flex items-center justify-between mb-2">
+                              <h4 className="font-light text-xs uppercase tracking-wider text-[#5a5a56]/90">
+                                Trouser Size: <span className="font-normal text-[#5a5a56]">{selectedTrouserSize}</span>
+                              </h4>
+                              <button
+                                onClick={() => setShowSizeChart("trouser")}
+                                className="text-[9px] text-[#5a5a56]/70 hover:text-[#5a5a56] underline"
+                              >
+                                Size Chart
+                              </button>
+                            </div>
+                            <div className="flex gap-2">
+                              {sizes.map((size) => (
+                                <button
+                                  key={size}
+                                  onClick={() => setSelectedTrouserSize(size)}
+                                  className={`w-10 h-10 border text-xs transition-all duration-200 ${
+                                    selectedTrouserSize === size
+                                      ? "border-[#5a5a56] bg-[#5a5a56] text-white"
+                                      : "border-[#5a5a56]/20 text-[#5a5a56] hover:border-[#5a5a56]/50"
+                                  }`}
+                                >
+                                  {size}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block font-light text-xs uppercase tracking-wider text-[#5a5a56]/90 mb-2">
                               Suggested Sets:
                             </label>
                             <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
@@ -763,7 +929,7 @@ export default function ShopPage() {
                               </SelectTrigger>
                               <SelectContent className="font-mulish rounded-none">
                                 {SUGGESTED_COMBINATIONS.map((combo) => (
-                                  <SelectItem key={combo.id} value={combo.id} className="font-light text-sm">
+                                  <SelectItem key={combo.id} value={combo.id} className="font-light text-xs">
                                     {combo.name}
                                   </SelectItem>
                                 ))}
@@ -772,15 +938,15 @@ export default function ShopPage() {
                           </div>
 
                           {/* Enhanced Price and Add to Cart Section */}
-                          <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-4 mt-4">
+                          <div className="bg-[#f9f8f5] border border-[#5a5a56]/10 p-3 mt-4">
                             <div className="text-center mb-3">
-                              <div className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1">
+                              <div className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-1">
                                 Complete Set
                               </div>
-                              <div className="text-2xl font-light text-[#5a5a56] mb-1">£{SET_PRICE}</div>
-                              <div className="text-xs text-[#5a5a56]/60">
-                                {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name}{" "}
-                                Trousers
+                              <div className="text-xl font-light text-[#5a5a56] mb-1">£{SET_PRICE}</div>
+                              <div className="text-[10px] text-[#5a5a56]/60">
+                                {SHIRT_COLORS[selectedShirt].name} Shirt ({selectedShirtSize}) +{" "}
+                                {TROUSER_COLORS[selectedTrouser].name} Trousers ({selectedTrouserSize})
                               </div>
                             </div>
 
@@ -788,12 +954,12 @@ export default function ShopPage() {
                               onClick={addSetFromPanelToCart}
                               variant="dark"
                               duration={800}
-                              className="w-full py-3 text-sm font-light tracking-wider mb-2"
+                              className="w-full py-2 text-xs font-light tracking-wider mb-2"
                             >
                               Add Complete Set to Cart
                             </SlidingButton>
 
-                            <div className="text-xs text-center text-[#5a5a56]/50">
+                            <div className="text-[10px] text-center text-[#5a5a56]/50">
                               Save £{SHIRT_PRICE + TROUSER_PRICE - SET_PRICE} vs individual items
                             </div>
                           </div>
@@ -817,9 +983,100 @@ export default function ShopPage() {
               <ProductCarousel products={TROUSER_COLORS} type="trouser" onAddToCart={addIndividualItemToCart} />
             </div>
           )}
+          {viewMode === "tailoring" && (
+            <div className="flex-1 overflow-hidden">
+              <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-2 sm:pt-4 pb-6 sm:pb-8 h-full">
+                {/* Main Content Grid - Equal Height Sections */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 h-full items-start">
+                  {/* Image Section */}
+                  <div className="flex items-start justify-center lg:justify-end pt-4">
+                    <div className="relative w-full max-w-md lg:max-w-lg">
+                      <Image
+                        src="/images/vintage-italian-family-new.jpg"
+                        alt="Vintage Italian family portrait showcasing traditional craftsmanship heritage"
+                        width={400}
+                        height={600}
+                        className="w-full h-auto object-cover rounded-sm shadow-lg"
+                        priority
+                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Content Section - All text content as one cohesive box */}
+                  <div className="flex flex-col items-start text-center lg:text-left pt-4">
+                    {/* BOUTIQUE TAILORING Header - now part of the content box */}
+                    <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6">
+                      BOUTIQUE TAILORING
+                    </h2>
+
+                    <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm mb-6 sm:mb-8 max-w-2xl mx-auto lg:mx-0">
+                      <p className="mb-3 sm:mb-4">
+                        Our showroom in the heart of Mayfair offers a refined setting for your personal tailoring
+                        experience. Here, we provide in-person boutique tailoring appointments for clients who wish to
+                        have their items fully tailored to their build, as well as those who prefer to view our
+                        collection in-person before purchasing.
+                      </p>
+                      <p>
+                        Once tailored to your specifications, an order will be placed, and you will receive your bespoke
+                        garments in 4-6 weeks. We will keep your measurements and preferences saved on file for future
+                        orders as we expand our operations.
+                      </p>
+                    </div>
+
+                    {/* Locate Us Box */}
+                    <Link
+                      href="https://maps.google.com/?q=Mayfair,+London,+UK"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block bg-[#eeeeec] p-4 sm:p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#e8e4d9] transition-colors duration-300 border border-[#e0ddd2] mb-6 mx-auto lg:mx-0"
+                    >
+                      <h4 className="text-[#5a5a56] font-normal mb-2 sm:mb-3 text-xs sm:text-sm uppercase tracking-wider text-center">
+                        LOCATE US
+                      </h4>
+                      <p className="text-[10px] sm:text-xs flex items-center justify-center">
+                        The Mayfair Showroom
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-3 w-3 ml-1 inline-block"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                      </p>
+                    </Link>
+
+                    {/* Register Interest Button */}
+                    <div className="max-w-[550px] mx-auto lg:mx-0">
+                      <div className="flex justify-center lg:justify-start">
+                        <SlidingButton
+                          onClick={() => router.push("/register")}
+                          variant="dark"
+                          duration={1000}
+                          className="min-w-[140px] sm:min-w-[160px] md:min-w-[200px] py-2 sm:py-3 text-xs sm:text-sm"
+                        >
+                          ENQUIRE
+                        </SlidingButton>
+                      </div>
+                      <p className="text-[10px] sm:text-xs mt-3 text-[#5a5a56]/70 text-center lg:text-left max-w-[400px] mx-auto lg:mx-0">
+                        Submit an enquiry and our team will contact you to discuss your order details.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Cart Summary - Fixed at Bottom - Only show on desktop or when not on trousers tab on mobile */}
+        {/* Cart Summary - Fixed at Bottom - Only show on desktop */}
         {cart.length > 0 && !isMobile && (
           <div className="flex-shrink-0 bg-[#f9f8f5] border-t border-[#5a5a56]/10 shadow-sm p-4 mx-4 mb-4">
             <div className="max-w-7xl mx-auto">
@@ -839,6 +1096,68 @@ export default function ShopPage() {
           </div>
         )}
       </div>
+      {/* Size Chart Modal */}
+      {showSizeChart && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white max-w-md w-full rounded-sm shadow-lg">
+            <div className="p-4 border-b border-[#5a5a56]/10">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-normal text-[#5a5a56] uppercase tracking-wider">
+                  {sizeChartData[showSizeChart].title}
+                </h3>
+                <button onClick={() => setShowSizeChart(null)} className="text-[#5a5a56]/70 hover:text-[#5a5a56]">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-4">
+              <div className="text-[10px] text-[#5a5a56]/70 mb-3">All measurements in inches</div>
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b border-[#5a5a56]/10">
+                    <th className="text-left py-2 text-[#5a5a56] font-normal">Size</th>
+                    {showSizeChart === "shirt" ? (
+                      <>
+                        <th className="text-left py-2 text-[#5a5a56] font-normal">Chest</th>
+                        <th className="text-left py-2 text-[#5a5a56] font-normal">Length</th>
+                        <th className="text-left py-2 text-[#5a5a56] font-normal">Shoulder</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className="text-left py-2 text-[#5a5a56] font-normal">Waist</th>
+                        <th className="text-left py-2 text-[#5a5a56] font-normal">Inseam</th>
+                        <th className="text-left py-2 text-[#5a5a56] font-normal">Hip</th>
+                      </>
+                    )}
+                  </tr>
+                </thead>
+                <tbody>
+                  {sizeChartData[showSizeChart].measurements.map((measurement) => (
+                    <tr key={measurement.size} className="border-b border-[#5a5a56]/5">
+                      <td className="py-2 text-[#5a5a56]">{measurement.size}</td>
+                      {showSizeChart === "shirt" ? (
+                        <>
+                          <td className="py-2 text-[#5a5a56]/80">{measurement.chest}</td>
+                          <td className="py-2 text-[#5a5a56]/80">{measurement.length}</td>
+                          <td className="py-2 text-[#5a5a56]/80">{measurement.shoulder}</td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-2 text-[#5a5a56]/80">{measurement.waist}</td>
+                          <td className="py-2 text-[#5a5a56]/80">{measurement.inseam}</td>
+                          <td className="py-2 text-[#5a5a56]/80">{measurement.hip}</td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
