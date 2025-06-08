@@ -144,20 +144,19 @@ export default function HomePage() {
 
     if (!aboutSectionRef.current) return
 
-    // For mobile, ensure we scroll fully to the "From The Yarn" section with extra offset
+    // For mobile, ensure we scroll to the "From The Yarn" section with precise positioning
     if (isMobile) {
       const fromTheYarnSection = document.getElementById("from-the-yarn")
       if (fromTheYarnSection) {
         // Get the position of the section
         const sectionTop = fromTheYarnSection.getBoundingClientRect().top + window.pageYOffset
 
-        // Calculate the sticky header height and add extra offset to ensure video is completely hidden
+        // Calculate the sticky header height - ensure header is visible
         const stickyHeaderHeight = 70
-        const extraOffset = 150 // Additional offset to ensure video is completely out of view
 
-        // Scroll to the section with offset for the sticky header plus extra offset
+        // Scroll to position the section header right below the navigation
         window.scrollTo({
-          top: sectionTop - stickyHeaderHeight - extraOffset,
+          top: sectionTop - stickyHeaderHeight,
           behavior: "smooth",
         })
       }
