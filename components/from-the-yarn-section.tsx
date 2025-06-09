@@ -67,7 +67,7 @@ export default function FromTheYarnSection() {
             className={`w-full md:w-1/2 space-y-4 sm:space-y-6 px-8 sm:px-12 md:px-16 lg:px-20 ${isMobile ? "mb-10" : ""}`}
           >
             <h2
-              className={`font-mulish text-sm sm:text-base font-light tracking-widest uppercase text-[#5a5a56] ${isMobile ? "text-center" : ""}`}
+              className={`text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider ${isMobile ? "text-center" : ""}`}
             >
               CRAFTED IN ITALY
             </h2>

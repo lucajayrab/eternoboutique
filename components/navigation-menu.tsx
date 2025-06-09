@@ -35,18 +35,30 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
   const handleNavClick = (href: string) => {
     setIsOpen(false)
 
+    if (href === "/shop#tailoring") {
+      // Navigate to shop page with tailoring focus
+      router.push("/shop")
+      return
+    }
+
     if (href.startsWith("#")) {
-      // Handle anchor links
+      // Handle anchor links with precise positioning
       if (pathname !== "/") {
         router.push(`/${href}`)
       } else {
-        const targetElement = document.getElementById(href.replace("#", ""))
+        const sectionId = href.replace("#", "")
+        const targetElement = document.getElementById(sectionId)
+
         if (targetElement) {
           const stickyHeaderHeight = 70
-          const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
+          const elementRect = targetElement.getBoundingClientRect()
+          const elementPosition = elementRect.top + window.pageYOffset
+
+          // Position so the bottom of the sticky header sits just at the top of the section
+          const targetScrollPosition = elementPosition - stickyHeaderHeight
 
           window.scrollTo({
-            top: offsetTop - stickyHeaderHeight,
+            top: targetScrollPosition,
             behavior: "smooth",
           })
         }
@@ -104,7 +116,7 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
               SHOP
             </button>
             <button
-              onClick={() => handleNavClick("#boutique-tailoring")}
+              onClick={() => handleNavClick("/shop#tailoring")}
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
             >
               TAILORING

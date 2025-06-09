@@ -144,19 +144,32 @@ export default function HomePage() {
 
     if (!aboutSectionRef.current) return
 
-    // For mobile, ensure we scroll to the "From The Yarn" section with precise positioning
+    // For mobile, position the sticky banner just above the "CRAFTED IN ITALY" title
     if (isMobile) {
-      const fromTheYarnSection = document.getElementById("from-the-yarn")
-      if (fromTheYarnSection) {
-        // Get the position of the section
-        const sectionTop = fromTheYarnSection.getBoundingClientRect().top + window.pageYOffset
+      // Find the "CRAFTED IN ITALY" title element
+      const craftedTitle = document.querySelector("#from-the-yarn h2")
 
-        // Calculate the sticky header height - ensure header is visible
+      if (craftedTitle) {
+        // Get the position of the title relative to the document
+        const titleRect = craftedTitle.getBoundingClientRect()
+        const titlePosition = titleRect.top + window.pageYOffset
+
+        // Position so the bottom of the sticky banner (70px height) sits just above the title
         const stickyHeaderHeight = 70
+        const targetScrollPosition = titlePosition - stickyHeaderHeight
 
-        // Scroll to position the section header right below the navigation
         window.scrollTo({
-          top: sectionTop - stickyHeaderHeight,
+          top: targetScrollPosition,
+          behavior: "smooth",
+        })
+      } else {
+        // Fallback if title not found - scroll to approximate position
+        const heroHeight = window.innerHeight
+        const stickyHeaderHeight = 70
+        const approximateOffset = 50 // Small buffer for section padding
+
+        window.scrollTo({
+          top: heroHeight + approximateOffset - stickyHeaderHeight,
           behavior: "smooth",
         })
       }
