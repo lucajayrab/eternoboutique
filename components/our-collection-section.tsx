@@ -78,7 +78,7 @@ export default function OurCollectionSection() {
             <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-12 px-3 sm:px-4 md:px-16 lg:px-20">
               <div className="w-full h-full flex items-center justify-center min-h-[280px] sm:min-h-[320px] md:min-h-[500px] relative">
                 <div
-                  className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] lg:h-[500px] cursor-pointer"
+                  className="relative w-full h-[200px] sm:h-[240px] md:h-[380px] lg:h-[420px] cursor-pointer"
                   onClick={handleShirtClick}
                 >
                   {!shirtImageError ? (
@@ -199,7 +199,7 @@ export default function OurCollectionSection() {
             <div className="w-full md:w-1/2 flex items-center justify-center py-4 md:py-12 px-3 sm:px-4 md:px-16 lg:px-20">
               <div className="w-full h-full flex items-center justify-center min-h-[280px] sm:min-h-[320px] md:min-h-[500px] relative">
                 <div
-                  className="relative w-full h-[240px] sm:h-[280px] md:h-[450px] lg:h-[500px] cursor-pointer"
+                  className="relative w-full h-[200px] sm:h-[240px] md:h-[380px] lg:h-[420px] cursor-pointer"
                   onClick={handleTrouserClick}
                 >
                   {!trouserImageError ? (
