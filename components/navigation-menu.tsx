@@ -113,7 +113,7 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
               onClick={() => handleNavClick("/shop")}
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
             >
-              SHOP
+              PRIVATE BOUTIQUE — BY INVITATION ONLY
             </button>
             <button
               onClick={() => handleNavClick("/shop#tailoring")}

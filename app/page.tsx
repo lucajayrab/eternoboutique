@@ -26,6 +26,8 @@ export default function HomePage() {
   const [isMobile, setIsMobile] = useState(false)
   const [isArrowClicked, setIsArrowClicked] = useState(false)
   const [videoAttempts, setVideoAttempts] = useState(0)
+  const [hasAutoScrolled, setHasAutoScrolled] = useState(false)
+  const [userHasInteracted, setUserHasInteracted] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -45,6 +47,34 @@ export default function HomePage() {
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
+
+  // Track user interactions to prevent auto-scroll if user is actively engaging
+  useEffect(() => {
+    const handleUserInteraction = () => {
+      setUserHasInteracted(true)
+    }
+
+    const handleScroll = () => {
+      if (window.scrollY > 100) {
+        setUserHasInteracted(true)
+      }
+    }
+
+    // Track various user interactions
+    const events = ["click", "touchstart", "keydown", "wheel"]
+    events.forEach((event) => {
+      document.addEventListener(event, handleUserInteraction, { passive: true })
+    })
+
+    window.addEventListener("scroll", handleScroll, { passive: true })
+
+    return () => {
+      events.forEach((event) => {
+        document.removeEventListener(event, handleUserInteraction)
+      })
+      window.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
 
   // Video loading and playback logic
   const attemptVideoPlay = useCallback(async () => {
@@ -123,6 +153,29 @@ export default function HomePage() {
     }
   }, [isMobile, isVideoLoaded, attemptVideoPlay])
 
+  // Auto-scroll functionality when video loop completes
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video || !isVideoLoaded || hasAutoScrolled || userHasInteracted) return
+
+    const handleTimeUpdate = () => {
+      // Check if we're approaching the end of the video (within 2 seconds)
+      if (video.duration && video.currentTime >= video.duration - 2) {
+        // Only auto-scroll if user hasn't interacted and we haven't auto-scrolled yet
+        if (!userHasInteracted && !hasAutoScrolled) {
+          setHasAutoScrolled(true)
+          // Add a small delay to make the transition feel natural
+          setTimeout(() => {
+            handleScrollDown()
+          }, 200)
+        }
+      }
+    }
+
+    video.addEventListener("timeupdate", handleTimeUpdate)
+    return () => video.removeEventListener("timeupdate", handleTimeUpdate)
+  }, [isVideoLoaded, hasAutoScrolled, userHasInteracted])
+
   // Video event handlers
   const handleVideoLoaded = useCallback(() => {
     setIsVideoLoaded(true)
@@ -137,6 +190,7 @@ export default function HomePage() {
 
   const handleScrollDown = useCallback(() => {
     setIsArrowClicked(true)
+    setUserHasInteracted(true) // Mark as interacted when scroll is triggered
 
     setTimeout(() => {
       setIsArrowClicked(false)
@@ -248,11 +302,11 @@ export default function HomePage() {
 
       {/* Content Sections */}
       <div ref={aboutSectionRef} className="bg-[#f9f8f5]">
-        <FromTheYarnSection />
+        <OurCollectionSection />
       </div>
 
       <div className="bg-[#eeeeec]">
-        <OurCollectionSection />
+        <FromTheYarnSection />
       </div>
 
       <div className="bg-[#eeeeec]">
@@ -261,11 +315,11 @@ export default function HomePage() {
             <div className="text-center">
               <div className="mb-6">
                 <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4">
-                  Explore Our Collection
+                  Private Boutique — By Invitation Only
                 </h2>
                 <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-2xl mx-auto mb-8">
-                  Discover our curated selection of handcrafted linen pieces. Mix and match colors, add personal
-                  touches, and create your perfect ensemble.
+                  Access our exclusive collection of handcrafted linen pieces. An intimate preview of our finest work,
+                  available only to our inner circle.
                 </p>
               </div>
 
@@ -275,7 +329,7 @@ export default function HomePage() {
                 duration={1000}
                 className="px-8 py-4 text-sm"
               >
-                SHOP NOW
+                ENTER BOUTIQUE
               </SlidingButton>
             </div>
           </div>

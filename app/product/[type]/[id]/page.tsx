@@ -126,6 +126,7 @@ export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState("M")
   const [productType, setProductType] = useState<"shirt" | "trouser">("shirt")
   const [showSizeChart, setShowSizeChart] = useState(false)
+  const [imageLoading, setImageLoading] = useState(false)
 
   useEffect(() => {
     const { type, id } = params
@@ -145,9 +146,12 @@ export default function ProductPage() {
   }, [params, router])
 
   const handleColorChange = (colorIndex: number) => {
-    setSelectedColorIndex(colorIndex)
     const colors = productType === "shirt" ? SHIRT_COLORS : TROUSER_COLORS
-    setProduct({ ...colors[colorIndex], type: productType, id: colorIndex })
+    const newProduct = { ...colors[colorIndex], type: productType, id: colorIndex }
+
+    // Update state immediately for responsive UI
+    setSelectedColorIndex(colorIndex)
+    setProduct(newProduct)
 
     // Update URL without page reload
     const newUrl = `/product/${productType}/${colorIndex}`
@@ -228,14 +232,17 @@ export default function ProductPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Product Image */}
             <div className="bg-[#f9f8f5] p-8">
-              <div className="aspect-square relative">
-                <Image
-                  src={product.image || "/placeholder.svg"}
-                  alt={`${product.name} Linen ${product.type.charAt(0).toUpperCase() + product.type.slice(1)}`}
-                  fill
-                  style={{ objectFit: "contain" }}
-                  priority
-                />
+              <div className="aspect-square relative overflow-hidden">
+                <div className="absolute inset-0 transition-opacity duration-300">
+                  <Image
+                    src={product.image || "/placeholder.svg"}
+                    alt={`${product.name} Linen ${product.type.charAt(0).toUpperCase() + product.type.slice(1)}`}
+                    fill
+                    style={{ objectFit: "contain" }}
+                    priority
+                    className="transition-opacity duration-300"
+                  />
+                </div>
               </div>
             </div>
 
@@ -274,15 +281,21 @@ export default function ProductPage() {
                     <div key={index} className="flex flex-col items-center">
                       <button
                         onClick={() => handleColorChange(index)}
-                        className={`w-8 h-8 rounded-full transition-all duration-200 ${
+                        className={`w-8 h-8 rounded-full transition-all duration-300 ease-out transform ${
                           selectedColorIndex === index
-                            ? "ring-2 ring-[#5a5a56] ring-offset-2 scale-110"
-                            : "hover:scale-105"
+                            ? "ring-2 ring-[#5a5a56] ring-offset-2 scale-110 shadow-lg"
+                            : "hover:scale-105 hover:shadow-md"
                         }`}
                         style={{ backgroundColor: color.color }}
                         aria-label={`Select ${color.name}`}
                       />
-                      <span className="text-xs mt-1 text-[#5a5a56]">{color.name}</span>
+                      <span
+                        className={`text-xs mt-1 transition-colors duration-200 ${
+                          selectedColorIndex === index ? "text-[#5a5a56] font-medium" : "text-[#5a5a56]/70"
+                        }`}
+                      >
+                        {color.name}
+                      </span>
                     </div>
                   ))}
                 </div>
