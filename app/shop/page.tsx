@@ -40,10 +40,7 @@ const SUGGESTED_COMBINATIONS = [
   { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
 
-type ViewMode = "sets" | "shirts" | "trousers" | "embroidery" | "tailoring"
-type EmbroideryPosition = "left-collar" | "right-collar" | "left-cuff" | "right-cuff" | null
-type CuffPosition = "inside" | "outside" | null
-type EmbroideryColor = "navy" | "black" | "white" | "gold"
+type ViewMode = "sets" | "shirts" | "trousers" | "tailoring"
 
 interface ProductCarouselProps {
   products: any[]
@@ -313,7 +310,7 @@ function BoutiqueTailoringSection() {
             </div>
 
             <Link
-              href="https://maps.google.com/?q=Mayfair,+London,+UK"
+              href="https://maps.google.com/?q=Clifford+Street,+Mayfair,+London,+UK"
               target="_blank"
               rel="noopener noreferrer"
               className={`inline-block bg-white p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#f8f8f8] transition-colors duration-300 border border-[#e0ddd2] border-0 shadow-sm mb-8 ${isMobile ? "mx-auto" : "mx-auto lg:mx-0"}`}
@@ -322,7 +319,7 @@ function BoutiqueTailoringSection() {
                 LOCATE US
               </h4>
               <p className="text-xs flex items-center justify-center">
-                The Mayfair Showroom
+                Clifford Street, Mayfair
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-3 w-3 ml-1 inline-block"
@@ -620,276 +617,6 @@ function StyleCombinationsSection() {
   )
 }
 
-// Custom Embroidery Showcase Section
-function EmbroideryShowcaseSection() {
-  const [embroideryPosition, setEmbroideryPosition] = useState<EmbroideryPosition>("left-collar")
-  const [cuffPosition, setCuffPosition] = useState<CuffPosition>("inside")
-  const [embroideryText, setEmbroideryText] = useState("ABC")
-  const [embroideryColor, setEmbroideryColor] = useState<EmbroideryColor>("navy")
-  const [hoveredArea, setHoveredArea] = useState<EmbroideryPosition>(null)
-
-  const getPositionLabel = (position: EmbroideryPosition) => {
-    switch (position) {
-      case "left-collar":
-        return "Left Collar"
-      case "right-collar":
-        return "Right Collar"
-      case "left-cuff":
-        return `Left Cuff${cuffPosition ? ` (${cuffPosition.charAt(0).toUpperCase() + cuffPosition.slice(1)})` : ""}`
-      case "right-cuff":
-        return `Right Cuff${cuffPosition ? ` (${cuffPosition.charAt(0).toUpperCase() + cuffPosition.slice(1)})` : ""}`
-      default:
-        return ""
-    }
-  }
-
-  return (
-    <section className="w-full bg-white py-16 border-b border-[#f0f0f0]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider mb-3">
-            Custom Embroidery
-          </h2>
-          <div className="w-20 h-px bg-[#5a5a56]/30 mx-auto mb-4"></div>
-          <p className="font-mulish font-light text-[#5a5a56]/70 text-xs max-w-2xl mx-auto">
-            Add a personal touch with hand-embroidered initials, crafted with precision and care.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Interactive Shirt Preview */}
-          <div className="bg-[#f9f8f5] border-0 p-8 shadow-sm">
-            <h3 className="font-mulish text-sm font-light tracking-wider uppercase text-[#5a5a56] mb-6 text-center">
-              Embroidery Placement
-            </h3>
-
-            <div className="relative aspect-square max-w-md mx-auto">
-              {/* Shirt Image */}
-              <div
-                className="relative w-full h-full bg-white shadow-md"
-                style={{
-                  boxShadow: "0 10px 25px -8px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <Image
-                  src="/images/shirts/new-white-linen-shirt.png"
-                  alt="White Linen Shirt for Embroidery Preview"
-                  fill
-                  style={{ objectFit: "contain", padding: "20px" }}
-                  className="pointer-events-none"
-                  priority
-                />
-
-                {/* Clickable Areas with Enhanced Visibility */}
-                {/* Left Collar Area */}
-                <button
-                  onClick={() => setEmbroideryPosition("left-collar")}
-                  onMouseEnter={() => setHoveredArea("left-collar")}
-                  onMouseLeave={() => setHoveredArea(null)}
-                  className={`absolute top-[14%] right-[38%] w-[30px] h-[30px] border-0 rounded-full transition-all duration-300 transform ${
-                    embroideryPosition === "left-collar"
-                      ? "bg-[#5a5a56]/50 ring-2 ring-[#5a5a56]/30 scale-110"
-                      : hoveredArea === "left-collar"
-                        ? "bg-[#5a5a56]/30 ring-1 ring-[#5a5a56]/20 scale-105"
-                        : "bg-[#5a5a56]/20 hover:bg-[#5a5a56]/30"
-                  }`}
-                  aria-label="Select left collar for embroidery"
-                />
-
-                {/* Right Collar Area */}
-                <button
-                  onClick={() => setEmbroideryPosition("right-collar")}
-                  onMouseEnter={() => setHoveredArea("right-collar")}
-                  onMouseLeave={() => setHoveredArea(null)}
-                  className={`absolute top-[14%] left-[38%] w-[30px] h-[30px] border-0 rounded-full transition-all duration-300 transform ${
-                    embroideryPosition === "right-collar"
-                      ? "bg-[#5a5a56]/50 ring-2 ring-[#5a5a56]/30 scale-110"
-                      : hoveredArea === "right-collar"
-                        ? "bg-[#5a5a56]/30 ring-1 ring-[#5a5a56]/20 scale-105"
-                        : "bg-[#5a5a56]/20 hover:bg-[#5a5a56]/30"
-                  }`}
-                  aria-label="Select right collar for embroidery"
-                />
-
-                {/* Left Cuff Area */}
-                <button
-                  onClick={() => setEmbroideryPosition("left-cuff")}
-                  onMouseEnter={() => setHoveredArea("left-cuff")}
-                  onMouseLeave={() => setHoveredArea(null)}
-                  className={`absolute bottom-[19%] right-[15%] w-[30px] h-[30px] border-0 rounded-full transition-all duration-300 transform ${
-                    embroideryPosition === "left-cuff"
-                      ? "bg-[#5a5a56]/50 ring-2 ring-[#5a5a56]/30 scale-110"
-                      : hoveredArea === "left-cuff"
-                        ? "bg-[#5a5a56]/30 ring-1 ring-[#5a5a56]/20 scale-105"
-                        : "bg-[#5a5a56]/20 hover:bg-[#5a5a56]/30"
-                  }`}
-                  aria-label="Select left cuff for embroidery"
-                />
-
-                {/* Right Cuff Area */}
-                <button
-                  onClick={() => setEmbroideryPosition("right-cuff")}
-                  onMouseEnter={() => setHoveredArea("right-cuff")}
-                  onMouseLeave={() => setHoveredArea(null)}
-                  className={`absolute bottom-[19%] left-[15%] w-[30px] h-[30px] border-0 rounded-full transition-all duration-300 transform ${
-                    embroideryPosition === "right-cuff"
-                      ? "bg-[#5a5a56]/50 ring-2 ring-[#5a5a56]/30 scale-110"
-                      : hoveredArea === "right-cuff"
-                        ? "bg-[#5a5a56]/30 ring-1 ring-[#5a5a56]/20 scale-105"
-                        : "bg-[#5a5a56]/20 hover:bg-[#5a5a56]/30"
-                  }`}
-                  aria-label="Select right cuff for embroidery"
-                />
-              </div>
-            </div>
-
-            <div className="mt-6 text-center">
-              <p className="text-sm text-[#5a5a56]/70">
-                {embroideryPosition
-                  ? `Selected: ${getPositionLabel(embroideryPosition)}`
-                  : "Choose from four refined placement options"}
-              </p>
-            </div>
-
-            {/* Embroidery Preview Box */}
-            <div className="mt-8 bg-white p-6 shadow-sm border border-[#e0ddd2]">
-              <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
-                Embroidery Preview
-              </h4>
-              <div className="flex items-center justify-center min-h-[80px] bg-[#f9f8f5] p-6">
-                {embroideryText ? (
-                  <span
-                    className="text-2xl font-serif italic"
-                    style={{
-                      color:
-                        embroideryColor === "navy"
-                          ? "#2d2a3e"
-                          : embroideryColor === "black"
-                            ? "#2a2a33"
-                            : embroideryColor === "white"
-                              ? "#ffffff"
-                              : "#d4af37",
-                      textShadow: embroideryColor === "white" ? "0 1px 2px rgba(0,0,0,0.3)" : "none",
-                    }}
-                  >
-                    {embroideryText}
-                  </span>
-                ) : (
-                  <span className="text-[#5a5a56]/50 text-sm italic">Enter initials to preview</span>
-                )}
-              </div>
-              <p className="text-xs text-[#5a5a56]/70 text-center mt-3">
-                {embroideryPosition ? `Placement: ${getPositionLabel(embroideryPosition)}` : "Select placement above"}
-              </p>
-            </div>
-          </div>
-
-          {/* Customization Options */}
-          <div className="space-y-6">
-            {/* Embroidery Details */}
-            <div className="bg-[#f9f8f5] border-0 p-6 shadow-sm">
-              <h4 className="font-mulish text-sm font-light tracking-wider uppercase text-[#5a5a56] mb-6">
-                Embroidery Details
-              </h4>
-
-              {/* Cuff Position Selection */}
-              {embroideryPosition?.includes("cuff") && (
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-[#5a5a56] mb-3">Cuff Position</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => setCuffPosition("inside")}
-                      className={`px-4 py-3 text-sm border-0 transition-all duration-200 border ${
-                        cuffPosition === "inside"
-                          ? "bg-[#5a5a56] text-white border-[#5a5a56]"
-                          : "bg-white text-[#5a5a56] hover:bg-[#5a5a56]/5 border-[#5a5a56]/20"
-                      }`}
-                    >
-                      Inside Cuff
-                    </button>
-                    <button
-                      onClick={() => setCuffPosition("outside")}
-                      className={`px-4 py-3 text-sm border-0 transition-all duration-200 border ${
-                        cuffPosition === "outside"
-                          ? "bg-[#5a5a56] text-white border-[#5a5a56]"
-                          : "bg-white text-[#5a5a56] hover:bg-[#5a5a56]/5 border-[#5a5a56]/20"
-                      }`}
-                    >
-                      Outside Cuff
-                    </button>
-                  </div>
-                  <p className="text-xs text-[#5a5a56]/60 mt-2">
-                    Inside cuff is more discreet, outside cuff is more visible
-                  </p>
-                </div>
-              )}
-
-              {/* Text Input */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-[#5a5a56] mb-2">Initials (max 3 characters)</label>
-                <input
-                  type="text"
-                  value={embroideryText}
-                  onChange={(e) => setEmbroideryText(e.target.value.slice(0, 3).toUpperCase())}
-                  className="w-full px-4 py-3 border border-[#5a5a56]/20 focus:outline-none focus:ring-2 focus:ring-[#5a5a56]/20 bg-white font-light tracking-wider"
-                  placeholder="ABC"
-                />
-                <p className="text-xs text-[#5a5a56]/60 mt-1">Hand-embroidered in refined script style</p>
-              </div>
-
-              {/* Color Selection */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-[#5a5a56] mb-3">Thread Colour</label>
-                <div className="flex gap-4">
-                  {(
-                    [
-                      { name: "navy", color: "#2d2a3e", label: "Navy" },
-                      { name: "black", color: "#2a2a33", label: "Black" },
-                      { name: "white", color: "#ffffff", label: "White" },
-                      { name: "gold", color: "#d4af37", label: "Gold" },
-                    ] as { name: EmbroideryColor; color: string; label: string }[]
-                  ).map((color) => (
-                    <div key={color.name} className="flex flex-col items-center">
-                      <button
-                        onClick={() => setEmbroideryColor(color.name)}
-                        className={`w-12 h-12 rounded-full border-2 transition-all duration-200 shadow-sm ${
-                          embroideryColor === color.name
-                            ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20 scale-110"
-                            : "border-gray-300 hover:border-[#5a5a56]/50 hover:scale-105"
-                        } ${color.name === "white" ? "shadow-md" : ""}`}
-                        style={{ backgroundColor: color.color }}
-                        aria-label={`${color.label} embroidery thread`}
-                      />
-                      <span className="text-xs mt-2 text-[#5a5a56] font-light">{color.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="text-sm text-[#5a5a56]/70 bg-white/50 p-4 border-0">
-                <p className="font-medium">Embroidery: £25</p>
-                <p className="text-xs mt-1">Professional hand-stitched personalisation</p>
-              </div>
-            </div>
-
-            {/* Information Panel */}
-            <div className="bg-white p-6 border-0 shadow-sm border border-[#e0ddd2]">
-              <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light">About This Service</h4>
-              <div className="space-y-3 text-xs text-[#5a5a56]/80 leading-relaxed">
-                <p>• Hand-embroidered by skilled Italian artisans</p>
-                <p>• Available on all shirt styles and colors</p>
-                <p>• Refined script lettering for timeless elegance</p>
-                <p>• Adds 1-2 days to production time</p>
-                <p>• Perfect for gifts or personal distinction</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export default function ShopPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -960,7 +687,6 @@ export default function ShopPage() {
             <ProductCarousel products={SHIRT_COLORS} type="shirt" title="Signature Shirts" />
             <ProductCarousel products={TROUSER_COLORS} type="trouser" title="Signature Trousers" />
             <StyleCombinationsSection />
-            <EmbroideryShowcaseSection />
           </div>
         ) : (
           /* Mobile: Enhanced Tab Interface */
@@ -969,7 +695,7 @@ export default function ShopPage() {
             <div className="flex-shrink-0 px-4 py-6 bg-white border-b border-[#f0f0f0]">
               <div className="flex justify-center">
                 <div className="flex space-x-6">
-                  {["shirts", "trousers", "sets", "embroidery", "tailoring"].map((tab) => (
+                  {["shirts", "trousers", "sets", "tailoring"].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab as ViewMode)}
@@ -977,7 +703,7 @@ export default function ShopPage() {
                         activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
                       }`}
                     >
-                      {tab === "embroidery" ? "Initials" : tab}
+                      {tab}
                       {activeTab === tab && (
                         <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5a5a56] transform -translate-y-px rounded-full"></span>
                       )}
@@ -1002,11 +728,6 @@ export default function ShopPage() {
               {activeTab === "sets" && (
                 <div className="h-full overflow-auto">
                   <StyleCombinationsSection />
-                </div>
-              )}
-              {activeTab === "embroidery" && (
-                <div className="h-full overflow-auto">
-                  <EmbroideryShowcaseSection />
                 </div>
               )}
               {activeTab === "tailoring" && (
