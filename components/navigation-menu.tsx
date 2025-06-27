@@ -35,32 +35,73 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
   const handleNavClick = (href: string) => {
     setIsOpen(false)
 
-    if (href === "/shop#tailoring") {
-      // Navigate to shop page with tailoring focus
-      router.push("/shop")
-      return
-    }
-
     if (href.startsWith("#")) {
       // Handle anchor links with precise positioning
       if (pathname !== "/") {
         router.push(`/${href}`)
       } else {
         const sectionId = href.replace("#", "")
-        const targetElement = document.getElementById(sectionId)
 
-        if (targetElement) {
-          const stickyHeaderHeight = 70
-          const elementRect = targetElement.getBoundingClientRect()
-          const elementPosition = elementRect.top + window.pageYOffset
+        // Special handling for collection to match hero arrow behavior
+        if (sectionId === "collection") {
+          // For mobile, position the sticky banner just above the "EXCLUSIVE EARLY ACCESS" title
+          const isMobile = window.innerWidth < 768
 
-          // Position so the bottom of the sticky header sits just at the top of the section
-          const targetScrollPosition = elementPosition - stickyHeaderHeight
+          if (isMobile) {
+            // Find the "EXCLUSIVE EARLY ACCESS" title element
+            const collectionTitle = document.querySelector("#exclusive-access h2")
 
-          window.scrollTo({
-            top: targetScrollPosition,
-            behavior: "smooth",
-          })
+            if (collectionTitle) {
+              // Get the position of the title relative to the document
+              const titleRect = collectionTitle.getBoundingClientRect()
+              const titlePosition = titleRect.top + window.pageYOffset
+
+              // Position so the bottom of the sticky banner (70px height) sits just above the title
+              const stickyHeaderHeight = 70
+              const targetScrollPosition = titlePosition - stickyHeaderHeight
+
+              window.scrollTo({
+                top: targetScrollPosition,
+                behavior: "smooth",
+              })
+            } else {
+              // Fallback if title not found - scroll to approximate position
+              const heroHeight = window.innerHeight
+              const stickyHeaderHeight = 70
+              const approximateOffset = 50 // Small buffer for section padding
+
+              window.scrollTo({
+                top: heroHeight + approximateOffset - stickyHeaderHeight,
+                behavior: "smooth",
+              })
+            }
+          } else {
+            // Desktop behavior - just enough to make the sticky banner colored
+            const heroHeight = window.innerHeight
+            const stickyBannerActivationPoint = heroHeight - 50
+
+            window.scrollTo({
+              top: stickyBannerActivationPoint,
+              behavior: "smooth",
+            })
+          }
+        } else {
+          // Regular section navigation
+          const targetElement = document.getElementById(sectionId)
+
+          if (targetElement) {
+            const stickyHeaderHeight = 70
+            const elementRect = targetElement.getBoundingClientRect()
+            const elementPosition = elementRect.top + window.pageYOffset
+
+            // Position so the bottom of the sticky header sits just at the top of the section
+            const targetScrollPosition = elementPosition - stickyHeaderHeight
+
+            window.scrollTo({
+              top: targetScrollPosition,
+              behavior: "smooth",
+            })
+          }
         }
       }
     } else {
@@ -98,34 +139,28 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
               HOME
             </button>
             <button
-              onClick={() => handleNavClick("#from-the-yarn")}
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
-            >
-              FROM THE YARN
-            </button>
-            <button
               onClick={() => handleNavClick("#collection")}
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
             >
               COLLECTION
             </button>
             <button
-              onClick={() => handleNavClick("/shop")}
+              onClick={() => handleNavClick("#from-the-yarn")}
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
             >
-              PRIVATE BOUTIQUE — BY INVITATION ONLY
-            </button>
-            <button
-              onClick={() => handleNavClick("/shop#tailoring")}
-              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
-            >
-              TAILORING
+              FROM THE YARN
             </button>
             <button
               onClick={() => handleNavClick("#manifesto")}
               className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
             >
               PHILOSOPHY
+            </button>
+            <button
+              onClick={() => handleNavClick("/shop")}
+              className="text-white text-lg uppercase tracking-widest font-light hover:text-white/70 transition-colors py-2"
+            >
+              PRIVATE BOUTIQUE
             </button>
           </nav>
 

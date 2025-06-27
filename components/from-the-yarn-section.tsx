@@ -59,7 +59,7 @@ export default function FromTheYarnSection() {
   const fallbackImage = "/tailoring-workshop-artisan-detail.png"
 
   return (
-    <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-28" id="from-the-yarn">
+    <section className="w-full bg-transparent py-12 sm:py-16 md:py-28" id="from-the-yarn">
       <div className="w-full px-0">
         <div className="flex flex-col md:flex-row items-center">
           {/* Text Content - Left side on desktop, top on mobile */}

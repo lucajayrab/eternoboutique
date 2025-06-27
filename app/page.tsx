@@ -18,6 +18,10 @@ const MOBILE_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515853_Drone_Boat_Sea_Woman_By_Rassvet_Production_Artlist_HD-uyfJr0lWhMqJwG1BWUM1LdnraoMdxe.mov"
 const FALLBACK_IMAGE = "/images/hero.jpg"
 
+// Define the two alternating colors
+const COLOR_A = "#f9f8f5" // Light cream
+const COLOR_B = "#eeeeec" // Light gray
+
 export default function HomePage() {
   const router = useRouter()
   const [isMounted, setIsMounted] = useState(false)
@@ -300,10 +304,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Content Sections - Reordered Pattern */}
-      {/* 1. Exclusive Access Announcement Section - Light Cream */}
-      <div className="bg-[#f9f8f5]">
-        <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-20" id="exclusive-access">
+      {/* Content Sections - Alternating Colors Pattern */}
+      {/* Row 1: Exclusive Access Announcement Section - Color A (Light Cream) */}
+      <div style={{ backgroundColor: COLOR_A }}>
+        <section className="w-full py-12 sm:py-16 md:py-20" id="exclusive-access" style={{ backgroundColor: COLOR_A }}>
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
               <div className="mb-6">
@@ -329,26 +333,30 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* 2. Our Collection Section - White */}
-      <div ref={aboutSectionRef} className="bg-white">
-        <OurCollectionSection />
+      {/* Row 2: Our Collection Section - Color B (Light Gray) */}
+      <div ref={aboutSectionRef} style={{ backgroundColor: COLOR_B }}>
+        <div className="[&>section]:!bg-transparent">
+          <OurCollectionSection />
+        </div>
       </div>
 
-      {/* 3. From the Yarn Section - Light Gray */}
-      <div className="bg-[#eeeeec]">
-        <FromTheYarnSection />
+      {/* Row 3: From the Yarn Section - Color A (Light Cream) */}
+      <div style={{ backgroundColor: COLOR_A }}>
+        <div className="[&>section]:!bg-transparent">
+          <FromTheYarnSection />
+        </div>
       </div>
 
-      {/* 4. Our Philosophy Section - Warm Cream Background */}
-      <div className="bg-[#faf9f7]">
-        <div className="[&>section]:!bg-[#faf9f7]">
+      {/* Row 4: Our Philosophy Section - Color B (Light Gray) */}
+      <div style={{ backgroundColor: COLOR_B }}>
+        <div className="[&>section]:!bg-transparent">
           <EternoManifestoSection />
         </div>
       </div>
 
-      {/* 5. Private Boutique Section - White (moved to bottom) */}
-      <div className="bg-white">
-        <section className="w-full bg-white py-12 sm:py-16 md:py-20" id="shop-now">
+      {/* Row 5: Private Boutique Section - Color A (Light Cream) */}
+      <div style={{ backgroundColor: COLOR_A }}>
+        <section className="w-full py-12 sm:py-16 md:py-20" id="shop-now" style={{ backgroundColor: COLOR_A }}>
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
               <div className="mb-6">
@@ -374,9 +382,9 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* 6. Footer - Sand Background */}
-      <div ref={contentRef} className="bg-eterno-sand">
-        <section className="w-full py-8 md:py-12 bg-eterno-sand border-t border-[#e0ddd2]">
+      {/* Row 6: Footer - Color B (Light Gray) */}
+      <div ref={contentRef} style={{ backgroundColor: COLOR_B }}>
+        <section className="w-full py-8 md:py-12 border-t border-[#e0ddd2]" style={{ backgroundColor: COLOR_B }}>
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="max-w-xl mx-auto space-y-6 text-center">
               <h2 className="font-mulish text-lg sm:text-xl font-light tracking-widest uppercase text-[#5a5a56]">

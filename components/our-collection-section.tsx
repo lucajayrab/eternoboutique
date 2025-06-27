@@ -71,7 +71,7 @@ export default function OurCollectionSection() {
   return (
     <>
       {/* Shirt Section */}
-      <section className="w-full bg-white" id="collection">
+      <section className="w-full bg-[#eeeeec]" id="collection">
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-0 min-h-[500px] md:min-h-[600px]">
             {/* Image Container - Mobile optimised with shadow */}
@@ -192,7 +192,7 @@ export default function OurCollectionSection() {
       </section>
 
       {/* Trouser Section */}
-      <section className="w-full bg-[#eeeeec]">
+      <section className="w-full bg-[#f9f8f5]">
         <div className="w-full">
           <div className="flex flex-col md:flex-row-reverse gap-0 min-h-[500px] md:min-h-[600px]">
             {/* Image Container - Mobile optimised with shadow */}
