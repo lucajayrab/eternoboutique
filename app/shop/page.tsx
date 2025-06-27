@@ -577,7 +577,7 @@ function StyleCombinationsSection() {
                     }`}
                   >
                     <div
-                      className={`w-8 h-8 rounded-full border-2 mb-2 shadow-sm ${
+                      className={`w-6 h-6 rounded-full border-2 mb-2 shadow-sm ${
                         selectedShirt === index ? "border-[#5a5a56]" : "border-[#ddd]"
                       }`}
                       style={{ backgroundColor: color.color }}
@@ -603,7 +603,7 @@ function StyleCombinationsSection() {
                     }`}
                   >
                     <div
-                      className={`w-8 h-8 rounded-full border-2 mb-2 shadow-sm ${
+                      className={`w-6 h-6 rounded-full border-2 mb-2 shadow-sm ${
                         selectedTrouser === index ? "border-[#5a5a56]" : "border-[#ddd]"
                       }`}
                       style={{ backgroundColor: color.color }}

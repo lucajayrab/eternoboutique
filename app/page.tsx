@@ -300,17 +300,55 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Content Sections */}
-      <div ref={aboutSectionRef} className="bg-[#f9f8f5]">
+      {/* Content Sections - Reordered Pattern */}
+      {/* 1. Exclusive Access Announcement Section - Light Cream */}
+      <div className="bg-[#f9f8f5]">
+        <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-20" id="exclusive-access">
+          <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
+            <div className="text-center">
+              <div className="mb-6">
+                <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4">
+                  Exclusive Early Access — 2026 Collection
+                </h2>
+                <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-2xl mx-auto mb-8">
+                  Register your interest for exclusive access to our early public sale of the Black & White monochrome
+                  linen set collection. Selected individuals will be invited to an exclusive European event.
+                </p>
+              </div>
+
+              <SlidingButton
+                onClick={() => router.push("/register")}
+                variant="dark"
+                duration={1000}
+                className="px-8 py-4 text-sm"
+              >
+                REGISTER INTEREST
+              </SlidingButton>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      {/* 2. Our Collection Section - White */}
+      <div ref={aboutSectionRef} className="bg-white">
         <OurCollectionSection />
       </div>
 
+      {/* 3. From the Yarn Section - Light Gray */}
       <div className="bg-[#eeeeec]">
         <FromTheYarnSection />
       </div>
 
-      <div className="bg-[#eeeeec]">
-        <section className="w-full bg-[#eeeeec] py-12 sm:py-16 md:py-20" id="shop-now">
+      {/* 4. Our Philosophy Section - Warm Cream Background */}
+      <div className="bg-[#faf9f7]">
+        <div className="[&>section]:!bg-[#faf9f7]">
+          <EternoManifestoSection />
+        </div>
+      </div>
+
+      {/* 5. Private Boutique Section - White (moved to bottom) */}
+      <div className="bg-white">
+        <section className="w-full bg-white py-12 sm:py-16 md:py-20" id="shop-now">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
               <div className="mb-6">
@@ -336,14 +374,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* Our Philosophy Section - Warm Cream Background */}
-      <div className="bg-[#faf9f7]">
-        <div className="[&>section]:!bg-[#faf9f7]">
-          <EternoManifestoSection />
-        </div>
-      </div>
-
-      {/* Footer */}
+      {/* 6. Footer - Sand Background */}
       <div ref={contentRef} className="bg-eterno-sand">
         <section className="w-full py-8 md:py-12 bg-eterno-sand border-t border-[#e0ddd2]">
           <div className="w-full px-4 sm:px-6 md:px-8">

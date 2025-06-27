@@ -1,14 +1,9 @@
 import { z } from "zod"
 
-export const registrationFormSchema = z.object({
-  firstname: z.string().min(1, "Please enter your first name"),
-  lastname: z.string().min(1, "Please enter your last name"),
-  email: z.string().email("Please enter a valid email address (e.g., name@example.com)"),
-  phonecontact: z.string().min(1, "Please enter your phone number with country code (e.g., +44 1234567890)"),
-  countrylocation: z.string().min(1, "Please enter your country"),
-  city: z.string().min(1, "Please enter your city"),
-  industrysector: z.string().min(1, "Please enter your industry"),
-  dob: z.string().optional(),
+export const formSchema = z.object({
+  firstName: z.string().min(1, "First name is required").min(2, "First name must be at least 2 characters"),
+  lastName: z.string().min(1, "Last name is required").min(2, "Last name must be at least 2 characters"),
+  email: z.string().min(1, "Email is required").email("Please enter a valid email address"),
 })
 
-export type RegistrationFormData = z.infer<typeof registrationFormSchema>
+export type FormData = z.infer<typeof formSchema>

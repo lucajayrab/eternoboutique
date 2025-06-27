@@ -291,7 +291,7 @@ export default function StyleCombinationsSection() {
                       }`}
                     >
                       <div
-                        className={`w-6 h-6 rounded-full border-2 mb-2 ${
+                        className={`w-5 h-5 rounded-full border-2 mb-2 ${
                           selectedShirt === index ? "border-[#5a5a56]" : "border-[#ddd]"
                         }`}
                         style={{ backgroundColor: color.color }}
@@ -317,7 +317,7 @@ export default function StyleCombinationsSection() {
                       }`}
                     >
                       <div
-                        className={`w-6 h-6 rounded-full border-2 mb-2 ${
+                        className={`w-5 h-5 rounded-full border-2 mb-2 ${
                           selectedTrouser === index ? "border-[#5a5a56]" : "border-[#ddd]"
                         }`}
                         style={{ backgroundColor: color.color }}

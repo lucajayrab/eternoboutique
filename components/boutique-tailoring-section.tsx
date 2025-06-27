@@ -6,7 +6,7 @@ import SlidingButton from "./sliding-button"
 import Link from "next/link"
 
 // Constants
-const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=Mayfair,+London,+UK"
+const GOOGLE_MAPS_LINK = "https://maps.google.com/?q=Clifford+Street,+Mayfair,+London,+UK"
 
 export default function BoutiqueTailoringSection() {
   const router = useRouter()
@@ -16,13 +16,27 @@ export default function BoutiqueTailoringSection() {
   }, [router])
 
   return (
-    <section id="boutique-tailoring" className="w-full bg-[#f9f8f5] py-6 sm:py-8 md:py-12 lg:py-16">
+    <section id="boutique-tailoring" className="w-full bg-white py-6 sm:py-8 md:py-12 lg:py-16">
       <div className="w-full px-8 sm:px-12 md:px-16 lg:px-20">
         <div className="max-w-4xl mx-auto text-center">
           {/* Shop Now header */}
           <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-1">SHOP NOW</p>
-          <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6">
+          <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4 sm:mb-6 flex items-center justify-center gap-2">
             IN-PERSON TAILORING
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-3 w-3 sm:h-4 sm:w-4 inline-block"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+              />
+            </svg>
           </h3>
 
           <div className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-[10px] sm:text-xs mb-6 sm:mb-10">
@@ -49,7 +63,7 @@ export default function BoutiqueTailoringSection() {
               LOCATE US
             </h4>
             <p className="text-[10px] sm:text-xs flex items-center justify-center">
-              The Mayfair Showroom
+              Clifford Street, Mayfair
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-3 w-3 ml-1 inline-block"

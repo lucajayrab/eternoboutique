@@ -71,7 +71,7 @@ export default function OurCollectionSection() {
   return (
     <>
       {/* Shirt Section */}
-      <section className="w-full bg-[#f9f8f5]" id="collection">
+      <section className="w-full bg-white" id="collection">
         <div className="w-full">
           <div className="flex flex-col md:flex-row gap-0 min-h-[500px] md:min-h-[600px]">
             {/* Image Container - Mobile optimised with shadow */}
@@ -148,13 +148,13 @@ export default function OurCollectionSection() {
                 </h3>
               </div>
 
-              {/* Color Selection */}
+              {/* Color Selection - Smaller swatches */}
               <div className={`space-y-3 ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs text-[#5a5a56]/70 uppercase tracking-wider">Select Colorway</p>
                 <div className={`flex gap-3 ${isMobile ? "justify-center" : "justify-start"}`}>
                   <button
                     onClick={() => setSelectedShirtColor("white")}
-                    className={`w-8 h-8 bg-white border-2 rounded-full transition-all duration-200 ${
+                    className={`w-4 h-4 bg-white border-2 rounded-full transition-all duration-200 ${
                       selectedShirtColor === "white"
                         ? "border-[#5a5a56] shadow-md"
                         : "border-[#5a5a56]/30 hover:border-[#5a5a56]/50"
@@ -163,7 +163,7 @@ export default function OurCollectionSection() {
                   />
                   <button
                     onClick={() => setSelectedShirtColor("black")}
-                    className={`w-8 h-8 bg-black border-2 rounded-full transition-all duration-200 ${
+                    className={`w-4 h-4 bg-black border-2 rounded-full transition-all duration-200 ${
                       selectedShirtColor === "black"
                         ? "border-[#5a5a56] shadow-md"
                         : "border-[#5a5a56]/30 hover:border-[#5a5a56]/50"
@@ -184,7 +184,7 @@ export default function OurCollectionSection() {
               </div>
 
               <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center mx-auto" : "text-left"}`}>
-                <p className="text-xs text-[#5a5a56]">Available in Black & White • Arriving 2026</p>
+                <p className="text-xs text-[#5a5a56]">Arriving 2026</p>
               </div>
             </div>
           </div>
@@ -269,13 +269,13 @@ export default function OurCollectionSection() {
                 </h3>
               </div>
 
-              {/* Color Selection */}
+              {/* Color Selection - Smaller swatches */}
               <div className={`space-y-3 ${isMobile ? "text-center" : "text-left"}`}>
                 <p className="text-xs text-[#5a5a56]/70 uppercase tracking-wider">Select Colorway</p>
                 <div className={`flex gap-3 ${isMobile ? "justify-center" : "justify-start"}`}>
                   <button
                     onClick={() => setSelectedTrouserColor("white")}
-                    className={`w-8 h-8 bg-white border-2 rounded-full transition-all duration-200 ${
+                    className={`w-4 h-4 bg-white border-2 rounded-full transition-all duration-200 ${
                       selectedTrouserColor === "white"
                         ? "border-[#5a5a56] shadow-md"
                         : "border-[#5a5a56]/30 hover:border-[#5a5a56]/50"
@@ -284,7 +284,7 @@ export default function OurCollectionSection() {
                   />
                   <button
                     onClick={() => setSelectedTrouserColor("black")}
-                    className={`w-8 h-8 bg-black border-2 rounded-full transition-all duration-200 ${
+                    className={`w-4 h-4 bg-black border-2 rounded-full transition-all duration-200 ${
                       selectedTrouserColor === "black"
                         ? "border-[#5a5a56] shadow-md"
                         : "border-[#5a5a56]/30 hover:border-[#5a5a56]/50"
@@ -305,7 +305,7 @@ export default function OurCollectionSection() {
               </div>
 
               <div className={`mt-4 md:mt-6 max-w-[550px] w-full ${isMobile ? "text-center mx-auto" : "text-left"}`}>
-                <p className="text-xs text-[#5a5a56]">Available in Black & White • Arriving 2026</p>
+                <p className="text-xs text-[#5a5a56]">Arriving 2026</p>
               </div>
             </div>
           </div>

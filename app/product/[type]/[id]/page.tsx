@@ -281,7 +281,7 @@ export default function ProductPage() {
                     <div key={index} className="flex flex-col items-center">
                       <button
                         onClick={() => handleColorChange(index)}
-                        className={`w-8 h-8 rounded-full transition-all duration-300 ease-out transform ${
+                        className={`w-6 h-6 rounded-full transition-all duration-300 ease-out transform ${
                           selectedColorIndex === index
                             ? "ring-2 ring-[#5a5a56] ring-offset-2 scale-110 shadow-lg"
                             : "hover:scale-105 hover:shadow-md"
