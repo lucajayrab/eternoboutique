@@ -149,10 +149,10 @@ export default function StyleCombinationsSection() {
           </div>
 
           {/* Main Content - Better organized */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
             {/* Left Column - Outfit Visualization (spans 2 columns on large screens) */}
-            <div className="lg:col-span-2">
-              <div className="bg-[#f9f8f5] p-4 md:p-6 lg:p-8">
+            <div className="lg:w-2/3">
+              <div className="bg-[#f9f8f5] p-4 md:p-6 lg:p-8 h-full">
                 {/* Current Selection Header */}
                 <div className="text-center mb-6">
                   <h3 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light mb-2">Current Selection</h3>
@@ -275,13 +275,13 @@ export default function StyleCombinationsSection() {
             </div>
 
             {/* Right Column - Color Selectors (more compact and organized) */}
-            <div className="space-y-8">
+            <div className="lg:w-1/3 flex flex-col space-y-8">
               {/* Shirt Color Selector */}
-              <div className="bg-[#f9f8f5] p-4 rounded">
+              <div className="bg-[#f9f8f5] p-4 rounded flex-1 flex flex-col">
                 <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                   Shirt Colors
                 </h4>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2 mt-auto">
                   {SHIRT_COLORS.map((color, index) => (
                     <button
                       key={index}
@@ -303,11 +303,11 @@ export default function StyleCombinationsSection() {
               </div>
 
               {/* Trouser Color Selector */}
-              <div className="bg-[#f9f8f5] p-4 rounded">
+              <div className="bg-[#f9f8f5] p-4 rounded flex-1 flex flex-col">
                 <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                   Trouser Colors
                 </h4>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2 mt-auto">
                   {TROUSER_COLORS.map((color, index) => (
                     <button
                       key={index}
@@ -329,7 +329,7 @@ export default function StyleCombinationsSection() {
               </div>
 
               {/* Quick Info */}
-              <div className="bg-[#f9f8f5] p-4 rounded text-center">
+              <div className="bg-[#f9f8f5] p-4 rounded text-center flex-1 flex flex-col justify-center">
                 <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] mb-3 font-light">About This Set</h4>
                 <p className="text-xs text-[#5a5a56]/80 leading-relaxed">
                   Both pieces are handcrafted in Italy from premium linen. Perfect for Mediterranean summers and

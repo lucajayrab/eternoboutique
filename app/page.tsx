@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { useState, useEffect, useRef, useCallback } from "react"
 import FromTheYarnSection from "@/components/from-the-yarn-section"
 import EternoManifestoSection from "@/components/eterno-manifesto-section"
-import OurCollectionSection from "@/components/our-collection-section"
 import SlidingButton from "@/components/sliding-button"
 import NavigationMenu from "@/components/navigation-menu"
 
@@ -263,7 +262,6 @@ export default function HomePage() {
           autoPlay
           preload="auto"
           disablePictureInPicture
-          disableRemotePlaybook
           className="absolute inset-0 w-full h-full object-cover z-10"
           style={{ objectFit: "cover", filter: "brightness(0.7)" }}
           onLoadedData={handleVideoLoaded}
@@ -292,7 +290,7 @@ export default function HomePage() {
             aria-label="Scroll down to content"
           >
             <svg
-              className="arrow-icon w-6 h-6 text-black"
+              className="arrow-icon w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -307,7 +305,7 @@ export default function HomePage() {
       {/* Content Sections - Alternating Colors Pattern */}
       {/* Row 1: Exclusive Access Announcement Section - Color A (Light Cream) */}
       <div style={{ backgroundColor: COLOR_A }}>
-        <section className="w-full py-12 sm:py-16 md:py-20" id="exclusive-access" style={{ backgroundColor: COLOR_A }}>
+        <section className="w-full py-12 sm:py-16 md:py-20" id="exclusive-access">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
               <div className="mb-6">
@@ -333,30 +331,19 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* Row 2: Our Collection Section - Color B (Light Gray) */}
+      {/* Row 2: From the Yarn Section - Color B (Light Gray) */}
       <div ref={aboutSectionRef} style={{ backgroundColor: COLOR_B }}>
-        <div className="[&>section]:!bg-transparent">
-          <OurCollectionSection />
-        </div>
+        <FromTheYarnSection />
       </div>
 
-      {/* Row 3: From the Yarn Section - Color A (Light Cream) */}
+      {/* Row 3: Our Philosophy Section - Color A (Light Cream) */}
       <div style={{ backgroundColor: COLOR_A }}>
-        <div className="[&>section]:!bg-transparent">
-          <FromTheYarnSection />
-        </div>
+        <EternoManifestoSection />
       </div>
 
-      {/* Row 4: Our Philosophy Section - Color B (Light Gray) */}
+      {/* Row 4: Private Boutique Section - Color B (Light Gray) */}
       <div style={{ backgroundColor: COLOR_B }}>
-        <div className="[&>section]:!bg-transparent">
-          <EternoManifestoSection />
-        </div>
-      </div>
-
-      {/* Row 5: Private Boutique Section - Color A (Light Cream) */}
-      <div style={{ backgroundColor: COLOR_A }}>
-        <section className="w-full py-12 sm:py-16 md:py-20" id="shop-now" style={{ backgroundColor: COLOR_A }}>
+        <section className="w-full py-12 sm:py-16 md:py-20" id="shop-now">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
               <div className="mb-6">
@@ -382,9 +369,9 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* Row 6: Footer - Color B (Light Gray) */}
-      <div ref={contentRef} style={{ backgroundColor: COLOR_B }}>
-        <section className="w-full py-8 md:py-12 border-t border-[#e0ddd2]" style={{ backgroundColor: COLOR_B }}>
+      {/* Row 5: Footer - Color A (Light Cream) */}
+      <div ref={contentRef} style={{ backgroundColor: COLOR_A }}>
+        <section className="w-full py-8 md:py-12 border-t border-[#e0ddd2]">
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="max-w-xl mx-auto space-y-6 text-center">
               <h2 className="font-mulish text-lg sm:text-xl font-light tracking-widest uppercase text-[#5a5a56]">

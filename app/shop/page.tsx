@@ -40,21 +40,69 @@ const SUGGESTED_COMBINATIONS = [
   { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
 
+// Black & White Capsule Collection Images for homepage-style sections
+const SIGNATURE_SHIRT_IMAGES = {
+  white: "/white-linen-shirt-final.png",
+  black: "/black-linen-shirt-final.png",
+}
+
 type ViewMode = "sets" | "shirts" | "trousers" | "tailoring"
+
+// Homepage-style Shirt Section Component
+function SignatureShirtSection() {
+  return (
+    <section className="w-full bg-[#eeeeec] py-12 sm:py-16 md:py-20">
+      <div className="container mx-auto px-4 sm:px-6 max-w-3xl">
+        <div className="flex flex-col items-center justify-center text-center space-y-6">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">2026 CAPSULE</p>
+            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE SHIRT</h3>
+          </div>
+          <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md">
+            Our signature shirt reimagined in pure monochrome. The clean, single-placket front flows into the soft roll
+            of the paramontura collar, echoed by curved cuffs fastened with genuine mother-of-pearl buttons. A study in
+            timeless elegance.
+          </p>
+          <p className="text-xs text-[#5a5a56]">Arriving 2026</p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// Text-only Trouser Section Component
+function SignatureTrouserSection() {
+  return (
+    <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-20">
+      <div className="container mx-auto px-4 sm:px-6 max-w-3xl">
+        <div className="flex flex-col items-center justify-center text-center space-y-6">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">2026 CAPSULE</p>
+            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE TROUSER</h3>
+          </div>
+          <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md">
+            Our pleated linen trousers refined to their purest form. A single forward pleat introduces movement through
+            the front, while the waistband combines a clean, classic front with discrete elastic at the back. Monochrome
+            sophistication.
+          </p>
+          <p className="text-xs text-[#5a5a56]">Arriving 2026</p>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 interface ProductCarouselProps {
   products: any[]
   type: "shirt" | "trouser"
-  title: string
 }
 
-function ProductCarousel({ products, type, title }: ProductCarouselProps) {
+function ProductCarousel({ products, type }: ProductCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(products.length >= 3 ? 1 : 0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const carouselRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
-  // Enhanced styling for clean sections
   const DESKTOP_SECTION_HEIGHT = 650
   const ITEM_WIDTH_CENTER = isMobile ? 280 : 420
   const ITEM_HEIGHT_CENTER = isMobile ? 350 : 500
@@ -64,28 +112,21 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
   const TRANSITION_DURATION = 500
   const AUTO_PLAY_INTERVAL = 6000
 
-  // Auto-play
   useEffect(() => {
     if (products.length <= 1) return
-
     const interval = setInterval(() => {
       if (!isTransitioning) {
         setCurrentIndex((prev) => (prev + 1) % products.length)
       }
     }, AUTO_PLAY_INTERVAL)
-
     return () => clearInterval(interval)
   }, [currentIndex, isTransitioning, products.length])
 
   const changeSlide = (newIndex: number) => {
     if (isTransitioning || newIndex === currentIndex || newIndex < 0 || newIndex >= products.length) return
-
     setIsTransitioning(true)
     setCurrentIndex(newIndex)
-
-    setTimeout(() => {
-      setIsTransitioning(false)
-    }, TRANSITION_DURATION)
+    setTimeout(() => setIsTransitioning(false), TRANSITION_DURATION)
   }
 
   const handleProductClick = (index: number) => {
@@ -99,30 +140,16 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
     if (!carouselRef.current) return 0
     const containerWidth = carouselRef.current.offsetWidth
     let offsetToCenterOfCurrentItem = 0
-
     for (let i = 0; i < currentIndex; i++) {
       offsetToCenterOfCurrentItem += ITEM_WIDTH_SIDE + ITEM_GAP
     }
     offsetToCenterOfCurrentItem += ITEM_WIDTH_CENTER / 2
-
     return containerWidth / 2 - offsetToCenterOfCurrentItem
   }
 
   return (
     <section className="w-full bg-white py-16 border-b border-[#f0f0f0]">
       <div className="max-w-7xl mx-auto">
-        {/* Section Title */}
-        <div className="text-center mb-12">
-          <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider mb-3">{title}</h2>
-          <div className="w-20 h-px bg-[#5a5a56]/30 mx-auto mb-4"></div>
-          <p className="font-mulish font-light text-[#5a5a56]/70 text-xs max-w-2xl mx-auto">
-            {type === "shirt"
-              ? "Handcrafted in Italy from premium linen, each shirt embodies Mediterranean sophistication."
-              : "Refined pleated trousers that combine comfort with timeless elegance."}
-          </p>
-        </div>
-
-        {/* Carousel */}
         <div
           className="relative w-full overflow-hidden"
           ref={carouselRef}
@@ -142,7 +169,6 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
               const scale = isCenter ? 1 : Math.max(0.75, 1 - distance * 0.12)
               const opacity = isCenter ? 1 : Math.max(0.4, 1 - distance * 0.3)
               const zIndex = isCenter ? 20 : Math.max(1, 10 - distance)
-
               const itemWidth = isCenter ? ITEM_WIDTH_CENTER : ITEM_WIDTH_SIDE
               const itemHeight = isCenter ? ITEM_HEIGHT_CENTER : ITEM_HEIGHT_SIDE
 
@@ -152,7 +178,7 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
                   className="relative flex-shrink-0 cursor-pointer flex flex-col items-center justify-center transition-all ease-out"
                   style={{
                     width: `${itemWidth}px`,
-                    height: `${itemHeight + 80}px`, // Extra space for product info
+                    height: `${itemHeight + 80}px`,
                     marginRight: `${ITEM_GAP}px`,
                     transform: `scale(${scale})`,
                     opacity: opacity,
@@ -162,15 +188,10 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
                   }}
                   onClick={() => handleProductClick(index)}
                 >
-                  {/* Product Image with Shadow Directly Under Product */}
                   <div
                     className="relative flex flex-col items-center justify-center"
-                    style={{
-                      width: itemWidth,
-                      height: itemHeight + 80,
-                    }}
+                    style={{ width: itemWidth, height: itemHeight + 80 }}
                   >
-                    {/* Product Image */}
                     <div
                       className="relative bg-transparent"
                       style={{
@@ -194,8 +215,6 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
                         sizes={`(max-width: 768px) 100vw, ${itemWidth}px`}
                       />
                     </div>
-
-                    {/* Product Information */}
                     <div className="mt-6 text-center">
                       <h3 className="text-[#5a5a56] font-normal text-sm uppercase tracking-wider mb-1">
                         {product.name}
@@ -211,23 +230,17 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
               )
             })}
           </div>
-
-          {/* Navigation dots */}
           <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center space-x-2">
             {products.map((_, index) => (
               <button
                 key={index}
                 onClick={() => changeSlide(index)}
                 disabled={isTransitioning}
-                className={`transition-all duration-300 border-0 ${
-                  index === currentIndex ? "bg-[#5a5a56] w-8 h-3" : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50 w-3 h-3"
-                } rounded-full`}
+                className={`transition-all duration-300 border-0 ${index === currentIndex ? "bg-[#5a5a56] w-8 h-3" : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50 w-3 h-3"} rounded-full`}
                 aria-label={`View ${products[index].name}`}
               />
             ))}
           </div>
-
-          {/* Navigation arrows */}
           <button
             onClick={() => changeSlide((currentIndex - 1 + products.length) % products.length)}
             disabled={isTransitioning}
@@ -238,7 +251,6 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
-
           <button
             onClick={() => changeSlide((currentIndex + 1) % products.length)}
             disabled={isTransitioning}
@@ -255,74 +267,54 @@ function ProductCarousel({ products, type, title }: ProductCarouselProps) {
   )
 }
 
-// Boutique Tailoring Section Component
+// Boutique Tailoring Section Component - Homepage Style Layout
 function BoutiqueTailoringSection() {
   const router = useRouter()
   const isMobile = useIsMobile()
 
   return (
-    <section className="w-full bg-[#f9f8f5] py-16 border-b border-[#f0f0f0]">
-      <div className="max-w-6xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider mb-3">
-            Boutique Tailoring
-          </h2>
-          <div className="w-20 h-px bg-[#5a5a56]/30 mx-auto mb-4"></div>
-          <p className="font-mulish font-light text-[#5a5a56]/70 text-xs max-w-2xl mx-auto">
-            Experience our exclusive in-person tailoring service in the heart of Mayfair.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className={`flex ${isMobile ? "justify-center" : "items-start justify-center lg:justify-end"}`}>
-            <div className="relative w-full max-w-md lg:max-w-lg">
-              <div className="overflow-hidden shadow-xl">
-                <Image
-                  src="/images/vintage-italian-family-new.jpg"
-                  alt="Vintage Italian family portrait showcasing traditional craftsmanship heritage"
-                  width={400}
-                  height={600}
-                  className="w-full h-auto object-cover"
-                  priority
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
-                />
-              </div>
-            </div>
-          </div>
-
+    <section className="w-full bg-[#f9f8f5]">
+      <div className="flex flex-col md:flex-row min-h-[500px] md:min-h-[600px]">
+        <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16">
           <div
-            className={`flex flex-col ${isMobile ? "items-center text-center" : "items-start text-center lg:text-left"}`}
+            className="relative w-full h-[300px] md:h-[450px]"
+            style={{ filter: "drop-shadow(0 15px 25px rgba(0,0,0,0.15))" }}
           >
-            <div
-              className={`font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm mb-8 max-w-2xl ${isMobile ? "mx-auto text-center" : "mx-auto lg:mx-0"}`}
-            >
-              <p className="mb-4">
-                Our showroom in the heart of Mayfair offers a refined setting for your personal tailoring experience.
-                Here, we provide in-person boutique tailoring appointments for clients who wish to have their items
-                fully tailored to their build, as well as those who prefer to view our collection in-person before
-                purchasing.
-              </p>
-              <p>
-                Once tailored to your specifications, an order will be placed, and you will receive your bespoke
-                garments in 4-6 weeks. We will keep your measurements and preferences saved on file for future orders as
-                we expand our operations.
-              </p>
-            </div>
-
+            <Image
+              src="/images/vintage-italian-family-new.jpg"
+              alt="Vintage Italian family portrait"
+              fill
+              style={{ objectFit: "contain" }}
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+            />
+          </div>
+        </div>
+        <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-16 space-y-6 text-center md:text-left">
+          <div>
+            <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">IN-PERSON SERVICE</p>
+            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">BOUTIQUE TAILORING</h3>
+          </div>
+          <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md mx-auto md:mx-0">
+            Our Mayfair showroom offers a refined setting for your personal tailoring experience. We provide in-person
+            appointments for clients who wish to have their items fully tailored, or view our collection before
+            purchasing. Once tailored, you will receive your bespoke garments in 4-6 weeks.
+          </p>
+          <div className="space-y-4">
             <Link
               href="https://maps.google.com/?q=Clifford+Street,+Mayfair,+London,+UK"
               target="_blank"
               rel="noopener noreferrer"
-              className={`inline-block bg-white p-6 font-mulish text-[#5a5a56]/80 max-w-[550px] hover:bg-[#f8f8f8] transition-colors duration-300 border border-[#e0ddd2] border-0 shadow-sm mb-8 ${isMobile ? "mx-auto" : "mx-auto lg:mx-0"}`}
+              className="inline-block bg-white p-4 font-mulish text-[#5a5a56]/80 hover:bg-gray-50 transition-colors duration-300 border border-[#e0ddd2] shadow-sm"
             >
-              <h4 className="text-[#5a5a56] font-normal mb-3 text-sm uppercase tracking-wider text-center">
+              <h4 className="text-[#5a5a56] font-normal mb-2 text-sm uppercase tracking-wider text-center">
                 LOCATE US
               </h4>
               <p className="text-xs flex items-center justify-center">
                 Clifford Street, Mayfair
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 ml-1 inline-block"
+                  className="h-3 w-3 ml-1"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -336,24 +328,21 @@ function BoutiqueTailoringSection() {
                 </svg>
               </p>
             </Link>
-
-            <div className={`max-w-[550px] ${isMobile ? "mx-auto" : "mx-auto lg:mx-0"}`}>
-              <div className={`flex ${isMobile ? "justify-center" : "justify-center lg:justify-start"}`}>
-                <SlidingButton
-                  onClick={() => router.push("/register")}
-                  variant="dark"
-                  duration={1000}
-                  className="min-w-[200px] py-3 text-sm"
-                >
-                  ENQUIRE
-                </SlidingButton>
-              </div>
-              <p
-                className={`text-xs mt-3 text-[#5a5a56]/70 ${isMobile ? "text-center" : "text-center lg:text-left"} max-w-[400px] ${isMobile ? "mx-auto" : "mx-auto lg:mx-0"}`}
+          </div>
+          <div className="pt-4">
+            <div className={`flex ${isMobile ? "justify-center" : "justify-start"}`}>
+              <SlidingButton
+                onClick={() => router.push("/register")}
+                variant="dark"
+                duration={1000}
+                className="min-w-[200px] py-3 text-sm"
               >
-                Submit an enquiry and our team will contact you to discuss your order details.
-              </p>
+                ENQUIRE
+              </SlidingButton>
             </div>
+            <p className="text-xs mt-3 text-[#5a5a56]/70 max-w-xs mx-auto md:mx-0">
+              Submit an enquiry and our team will contact you to discuss your order details.
+            </p>
           </div>
         </div>
       </div>
@@ -382,7 +371,6 @@ function StyleCombinationsSection() {
     }
   }
 
-  // Reset image states when selections change
   useEffect(() => {
     setShirtImageLoaded(false)
     setShirtImageError(false)
@@ -409,7 +397,7 @@ function StyleCombinationsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Outfit Visualization */}
           <div className="lg:col-span-2">
-            <div className="bg-[#f9f8f5] p-8 border-0 shadow-sm">
+            <div className="bg-[#f9f8f5] p-8 border-0 shadow-sm min-h-full flex flex-col">
               <div className="text-center mb-8">
                 <h3 className="text-sm uppercase tracking-wider text-[#5a5a56] font-light mb-2">Current Selection</h3>
                 <p className="text-xs text-[#5a5a56]/70">
@@ -417,7 +405,7 @@ function StyleCombinationsSection() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 min-h-[500px]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow min-h-[500px]">
                 {/* Shirt Display */}
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between mb-4">
@@ -426,7 +414,6 @@ function StyleCombinationsSection() {
                     </h4>
                     <span className="text-xs text-[#5a5a56]/70">£{SHIRT_PRICE}</span>
                   </div>
-
                   <div
                     className="relative flex-1 bg-[#f9f8f5] flex items-center justify-center shadow-md"
                     style={{
@@ -449,7 +436,6 @@ function StyleCombinationsSection() {
                         />
                       </div>
                     )}
-
                     {(shirtImageError || (!shirtImageLoaded && !shirtImageError)) && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         {shirtImageError ? (
@@ -481,7 +467,6 @@ function StyleCombinationsSection() {
                     </h4>
                     <span className="text-xs text-[#5a5a56]/70">£{TROUSER_PRICE}</span>
                   </div>
-
                   <div
                     className="relative flex-1 bg-[#f9f8f5] flex items-center justify-center shadow-md"
                     style={{
@@ -504,7 +489,6 @@ function StyleCombinationsSection() {
                         />
                       </div>
                     )}
-
                     {(trouserImageError || (!trouserImageLoaded && !trouserImageError)) && (
                       <div className="absolute inset-0 flex items-center justify-center">
                         {trouserImageError ? (
@@ -539,37 +523,39 @@ function StyleCombinationsSection() {
           </div>
 
           {/* Color Selectors */}
-          <div className="space-y-8">
+          <div className="space-y-8 flex flex-col">
             {/* Suggested Combinations */}
-            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm">
+            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm flex-1 flex flex-col">
               <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                 Curated Sets
               </h4>
-              <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
-                <SelectTrigger className="w-full bg-white border-gray-300/70 text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 border-0">
-                  <SelectValue placeholder="Select a combination..." className="font-light" />
-                </SelectTrigger>
-                <SelectContent className="font-mulish border-0">
-                  {SUGGESTED_COMBINATIONS.map((combo) => (
-                    <SelectItem key={combo.id} value={combo.id} className="font-light text-xs">
-                      {combo.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex-grow flex items-center">
+                <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
+                  <SelectTrigger className="w-full bg-white border-gray-300/70 text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 border-0">
+                    <SelectValue placeholder="Select a combination..." className="font-light" />
+                  </SelectTrigger>
+                  <SelectContent className="font-mulish border-0">
+                    {SUGGESTED_COMBINATIONS.map((combo) => (
+                      <SelectItem key={combo.id} value={combo.id} className="font-light text-xs">
+                        {combo.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Shirt Color Selector */}
-            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm">
+            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm flex-1 flex flex-col">
               <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                 Shirt Colors
               </h4>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3 flex-grow">
                 {SHIRT_COLORS.map((color, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedShirt(index)}
-                    className={`flex flex-col items-center p-3 transition-all duration-200 ${
+                    className={`flex flex-col items-center justify-center p-3 transition-all duration-200 ${
                       selectedShirt === index ? "bg-[#5a5a56]/10 ring-2 ring-[#5a5a56]/30" : "hover:bg-[#5a5a56]/5"
                     }`}
                   >
@@ -586,16 +572,16 @@ function StyleCombinationsSection() {
             </div>
 
             {/* Trouser Color Selector */}
-            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm">
+            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm flex-1 flex flex-col">
               <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                 Trouser Colors
               </h4>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-3 flex-grow">
                 {TROUSER_COLORS.map((color, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedTrouser(index)}
-                    className={`flex flex-col items-center p-3 transition-all duration-200 ${
+                    className={`flex flex-col items-center justify-center p-3 transition-all duration-200 ${
                       selectedTrouser === index ? "bg-[#5a5a56]/10 ring-2 ring-[#5a5a56]/30" : "hover:bg-[#5a5a56]/5"
                     }`}
                   >
@@ -622,17 +608,13 @@ export default function ShopPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<ViewMode>("shirts")
   const isMobile = useIsMobile()
-  const router = useRouter()
 
-  // Check authentication on mount
   useEffect(() => {
     const checkAuth = () => {
       const authStatus = localStorage.getItem("eternoBoutiqueAccess")
       const authTime = localStorage.getItem("eternoBoutiqueAccessTime")
-
       if (authStatus === "authenticated" && authTime) {
         const timeDiff = Date.now() - Number.parseInt(authTime)
-        // Session expires after 24 hours
         if (timeDiff < 24 * 60 * 60 * 1000) {
           setIsAuthenticated(true)
         } else {
@@ -642,7 +624,6 @@ export default function ShopPage() {
       }
       setIsLoading(false)
     }
-
     checkAuth()
   }, [])
 
@@ -665,9 +646,7 @@ export default function ShopPage() {
   return (
     <div className="min-h-screen bg-white font-mulish">
       <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
-
       <div className="pt-[70px]">
-        {/* Header */}
         <div className="text-center py-12 bg-white border-b border-[#f0f0f0]">
           <h1 className="text-[#5a5a56] font-normal text-xl md:text-2xl uppercase tracking-wider mb-3">
             Private Boutique Collection
@@ -680,18 +659,17 @@ export default function ShopPage() {
           </p>
         </div>
 
-        {/* Desktop: Clean Scrollable Sections */}
         {!isMobile ? (
           <div className="space-y-0">
             <BoutiqueTailoringSection />
-            <ProductCarousel products={SHIRT_COLORS} type="shirt" title="Signature Shirts" />
-            <ProductCarousel products={TROUSER_COLORS} type="trouser" title="Signature Trousers" />
+            <SignatureShirtSection />
+            <ProductCarousel products={SHIRT_COLORS} type="shirt" />
+            <SignatureTrouserSection />
+            <ProductCarousel products={TROUSER_COLORS} type="trouser" />
             <StyleCombinationsSection />
           </div>
         ) : (
-          /* Mobile: Enhanced Tab Interface */
           <div className="h-screen flex flex-col overflow-hidden">
-            {/* Tab Navigation */}
             <div className="flex-shrink-0 px-4 py-6 bg-white border-b border-[#f0f0f0]">
               <div className="flex justify-center">
                 <div className="flex space-x-6">
@@ -699,9 +677,7 @@ export default function ShopPage() {
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab as ViewMode)}
-                      className={`px-4 py-3 text-xs font-light uppercase tracking-wider transition-all duration-300 relative ${
-                        activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
-                      }`}
+                      className={`px-4 py-3 text-xs font-light uppercase tracking-wider transition-all duration-300 relative ${activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"}`}
                     >
                       {tab}
                       {activeTab === tab && (
@@ -712,29 +688,21 @@ export default function ShopPage() {
                 </div>
               </div>
             </div>
-
-            {/* Tab Content */}
-            <div className="flex-1 overflow-hidden">
+            <div className="flex-1 overflow-y-auto">
               {activeTab === "shirts" && (
-                <div className="h-full">
-                  <ProductCarousel products={SHIRT_COLORS} type="shirt" title="Signature Shirts" />
-                </div>
+                <>
+                  <SignatureShirtSection />
+                  <ProductCarousel products={SHIRT_COLORS} type="shirt" />
+                </>
               )}
               {activeTab === "trousers" && (
-                <div className="h-full">
-                  <ProductCarousel products={TROUSER_COLORS} type="trouser" title="Signature Trousers" />
-                </div>
+                <>
+                  <SignatureTrouserSection />
+                  <ProductCarousel products={TROUSER_COLORS} type="trouser" />
+                </>
               )}
-              {activeTab === "sets" && (
-                <div className="h-full overflow-auto">
-                  <StyleCombinationsSection />
-                </div>
-              )}
-              {activeTab === "tailoring" && (
-                <div className="h-full overflow-auto">
-                  <BoutiqueTailoringSection />
-                </div>
-              )}
+              {activeTab === "sets" && <StyleCombinationsSection />}
+              {activeTab === "tailoring" && <BoutiqueTailoringSection />}
             </div>
           </div>
         )}
