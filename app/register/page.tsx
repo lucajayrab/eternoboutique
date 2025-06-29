@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import NavigationMenu from "@/components/navigation-menu"
 import SectionedRegistrationForm from "@/components/sectioned-registration-form"
-import StickyBanner from "@/components/sticky-banner"
 import MobileMenu from "@/components/main-menu"
 
 // Define a consistent logo size
@@ -28,10 +27,7 @@ export default function RegisterPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Sticky Banner for all devices */}
-      <StickyBanner logoWidth={LOGO_SIZE} alwaysVisible={true} />
-
+    <div className="min-h-screen bg-eterno-grey-beige">
       {/* Mobile Menu - only visible on mobile */}
       <MobileMenu />
 

@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import Image from "next/image"
-import StickyBanner from "@/components/sticky-banner"
-import MobileMenu from "@/components/main-menu"
-import DesktopNavigation from "@/components/desktop-navigation"
+import NavigationMenu from "@/components/navigation-menu"
 import SlidingButton from "@/components/sliding-button"
 
 // Product data
@@ -73,7 +71,7 @@ function SizeChartModal({ isOpen, onClose, productType }: SizeChartModalProps) {
             </button>
           </div>
 
-          <div className="bg-[#f9f8f5] p-4 rounded">
+          <div className="bg-eterno-cream p-4 rounded">
             <h4 className="text-[#5a5a56] font-normal mb-3 text-sm uppercase tracking-wider text-center">
               {productType === "shirt" ? "Shirts" : "Trousers"} ({measurementType} Size in Inches)
             </h4>
@@ -126,7 +124,6 @@ export default function ProductPage() {
   const [selectedSize, setSelectedSize] = useState("M")
   const [productType, setProductType] = useState<"shirt" | "trouser">("shirt")
   const [showSizeChart, setShowSizeChart] = useState(false)
-  const [imageLoading, setImageLoading] = useState(false)
 
   useEffect(() => {
     const { type, id } = params
@@ -141,7 +138,7 @@ export default function ProductPage() {
       setSelectedColorIndex(productId)
       setProduct({ ...TROUSER_COLORS[productId], type: "trouser", id: productId })
     } else {
-      router.push("/")
+      router.push("/shop")
     }
   }, [params, router])
 
@@ -149,11 +146,9 @@ export default function ProductPage() {
     const colors = productType === "shirt" ? SHIRT_COLORS : TROUSER_COLORS
     const newProduct = { ...colors[colorIndex], type: productType, id: colorIndex }
 
-    // Update state immediately for responsive UI
     setSelectedColorIndex(colorIndex)
     setProduct(newProduct)
 
-    // Update URL without page reload
     const newUrl = `/product/${productType}/${colorIndex}`
     window.history.replaceState({}, "", newUrl)
   }
@@ -182,7 +177,6 @@ export default function ProductPage() {
 
     localStorage.setItem("eternoCart", JSON.stringify(existingCart))
 
-    // If it's a shirt, redirect to shirt customization
     if (product.type === "shirt") {
       localStorage.setItem(
         "pendingShirtCustomization",
@@ -193,7 +187,6 @@ export default function ProductPage() {
       )
       router.push("/customize-shirt")
     } else {
-      // Show success message for trousers and stay on page
       router.push("/shop")
     }
   }
@@ -214,40 +207,26 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Sticky Banner */}
-      <StickyBanner logoWidth="45mm" />
-
-      {/* Mobile Menu */}
-      <MobileMenu />
-
-      {/* Desktop Navigation */}
-      <DesktopNavigation />
-
-      {/* Size Chart Modal */}
+      <NavigationMenu logoWidth="45mm" />
       <SizeChartModal isOpen={showSizeChart} onClose={() => setShowSizeChart(false)} productType={productType} />
 
-      {/* Main Content */}
-      <div className="pt-[70px]">
-        <div className="container mx-auto px-8 sm:px-12 md:px-16 lg:px-20 max-w-7xl py-12">
+      <main className="pt-[70px]">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl py-12">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Product Image */}
-            <div className="bg-[#f9f8f5] p-8">
-              <div className="aspect-square relative overflow-hidden">
-                <div className="absolute inset-0 transition-opacity duration-300">
-                  <Image
-                    src={product.image || "/placeholder.svg"}
-                    alt={`${product.name} Linen ${product.type.charAt(0).toUpperCase() + product.type.slice(1)}`}
-                    fill
-                    style={{ objectFit: "contain" }}
-                    priority
-                    className="transition-opacity duration-300"
-                  />
-                </div>
+            <div className="bg-eterno-cream p-8">
+              <div className="aspect-square relative">
+                <Image
+                  src={product.image || "/placeholder.svg"}
+                  alt={`${product.name} Linen ${product.type.charAt(0).toUpperCase() + product.type.slice(1)}`}
+                  fill
+                  style={{ objectFit: "contain" }}
+                  priority
+                  className="transition-opacity duration-300"
+                />
               </div>
             </div>
 
-            {/* Product Details */}
-            <div className="flex flex-col justify-center space-y-6">
+            <div className="flex flex-col justify-center py-8 space-y-6">
               <div>
                 <h1 className="font-mulish text-2xl md:text-3xl font-light tracking-widest uppercase text-[#5a5a56] mb-2">
                   {product.name}
@@ -273,7 +252,6 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              {/* Color Selection */}
               <div className="space-y-3">
                 <p className="text-sm font-medium text-[#5a5a56]">Color</p>
                 <div className="flex gap-3 flex-wrap">
@@ -301,7 +279,6 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              {/* Size Selection */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-[#5a5a56]">Size</p>
@@ -329,14 +306,12 @@ export default function ProductPage() {
                 </div>
               </div>
 
-              {/* Add to Cart */}
               <div className="pt-4">
                 <SlidingButton onClick={addToCart} variant="dark" duration={800} className="w-full py-4 text-sm">
                   Add to Cart
                 </SlidingButton>
               </div>
 
-              {/* Additional Info */}
               <div className="pt-4 border-t border-[#5a5a56]/10 space-y-2">
                 <p className="text-xs text-[#5a5a56]/70">• Handcrafted in Italy</p>
                 <p className="text-xs text-[#5a5a56]/70">• 2-3 weeks production time</p>
@@ -346,7 +321,7 @@ export default function ProductPage() {
             </div>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   )
 }

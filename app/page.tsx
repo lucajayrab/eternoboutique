@@ -17,10 +17,6 @@ const MOBILE_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/515853_Drone_Boat_Sea_Woman_By_Rassvet_Production_Artlist_HD-uyfJr0lWhMqJwG1BWUM1LdnraoMdxe.mov"
 const FALLBACK_IMAGE = "/images/hero.jpg"
 
-// Define the two alternating colors
-const COLOR_A = "#f9f8f5" // Light cream
-const COLOR_B = "#eeeeec" // Light gray
-
 export default function HomePage() {
   const router = useRouter()
   const [isMounted, setIsMounted] = useState(false)
@@ -303,8 +299,7 @@ export default function HomePage() {
       </section>
 
       {/* Content Sections - Alternating Colors Pattern */}
-      {/* Row 1: Exclusive Access Announcement Section - Color A (Light Cream) */}
-      <div style={{ backgroundColor: COLOR_A }}>
+      <div className="bg-white">
         <section className="w-full py-12 sm:py-16 md:py-20" id="exclusive-access">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
@@ -331,18 +326,15 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* Row 2: From the Yarn Section - Color B (Light Gray) */}
-      <div ref={aboutSectionRef} style={{ backgroundColor: COLOR_B }}>
+      <div ref={aboutSectionRef} className="bg-eterno-cream">
         <FromTheYarnSection />
       </div>
 
-      {/* Row 3: Our Philosophy Section - Color A (Light Cream) */}
-      <div style={{ backgroundColor: COLOR_A }}>
+      <div className="bg-white">
         <EternoManifestoSection />
       </div>
 
-      {/* Row 4: Private Boutique Section - Color B (Light Gray) */}
-      <div style={{ backgroundColor: COLOR_B }}>
+      <div className="bg-eterno-cream">
         <section className="w-full py-12 sm:py-16 md:py-20" id="shop-now">
           <div className="container mx-auto px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl">
             <div className="text-center">
@@ -369,8 +361,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      {/* Row 5: Footer - Color A (Light Cream) */}
-      <div ref={contentRef} style={{ backgroundColor: COLOR_A }}>
+      <div ref={contentRef} className="bg-white">
         <section className="w-full py-8 md:py-12 border-t border-[#e0ddd2]">
           <div className="w-full px-4 sm:px-6 md:px-8">
             <div className="max-w-xl mx-auto space-y-6 text-center">

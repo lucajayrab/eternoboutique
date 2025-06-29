@@ -8,7 +8,6 @@ import SlidingButton from "@/components/sliding-button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useIsMobile } from "@/hooks/use-mobile"
 import Link from "next/link"
-import PasswordProtection from "@/components/password-protection"
 
 // Product data
 const SHIRT_PRICE = 325
@@ -40,52 +39,36 @@ const SUGGESTED_COMBINATIONS = [
   { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
 
-// Black & White Capsule Collection Images for homepage-style sections
-const SIGNATURE_SHIRT_IMAGES = {
-  white: "/white-linen-shirt-final.png",
-  black: "/black-linen-shirt-final.png",
-}
-
 type ViewMode = "sets" | "shirts" | "trousers" | "tailoring"
 
-// Homepage-style Shirt Section Component
 function SignatureShirtSection() {
   return (
-    <section className="w-full bg-[#eeeeec] py-12 sm:py-16 md:py-20">
+    <section className="w-full py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-3xl">
         <div className="flex flex-col items-center justify-center text-center space-y-6">
-          <div>
-            <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">2026 CAPSULE</p>
-            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE SHIRT</h3>
-          </div>
+          <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE SHIRT</h3>
           <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md">
             Our signature shirt reimagined in pure monochrome. The clean, single-placket front flows into the soft roll
             of the paramontura collar, echoed by curved cuffs fastened with genuine mother-of-pearl buttons. A study in
             timeless elegance.
           </p>
-          <p className="text-xs text-[#5a5a56]">Arriving 2026</p>
         </div>
       </div>
     </section>
   )
 }
 
-// Text-only Trouser Section Component
 function SignatureTrouserSection() {
   return (
-    <section className="w-full bg-[#f9f8f5] py-12 sm:py-16 md:py-20">
+    <section className="w-full py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-3xl">
         <div className="flex flex-col items-center justify-center text-center space-y-6">
-          <div>
-            <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">2026 CAPSULE</p>
-            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE TROUSER</h3>
-          </div>
+          <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE TROUSER</h3>
           <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md">
             Our pleated linen trousers refined to their purest form. A single forward pleat introduces movement through
             the front, while the waistband combines a clean, classic front with discrete elastic at the back. Monochrome
             sophistication.
           </p>
-          <p className="text-xs text-[#5a5a56]">Arriving 2026</p>
         </div>
       </div>
     </section>
@@ -98,6 +81,7 @@ interface ProductCarouselProps {
 }
 
 function ProductCarousel({ products, type }: ProductCarouselProps) {
+  const router = useRouter()
   const [currentIndex, setCurrentIndex] = useState(products.length >= 3 ? 1 : 0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const carouselRef = useRef<HTMLDivElement>(null)
@@ -133,6 +117,8 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
     if (isTransitioning) return
     if (index !== currentIndex) {
       changeSlide(index)
+    } else {
+      router.push(`/product/${type}/${index}`)
     }
   }
 
@@ -148,7 +134,7 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
   }
 
   return (
-    <section className="w-full bg-white py-16 border-b border-[#f0f0f0]">
+    <section className="w-full py-16 border-b border-[#f0f0f0]">
       <div className="max-w-7xl mx-auto">
         <div
           className="relative w-full overflow-hidden"
@@ -219,7 +205,6 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
                       <h3 className="text-[#5a5a56] font-normal text-sm uppercase tracking-wider mb-1">
                         {product.name}
                       </h3>
-                      <p className="text-[#5a5a56]/70 text-xs font-light">£{product.price}</p>
                       <div
                         className="w-4 h-4 border border-[#ddd] mx-auto mt-2"
                         style={{ backgroundColor: product.color }}
@@ -267,13 +252,12 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
   )
 }
 
-// Boutique Tailoring Section Component - Homepage Style Layout
 function BoutiqueTailoringSection() {
   const router = useRouter()
   const isMobile = useIsMobile()
 
   return (
-    <section className="w-full bg-[#f9f8f5]">
+    <section className="w-full">
       <div className="flex flex-col md:flex-row min-h-[500px] md:min-h-[600px]">
         <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16">
           <div
@@ -350,7 +334,6 @@ function BoutiqueTailoringSection() {
   )
 }
 
-// Style Combinations Section Component
 function StyleCombinationsSection() {
   const [selectedShirt, setSelectedShirt] = useState(0)
   const [selectedTrouser, setSelectedTrouser] = useState(0)
@@ -382,7 +365,7 @@ function StyleCombinationsSection() {
   }, [selectedTrouser])
 
   return (
-    <section className="w-full bg-[#eeeeec] py-16 border-b border-[#f0f0f0]">
+    <section className="w-full py-16 border-b border-[#f0f0f0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
         <div className="text-center mb-12">
           <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider mb-3">
@@ -397,7 +380,7 @@ function StyleCombinationsSection() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Outfit Visualization */}
           <div className="lg:col-span-2">
-            <div className="bg-[#f9f8f5] p-8 border-0 shadow-sm min-h-full flex flex-col">
+            <div className="bg-white p-8 border-0 shadow-sm min-h-full flex flex-col">
               <div className="text-center mb-8">
                 <h3 className="text-sm uppercase tracking-wider text-[#5a5a56] font-light mb-2">Current Selection</h3>
                 <p className="text-xs text-[#5a5a56]/70">
@@ -412,10 +395,9 @@ function StyleCombinationsSection() {
                     <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
                       {SHIRT_COLORS[selectedShirt].name} Shirt
                     </h4>
-                    <span className="text-xs text-[#5a5a56]/70">£{SHIRT_PRICE}</span>
                   </div>
                   <div
-                    className="relative flex-1 bg-[#f9f8f5] flex items-center justify-center shadow-md"
+                    className="relative flex-1 bg-white flex items-center justify-center shadow-md"
                     style={{
                       boxShadow: "0 10px 25px -8px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1)",
                     }}
@@ -465,10 +447,9 @@ function StyleCombinationsSection() {
                     <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
                       {TROUSER_COLORS[selectedTrouser].name} Trousers
                     </h4>
-                    <span className="text-xs text-[#5a5a56]/70">£{TROUSER_PRICE}</span>
                   </div>
                   <div
-                    className="relative flex-1 bg-[#f9f8f5] flex items-center justify-center shadow-md"
+                    className="relative flex-1 bg-white flex items-center justify-center shadow-md"
                     style={{
                       boxShadow: "0 10px 25px -8px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1)",
                     }}
@@ -525,13 +506,13 @@ function StyleCombinationsSection() {
           {/* Color Selectors */}
           <div className="space-y-8 flex flex-col">
             {/* Suggested Combinations */}
-            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm flex-1 flex flex-col">
+            <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
               <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                 Curated Sets
               </h4>
               <div className="flex-grow flex items-center">
                 <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
-                  <SelectTrigger className="w-full bg-white border-gray-300/70 text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 border-0">
+                  <SelectTrigger className="w-full bg-white text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 border border-[#e0ddd2]">
                     <SelectValue placeholder="Select a combination..." className="font-light" />
                   </SelectTrigger>
                   <SelectContent className="font-mulish border-0">
@@ -546,7 +527,7 @@ function StyleCombinationsSection() {
             </div>
 
             {/* Shirt Color Selector */}
-            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm flex-1 flex flex-col">
+            <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
               <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                 Shirt Colors
               </h4>
@@ -572,7 +553,7 @@ function StyleCombinationsSection() {
             </div>
 
             {/* Trouser Color Selector */}
-            <div className="bg-[#f9f8f5] p-6 border-0 shadow-sm flex-1 flex flex-col">
+            <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
               <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
                 Trouser Colors
               </h4>
@@ -604,56 +585,20 @@ function StyleCombinationsSection() {
 }
 
 export default function ShopPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<ViewMode>("shirts")
   const isMobile = useIsMobile()
-
-  useEffect(() => {
-    const checkAuth = () => {
-      const authStatus = localStorage.getItem("eternoBoutiqueAccess")
-      const authTime = localStorage.getItem("eternoBoutiqueAccessTime")
-      if (authStatus === "authenticated" && authTime) {
-        const timeDiff = Date.now() - Number.parseInt(authTime)
-        if (timeDiff < 24 * 60 * 60 * 1000) {
-          setIsAuthenticated(true)
-        } else {
-          localStorage.removeItem("eternoBoutiqueAccess")
-          localStorage.removeItem("eternoBoutiqueAccessTime")
-        }
-      }
-      setIsLoading(false)
-    }
-    checkAuth()
-  }, [])
-
-  const handleAuthenticated = () => {
-    setIsAuthenticated(true)
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
-      </div>
-    )
-  }
-
-  if (!isAuthenticated) {
-    return <PasswordProtection onAuthenticated={handleAuthenticated} />
-  }
 
   return (
     <div className="min-h-screen bg-white font-mulish">
       <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
       <div className="pt-[70px]">
-        <div className="text-center py-12 bg-white border-b border-[#f0f0f0]">
+        <div className="text-center py-12 bg-white border-b border-[#e0ddd2]">
           <h1 className="text-[#5a5a56] font-normal text-xl md:text-2xl uppercase tracking-wider mb-3">
             Private Boutique Collection
           </h1>
           <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-4">By Invitation Only</p>
           <div className="w-24 h-px bg-[#5a5a56]/30 mx-auto"></div>
-          <p className="font-mulish font-light text-[#5a5a56]/70 text-sm max-w-3xl mx-auto mt-6">
+          <p className="font-mulish font-light text-[#5a5a56]/70 text-sm max-w-3xl mx-auto mt-6 px-4">
             Explore our exclusive collection of handcrafted Italian linen pieces. Each garment represents the pinnacle
             of Mediterranean craftsmanship and timeless design.
           </p>
@@ -661,16 +606,28 @@ export default function ShopPage() {
 
         {!isMobile ? (
           <div className="space-y-0">
-            <BoutiqueTailoringSection />
-            <SignatureShirtSection />
-            <ProductCarousel products={SHIRT_COLORS} type="shirt" />
-            <SignatureTrouserSection />
-            <ProductCarousel products={TROUSER_COLORS} type="trouser" />
-            <StyleCombinationsSection />
+            <div className="bg-eterno-cream">
+              <BoutiqueTailoringSection />
+            </div>
+            <div className="bg-white">
+              <SignatureShirtSection />
+            </div>
+            <div className="bg-eterno-cream">
+              <ProductCarousel products={SHIRT_COLORS} type="shirt" />
+            </div>
+            <div className="bg-white">
+              <SignatureTrouserSection />
+            </div>
+            <div className="bg-eterno-cream">
+              <ProductCarousel products={TROUSER_COLORS} type="trouser" />
+            </div>
+            <div className="bg-white">
+              <StyleCombinationsSection />
+            </div>
           </div>
         ) : (
           <div className="h-screen flex flex-col overflow-hidden">
-            <div className="flex-shrink-0 px-4 py-6 bg-white border-b border-[#f0f0f0]">
+            <div className="flex-shrink-0 px-4 py-6 bg-white border-b border-[#e0ddd2]">
               <div className="flex justify-center">
                 <div className="flex space-x-6">
                   {["shirts", "trousers", "sets", "tailoring"].map((tab) => (
@@ -691,18 +648,34 @@ export default function ShopPage() {
             <div className="flex-1 overflow-y-auto">
               {activeTab === "shirts" && (
                 <>
-                  <SignatureShirtSection />
-                  <ProductCarousel products={SHIRT_COLORS} type="shirt" />
+                  <div className="bg-white">
+                    <SignatureShirtSection />
+                  </div>
+                  <div className="bg-eterno-cream">
+                    <ProductCarousel products={SHIRT_COLORS} type="shirt" />
+                  </div>
                 </>
               )}
               {activeTab === "trousers" && (
                 <>
-                  <SignatureTrouserSection />
-                  <ProductCarousel products={TROUSER_COLORS} type="trouser" />
+                  <div className="bg-white">
+                    <SignatureTrouserSection />
+                  </div>
+                  <div className="bg-eterno-cream">
+                    <ProductCarousel products={TROUSER_COLORS} type="trouser" />
+                  </div>
                 </>
               )}
-              {activeTab === "sets" && <StyleCombinationsSection />}
-              {activeTab === "tailoring" && <BoutiqueTailoringSection />}
+              {activeTab === "sets" && (
+                <div className="bg-white">
+                  <StyleCombinationsSection />
+                </div>
+              )}
+              {activeTab === "tailoring" && (
+                <div className="bg-eterno-cream">
+                  <BoutiqueTailoringSection />
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -62,7 +62,7 @@ const config: Config = {
           ring: "hsl(var(--sidebar-ring))",
         },
         "eterno-bg-light": "#fbfaf7",
-        "eterno-sand": "#d8d3c2",
+        "eterno-cream": "#f9f8f5",
       },
       borderRadius: {
         lg: "var(--radius)",
