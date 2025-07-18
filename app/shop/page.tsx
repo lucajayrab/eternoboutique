@@ -1,13 +1,16 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import NavigationMenu from "@/components/navigation-menu"
-import SlidingButton from "@/components/sliding-button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useIsMobile } from "@/hooks/use-mobile"
-import Link from "next/link"
+import { Input } from "@/components/ui/input"
+import SlidingButton from "@/components/sliding-button"
+import MinimalistFooter from "@/components/minimalist-footer"
 
 // Product data
 const SHIRT_PRICE = 325
@@ -40,6 +43,64 @@ const SUGGESTED_COMBINATIONS = [
 ]
 
 type ViewMode = "sets" | "shirts" | "trousers" | "tailoring"
+
+// Password Protection Component
+function PasswordProtection({ onAuthenticated }: { onAuthenticated: () => void }) {
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError("")
+
+    // Check password
+    if (password === "eterno2026") {
+      onAuthenticated()
+    } else {
+      setError("Incorrect password")
+    }
+    setIsSubmitting(false)
+  }
+
+  return (
+    <div className="min-h-screen bg-white font-mulish flex items-center justify-center">
+      <div className="w-full max-w-md p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-xl md:text-2xl font-light text-[#5a5a56] uppercase tracking-widest mb-3">
+            Private Boutique
+          </h1>
+          <p className="text-xs text-[#5a5a56]/70">Enter password to access exclusive collection</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="h-12 border-[#5a5a56]/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-[#5a5a56]/50 rounded-none text-center"
+            />
+          </div>
+
+          {error && <p className="text-xs text-red-600 text-center">{error}</p>}
+
+          <SlidingButton
+            type="submit"
+            variant="dark"
+            duration={800}
+            className="w-full py-4 text-sm"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Checking..." : "Enter"}
+          </SlidingButton>
+        </form>
+      </div>
+    </div>
+  )
+}
 
 function SignatureShirtSection() {
   return (
@@ -253,9 +314,6 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
 }
 
 function BoutiqueTailoringSection() {
-  const router = useRouter()
-  const isMobile = useIsMobile()
-
   return (
     <section className="w-full">
       <div className="flex flex-col md:flex-row min-h-[500px] md:min-h-[600px]">
@@ -284,50 +342,6 @@ function BoutiqueTailoringSection() {
             appointments for clients who wish to have their items fully tailored, or view our collection before
             purchasing. Once tailored, you will receive your bespoke garments in 4-6 weeks.
           </p>
-          <div className="space-y-4">
-            <Link
-              href="https://maps.google.com/?q=Clifford+Street,+Mayfair,+London,+UK"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-white p-4 font-mulish text-[#5a5a56]/80 hover:bg-gray-50 transition-colors duration-300 border border-[#e0ddd2] shadow-sm"
-            >
-              <h4 className="text-[#5a5a56] font-normal mb-2 text-sm uppercase tracking-wider text-center">
-                LOCATE US
-              </h4>
-              <p className="text-xs flex items-center justify-center">
-                Clifford Street, Mayfair
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3 w-3 ml-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </p>
-            </Link>
-          </div>
-          <div className="pt-4">
-            <div className={`flex ${isMobile ? "justify-center" : "justify-start"}`}>
-              <SlidingButton
-                onClick={() => router.push("/register")}
-                variant="dark"
-                duration={1000}
-                className="min-w-[200px] py-3 text-sm"
-              >
-                ENQUIRE
-              </SlidingButton>
-            </div>
-            <p className="text-xs mt-3 text-[#5a5a56]/70 max-w-xs mx-auto md:mx-0">
-              Submit an enquiry and our team will contact you to discuss your order details.
-            </p>
-          </div>
         </div>
       </div>
     </section>
@@ -342,6 +356,7 @@ function StyleCombinationsSection() {
   const [trouserImageLoaded, setTrouserImageLoaded] = useState(false)
   const [shirtImageError, setShirtImageError] = useState(false)
   const [trouserImageError, setTrouserImageError] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const handleSuggestedCombinationChange = (comboId: string) => {
     const combination = SUGGESTED_COMBINATIONS.find((c) => c.id === comboId)
@@ -364,217 +379,247 @@ function StyleCombinationsSection() {
     setTrouserImageError(false)
   }, [selectedTrouser])
 
+  const toggleExpanded = () => {
+    setIsExpanded((prev) => !prev)
+  }
+
   return (
     <section className="w-full py-16 border-b border-[#f0f0f0]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider mb-3">
-            Style Combinations
-          </h2>
+        {/* Clickable Section Header */}
+        <div className="text-center mb-8 cursor-pointer" onClick={toggleExpanded}>
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider">
+              Style Combinations
+            </h2>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`transition-transform duration-300 text-[#5a5a56]/70 ${isExpanded ? "rotate-180" : ""}`}
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
           <div className="w-20 h-px bg-[#5a5a56]/30 mx-auto mb-4"></div>
           <p className="font-mulish font-light text-[#5a5a56]/70 text-xs max-w-2xl mx-auto">
-            Explore how our signature pieces work together to create the perfect ensemble.
+            {isExpanded
+              ? "Explore how our signature pieces work together to create the perfect ensemble."
+              : "Click to explore style combinations"}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Outfit Visualization */}
-          <div className="lg:col-span-2">
-            <div className="bg-white p-8 border-0 shadow-sm min-h-full flex flex-col">
-              <div className="text-center mb-8">
-                <h3 className="text-sm uppercase tracking-wider text-[#5a5a56] font-light mb-2">Current Selection</h3>
-                <p className="text-xs text-[#5a5a56]/70">
-                  {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name} Trousers
-                </p>
-              </div>
+        {/* Collapsible Content */}
+        <div
+          className={`transition-all duration-500 ease-in-out overflow-hidden ${
+            isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+          }`}
+        >
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Outfit Visualization */}
+            <div className="lg:col-span-2">
+              <div className="bg-white p-8 border-0 shadow-sm min-h-full flex flex-col">
+                <div className="text-center mb-8">
+                  <h3 className="text-sm uppercase tracking-wider text-[#5a5a56] font-light mb-2">Current Selection</h3>
+                  <p className="text-xs text-[#5a5a56]/70">
+                    {SHIRT_COLORS[selectedShirt].name} Shirt + {TROUSER_COLORS[selectedTrouser].name} Trousers
+                  </p>
+                </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow min-h-[500px]">
-                {/* Shirt Display */}
-                <div className="flex flex-col">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
-                      {SHIRT_COLORS[selectedShirt].name} Shirt
-                    </h4>
-                  </div>
-                  <div
-                    className="relative flex-1 bg-white flex items-center justify-center shadow-md"
-                    style={{
-                      boxShadow: "0 10px 25px -8px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1)",
-                    }}
-                  >
-                    {!shirtImageError && (
-                      <div
-                        className={`transition-opacity duration-300 w-full h-full ${shirtImageLoaded ? "opacity-100" : "opacity-0"}`}
-                      >
-                        <Image
-                          src={SHIRT_COLORS[selectedShirt].image || "/placeholder.svg"}
-                          alt={`${SHIRT_COLORS[selectedShirt].name} Linen Shirt`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          style={{ objectFit: "contain", objectPosition: "center", padding: "20px" }}
-                          onLoad={() => setShirtImageLoaded(true)}
-                          onError={() => setShirtImageError(true)}
-                          priority
-                        />
-                      </div>
-                    )}
-                    {(shirtImageError || (!shirtImageLoaded && !shirtImageError)) && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        {shirtImageError ? (
-                          <div className="text-center">
-                            <div className="w-12 h-12 bg-[#5a5a56]/10 border-0 flex items-center justify-center mb-2">
-                              <svg className="w-6 h-6 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                  fillRule="evenodd"
-                                  d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 flex-grow min-h-[500px]">
+                  {/* Shirt Display */}
+                  <div className="flex flex-col">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
+                        {SHIRT_COLORS[selectedShirt].name} Shirt
+                      </h4>
+                    </div>
+                    <div
+                      className="relative flex-1 bg-white flex items-center justify-center shadow-md"
+                      style={{
+                        boxShadow: "0 10px 25px -8px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      {!shirtImageError && (
+                        <div
+                          className={`transition-opacity duration-300 w-full h-full ${shirtImageLoaded ? "opacity-100" : "opacity-0"}`}
+                        >
+                          <Image
+                            src={SHIRT_COLORS[selectedShirt].image || "/placeholder.svg"}
+                            alt={`${SHIRT_COLORS[selectedShirt].name} Linen Shirt`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            style={{ objectFit: "contain", objectPosition: "center", padding: "20px" }}
+                            onLoad={() => setShirtImageLoaded(true)}
+                            onError={() => setShirtImageError(true)}
+                            priority
+                          />
+                        </div>
+                      )}
+                      {(shirtImageError || (!shirtImageLoaded && !shirtImageError)) && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          {shirtImageError ? (
+                            <div className="text-center">
+                              <div className="w-12 h-12 bg-[#5a5a56]/10 border-0 flex items-center justify-center mb-2">
+                                <svg className="w-6 h-6 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                              <p className="text-xs text-[#5a5a56]/70">Shirt Preview</p>
                             </div>
-                            <p className="text-xs text-[#5a5a56]/70">Shirt Preview</p>
-                          </div>
-                        ) : (
-                          <div className="w-5 h-5 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
-                        )}
-                      </div>
-                    )}
+                          ) : (
+                            <div className="w-5 h-5 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Trouser Display */}
+                  <div className="flex flex-col">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
+                        {TROUSER_COLORS[selectedTrouser].name} Trousers
+                      </h4>
+                    </div>
+                    <div
+                      className="relative flex-1 bg-white flex items-center justify-center shadow-md"
+                      style={{
+                        boxShadow: "0 10px 25px -8px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      {!trouserImageError && (
+                        <div
+                          className={`transition-opacity duration-300 w-full h-full ${trouserImageLoaded ? "opacity-100" : "opacity-0"}`}
+                        >
+                          <Image
+                            src={TROUSER_COLORS[selectedTrouser].image || "/placeholder.svg"}
+                            alt={`${TROUSER_COLORS[selectedTrouser].name} Linen Trousers`}
+                            fill
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            style={{ objectFit: "contain", objectPosition: "center", padding: "20px" }}
+                            onLoad={() => setTrouserImageLoaded(true)}
+                            onError={() => setTrouserImageError(true)}
+                            priority
+                          />
+                        </div>
+                      )}
+                      {(trouserImageError || (!trouserImageLoaded && !trouserImageError)) && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          {trouserImageError ? (
+                            <div className="text-center">
+                              <div className="w-12 h-12 bg-[#5a5a56]/10 border-0 flex items-center justify-center mb-2">
+                                <svg className="w-6 h-6 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                              <p className="text-xs text-[#5a5a56]/70">Trouser Preview</p>
+                            </div>
+                          ) : (
+                            <div className="w-5 h-5 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 
-                {/* Trouser Display */}
-                <div className="flex flex-col">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xs uppercase tracking-wider text-[#5a5a56] font-light">
-                      {TROUSER_COLORS[selectedTrouser].name} Trousers
-                    </h4>
-                  </div>
-                  <div
-                    className="relative flex-1 bg-white flex items-center justify-center shadow-md"
-                    style={{
-                      boxShadow: "0 10px 25px -8px rgba(0, 0, 0, 0.15), 0 4px 10px -4px rgba(0, 0, 0, 0.1)",
-                    }}
-                  >
-                    {!trouserImageError && (
-                      <div
-                        className={`transition-opacity duration-300 w-full h-full ${trouserImageLoaded ? "opacity-100" : "opacity-0"}`}
-                      >
-                        <Image
-                          src={TROUSER_COLORS[selectedTrouser].image || "/placeholder.svg"}
-                          alt={`${TROUSER_COLORS[selectedTrouser].name} Linen Trousers`}
-                          fill
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          style={{ objectFit: "contain", objectPosition: "center", padding: "20px" }}
-                          onLoad={() => setTrouserImageLoaded(true)}
-                          onError={() => setTrouserImageError(true)}
-                          priority
-                        />
-                      </div>
-                    )}
-                    {(trouserImageError || (!trouserImageLoaded && !trouserImageError)) && (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        {trouserImageError ? (
-                          <div className="text-center">
-                            <div className="w-12 h-12 bg-[#5a5a56]/10 border-0 flex items-center justify-center mb-2">
-                              <svg className="w-6 h-6 text-[#5a5a56]/50" fill="currentColor" viewBox="0 0 20 20">
-                                <path
-                                  fillRule="evenodd"
-                                  d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            </div>
-                            <p className="text-xs text-[#5a5a56]/70">Trouser Preview</p>
-                          </div>
-                        ) : (
-                          <div className="w-5 h-5 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin"></div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                <div className="mt-8 pt-6 border-t border-[#e0ddd2] text-center">
+                  <p className="text-lg font-medium text-[#5a5a56]">Complete Set: £{SET_PRICE}</p>
+                  <p className="text-xs text-[#5a5a56]/70 mt-1">
+                    Save £{SHIRT_PRICE + TROUSER_PRICE - SET_PRICE} when ordering both pieces together
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Color Selectors */}
+            <div className="space-y-8 flex flex-col">
+              {/* Suggested Combinations */}
+              <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
+                <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
+                  Curated Sets
+                </h4>
+                <div className="flex-grow flex items-center">
+                  <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
+                    <SelectTrigger className="w-full bg-white text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 border border-[#e0ddd2]">
+                      <SelectValue placeholder="Select a combination..." className="font-light" />
+                    </SelectTrigger>
+                    <SelectContent className="font-mulish border-0">
+                      {SUGGESTED_COMBINATIONS.map((combo) => (
+                        <SelectItem key={combo.id} value={combo.id} className="font-light text-xs">
+                          {combo.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-[#e0ddd2] text-center">
-                <p className="text-lg font-medium text-[#5a5a56]">Complete Set: £{SET_PRICE}</p>
-                <p className="text-xs text-[#5a5a56]/70 mt-1">
-                  Save £{SHIRT_PRICE + TROUSER_PRICE - SET_PRICE} when ordering both pieces together
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Color Selectors */}
-          <div className="space-y-8 flex flex-col">
-            {/* Suggested Combinations */}
-            <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
-              <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
-                Curated Sets
-              </h4>
-              <div className="flex-grow flex items-center">
-                <Select onValueChange={handleSuggestedCombinationChange} value={selectedCombinationId}>
-                  <SelectTrigger className="w-full bg-white text-[#5a5a56] font-light focus:ring-[#5a5a56]/50 focus:border-[#5a5a56]/50 border border-[#e0ddd2]">
-                    <SelectValue placeholder="Select a combination..." className="font-light" />
-                  </SelectTrigger>
-                  <SelectContent className="font-mulish border-0">
-                    {SUGGESTED_COMBINATIONS.map((combo) => (
-                      <SelectItem key={combo.id} value={combo.id} className="font-light text-xs">
-                        {combo.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Shirt Color Selector */}
-            <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
-              <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
-                Shirt Colors
-              </h4>
-              <div className="grid grid-cols-3 gap-3 flex-grow">
-                {SHIRT_COLORS.map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedShirt(index)}
-                    className={`flex flex-col items-center justify-center p-3 transition-all duration-200 ${
-                      selectedShirt === index ? "bg-[#5a5a56]/10 ring-2 ring-[#5a5a56]/30" : "hover:bg-[#5a5a56]/5"
-                    }`}
-                  >
-                    <div
-                      className={`w-6 h-6 rounded-full border-2 mb-2 shadow-sm ${
-                        selectedShirt === index ? "border-[#5a5a56]" : "border-[#ddd]"
+              {/* Shirt Color Selector */}
+              <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
+                <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
+                  Shirt Colors
+                </h4>
+                <div className="grid grid-cols-3 gap-3 flex-grow">
+                  {SHIRT_COLORS.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedShirt(index)}
+                      className={`flex flex-col items-center justify-center p-3 transition-all duration-200 ${
+                        selectedShirt === index ? "bg-[#5a5a56]/10 ring-2 ring-[#5a5a56]/30" : "hover:bg-[#5a5a56]/5"
                       }`}
-                      style={{ backgroundColor: color.color }}
-                    />
-                    <span className="text-xs text-[#5a5a56] text-center leading-tight">{color.name}</span>
-                  </button>
-                ))}
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-full border-2 mb-2 shadow-sm ${
+                          selectedShirt === index ? "border-[#5a5a56]" : "border-[#ddd]"
+                        }`}
+                        style={{ backgroundColor: color.color }}
+                      />
+                      <span className="text-xs text-[#5a5a56] text-center leading-tight">{color.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Trouser Color Selector */}
-            <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
-              <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
-                Trouser Colors
-              </h4>
-              <div className="grid grid-cols-2 gap-3 flex-grow">
-                {TROUSER_COLORS.map((color, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedTrouser(index)}
-                    className={`flex flex-col items-center justify-center p-3 transition-all duration-200 ${
-                      selectedTrouser === index ? "bg-[#5a5a56]/10 ring-2 ring-[#5a5a56]/30" : "hover:bg-[#5a5a56]/5"
-                    }`}
-                  >
-                    <div
-                      className={`w-6 h-6 rounded-full border-2 mb-2 shadow-sm ${
-                        selectedTrouser === index ? "border-[#5a5a56]" : "border-[#ddd]"
+              {/* Trouser Color Selector */}
+              <div className="bg-white p-6 border-0 shadow-sm flex-1 flex flex-col">
+                <h4 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light text-center">
+                  Trouser Colors
+                </h4>
+                <div className="grid grid-cols-2 gap-3 flex-grow">
+                  {TROUSER_COLORS.map((color, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedTrouser(index)}
+                      className={`flex flex-col items-center justify-center p-3 transition-all duration-200 ${
+                        selectedTrouser === index ? "bg-[#5a5a56]/10 ring-2 ring-[#5a5a56]/30" : "hover:bg-[#5a5a56]/5"
                       }`}
-                      style={{ backgroundColor: color.color }}
-                    />
-                    <span className="text-xs text-[#5a5a56] text-center leading-tight">{color.name}</span>
-                  </button>
-                ))}
+                    >
+                      <div
+                        className={`w-6 h-6 rounded-full border-2 mb-2 shadow-sm ${
+                          selectedTrouser === index ? "border-[#5a5a56]" : "border-[#ddd]"
+                        }`}
+                        style={{ backgroundColor: color.color }}
+                      />
+                      <span className="text-xs text-[#5a5a56] text-center leading-tight">{color.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -586,7 +631,12 @@ function StyleCombinationsSection() {
 
 export default function ShopPage() {
   const [activeTab, setActiveTab] = useState<ViewMode>("shirts")
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const isMobile = useIsMobile()
+
+  if (!isAuthenticated) {
+    return <PasswordProtection onAuthenticated={() => setIsAuthenticated(true)} />
+  }
 
   return (
     <div className="min-h-screen bg-white font-mulish">
@@ -680,6 +730,7 @@ export default function ShopPage() {
           </div>
         )}
       </div>
+      <MinimalistFooter />
     </div>
   )
 }

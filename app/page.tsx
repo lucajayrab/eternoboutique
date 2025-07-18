@@ -6,6 +6,7 @@ import FromTheYarnSection from "@/components/from-the-yarn-section"
 import EternoManifestoSection from "@/components/eterno-manifesto-section"
 import SlidingButton from "@/components/sliding-button"
 import NavigationMenu from "@/components/navigation-menu"
+import MinimalistFooter from "@/components/minimalist-footer"
 
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
@@ -27,6 +28,7 @@ export default function HomePage() {
   const [videoAttempts, setVideoAttempts] = useState(0)
   const [hasAutoScrolled, setHasAutoScrolled] = useState(false)
   const [userHasInteracted, setUserHasInteracted] = useState(false)
+  const [showRegisterButton, setShowRegisterButton] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -46,6 +48,16 @@ export default function HomePage() {
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
+
+  // Show register button after video loads with delay
+  useEffect(() => {
+    if (isVideoLoaded) {
+      const timer = setTimeout(() => {
+        setShowRegisterButton(true)
+      }, 2000) // 2 second delay after video loads
+      return () => clearTimeout(timer)
+    }
+  }, [isVideoLoaded])
 
   // Track user interactions to prevent auto-scroll if user is actively engaging
   useEffect(() => {
@@ -278,6 +290,24 @@ export default function HomePage() {
           </div>
         )}
 
+        {/* Register Interest Button - Fade in over video */}
+        <div
+          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 transition-all duration-1000 ${
+            showRegisterButton ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+        >
+          <div className="text-center">
+            <SlidingButton
+              onClick={() => router.push("/register")}
+              variant="light"
+              duration={1000}
+              className="px-8 py-4 text-sm"
+            >
+              REGISTER INTEREST
+            </SlidingButton>
+          </div>
+        </div>
+
         {/* Down Arrow Button - Higher position on mobile with black arrow */}
         <div className={`absolute ${isMobile ? "bottom-20" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
           <button
@@ -340,7 +370,7 @@ export default function HomePage() {
             <div className="text-center">
               <div className="mb-6">
                 <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4">
-                  Private Boutique — By Invitation Only
+                  Private Boutique
                 </h2>
                 <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-2xl mx-auto mb-8">
                   Access our exclusive collection of handcrafted linen pieces. An intimate preview of our finest work,
@@ -361,32 +391,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      <div ref={contentRef} className="bg-white">
-        <section className="w-full py-8 md:py-12 border-t border-[#e0ddd2]">
-          <div className="w-full px-4 sm:px-6 md:px-8">
-            <div className="max-w-xl mx-auto space-y-6 text-center">
-              <h2 className="font-mulish text-lg sm:text-xl font-light tracking-widest uppercase text-[#5a5a56]">
-                Contact Eterno
-              </h2>
-
-              <div className="py-4 max-w-xs mx-auto">
-                <SlidingButton
-                  onClick={() => (window.location.href = "mailto:enquiries@eternotailoring.com")}
-                  variant="dark"
-                  duration={1000}
-                  className="w-full py-4 text-sm"
-                >
-                  ENQUIRE
-                </SlidingButton>
-              </div>
-
-              <div className="pt-4 mt-6 border-t border-[#e0ddd2] text-xs text-[#5a5a56]/50 font-mulish">
-                © {new Date().getFullYear()} ETERNO. All rights reserved.
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
+      <MinimalistFooter />
     </div>
   )
 }
