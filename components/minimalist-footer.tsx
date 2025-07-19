@@ -2,9 +2,11 @@
 
 import { useRouter } from "next/navigation"
 import SlidingButton from "@/components/sliding-button"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 export default function MinimalistFooter() {
   const router = useRouter()
+  const isMobile = useIsMobile()
 
   const scrollToSection = (sectionId: string) => {
     if (window.location.pathname !== "/") {
@@ -32,11 +34,12 @@ export default function MinimalistFooter() {
   return (
     <footer className="bg-[#d8d3c2] font-mulish">
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-          {/* Navigation Section - Left */}
-          <div className="space-y-4">
+        {/* Mobile-first layout - stacked vertically on mobile, side by side on desktop */}
+        <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12">
+          {/* Navigation Section - Now first on mobile */}
+          <div className="space-y-4 order-1">
             <h4 className="text-sm font-light text-[#5a5a56] uppercase tracking-wider mb-6">Navigation</h4>
-            <nav className="space-y-3">
+            <nav className="grid grid-cols-2 md:grid-cols-1 gap-3 md:gap-3">
               <button
                 onClick={() => router.push("/")}
                 className="block text-sm font-light text-[#5a5a56]/80 hover:text-[#5a5a56] transition-colors duration-200 text-left"
@@ -70,9 +73,9 @@ export default function MinimalistFooter() {
             </nav>
           </div>
 
-          {/* Enhanced Register Interest Section - Bottom Right */}
-          <div className="flex flex-col justify-end h-full mt-8 md:mt-0">
-            <div className="flex flex-col items-start md:items-end space-y-6">
+          {/* Register Interest Section - Now second on mobile, right on desktop */}
+          <div className="flex flex-col justify-start md:justify-end h-full order-2">
+            <div className="flex flex-col items-start md:items-end space-y-4 md:space-y-6">
               {/* Subtle heading */}
               <div className="text-[#5a5a56] text-xs uppercase tracking-widest font-light font-mulish opacity-60">
                 Stay Connected
@@ -89,7 +92,7 @@ export default function MinimalistFooter() {
                   onClick={handleRegisterClick}
                   variant="dark"
                   duration={1000}
-                  className="px-6 py-3 text-sm"
+                  className="w-full md:w-auto px-6 py-3 text-sm"
                 >
                   REGISTER INTEREST
                 </SlidingButton>
@@ -99,7 +102,7 @@ export default function MinimalistFooter() {
         </div>
 
         {/* Copyright Section - Centered at Bottom */}
-        <div className="mt-12 pt-8 border-t border-[#5a5a56]/20 text-center">
+        <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-[#5a5a56]/20 text-center">
           <p className="text-xs font-light text-[#5a5a56]/60">© 2024 ETERNO LDN. All rights reserved.</p>
         </div>
       </div>

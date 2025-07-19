@@ -42,8 +42,6 @@ const SUGGESTED_COMBINATIONS = [
   { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
 
-type ViewMode = "sets" | "shirts" | "trousers" | "tailoring" | "enquire"
-
 // Password Protection Component
 function PasswordProtection({ onAuthenticated }: { onAuthenticated: () => void }) {
   const [password, setPassword] = useState("")
@@ -108,7 +106,9 @@ function SignatureShirtSection() {
     <section className="w-full py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-3xl">
         <div className="flex flex-col items-center justify-center text-center space-y-6">
-          <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE SHIRT</h3>
+          <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider">
+            SIGNATURE SHIRT
+          </h3>
           <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md">
             Our signature shirt reimagined in pure monochrome. The clean, single-placket front flows into the soft roll
             of the paramontura collar, echoed by curved cuffs fastened with genuine mother-of-pearl buttons. A study in
@@ -125,7 +125,9 @@ function SignatureTrouserSection() {
     <section className="w-full py-12 sm:py-16 md:py-20">
       <div className="container mx-auto px-4 sm:px-6 max-w-3xl">
         <div className="flex flex-col items-center justify-center text-center space-y-6">
-          <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">SIGNATURE TROUSER</h3>
+          <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider">
+            SIGNATURE TROUSER
+          </h3>
           <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md">
             Our pleated linen trousers refined to their purest form. A single forward pleat introduces movement through
             the front, while the waistband combines a clean, classic front with discrete elastic at the back. Monochrome
@@ -149,9 +151,10 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
-  const DESKTOP_SECTION_HEIGHT = 550 // Reduced from 650
+  const DESKTOP_SECTION_HEIGHT = 550
+  const MOBILE_SECTION_HEIGHT = 400
   const ITEM_WIDTH_CENTER = isMobile ? 280 : 420
-  const ITEM_HEIGHT_CENTER = isMobile ? 300 : 420 // Reduced from 500
+  const ITEM_HEIGHT_CENTER = isMobile ? 280 : 420
   const ITEM_WIDTH_SIDE = ITEM_WIDTH_CENTER * (isMobile ? 0.7 : 0.8)
   const ITEM_HEIGHT_SIDE = ITEM_HEIGHT_CENTER * (isMobile ? 0.7 : 0.8)
   const ITEM_GAP = isMobile ? 16 : 32
@@ -201,7 +204,7 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
         <div
           className="relative w-full overflow-hidden"
           ref={carouselRef}
-          style={{ height: `${DESKTOP_SECTION_HEIGHT}px` }}
+          style={{ height: `${isMobile ? MOBILE_SECTION_HEIGHT : DESKTOP_SECTION_HEIGHT}px` }}
         >
           <div
             className="flex items-center transition-transform ease-out h-full"
@@ -268,7 +271,7 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
               )
             })}
           </div>
-          {/* Only show dots on desktop */}
+          {/* Show dots only on desktop */}
           {!isMobile && (
             <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center space-x-2">
               {products.map((_, index) => (
@@ -330,7 +333,9 @@ function BoutiqueTailoringSection() {
         <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-16 space-y-6 text-center md:text-left">
           <div>
             <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">ITALIAN HERITAGE</p>
-            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">BESPOKE EXPERIENCE</h3>
+            <h3 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider">
+              BESPOKE EXPERIENCE
+            </h3>
           </div>
           <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md mx-auto md:mx-0">
             Founded on authentic Italian craftsmanship, our atelier operates under the guidance of a master tailor with
@@ -386,7 +391,7 @@ function StyleCombinationsSection() {
         {/* Clickable Section Header */}
         <div className="text-center mb-8 cursor-pointer" onClick={toggleExpanded}>
           <div className="flex items-center justify-center gap-2 mb-2">
-            <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider">
+            <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider">
               Style Combinations
             </h2>
             <svg
@@ -627,7 +632,6 @@ function StyleCombinationsSection() {
 }
 
 export default function ShopPage() {
-  const [activeTab, setActiveTab] = useState<ViewMode>("tailoring")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const isMobile = useIsMobile()
 
@@ -640,7 +644,7 @@ export default function ShopPage() {
       <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
       <div className="pt-[70px]">
         <div className="text-center py-12 bg-white">
-          <h1 className="text-[#5a5a56] font-normal text-lg md:text-xl uppercase tracking-wider mb-3">
+          <h1 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-3">
             Boutique Tailoring
           </h1>
           <div className="w-24 h-px bg-[#5a5a56]/30 mx-auto"></div>
@@ -650,47 +654,47 @@ export default function ShopPage() {
           </p>
         </div>
 
-        {!isMobile ? (
-          <div className="space-y-0">
-            <div className="bg-eterno-cream">
-              <BoutiqueTailoringSection />
-            </div>
-            <div className="bg-white">
-              <SignatureShirtSection />
-            </div>
-            <div className="bg-eterno-cream">
-              <ProductCarousel products={SHIRT_COLORS} type="shirt" />
-            </div>
-            <div className="bg-white">
-              <SignatureTrouserSection />
-            </div>
-            <div className="bg-eterno-cream">
-              <ProductCarousel products={TROUSER_COLORS} type="trouser" />
-            </div>
-            <div className="bg-white">
-              <StyleCombinationsSection />
-            </div>
-            <div className="bg-white">
-              <section className="w-full py-16 md:py-20">
-                <div className="max-w-3xl mx-auto px-4 sm:px-8 text-center">
-                  <div className="space-y-6">
-                    <div>
-                      <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider mb-4">
-                        Ready to Begin?
-                      </h2>
-                      <div className="w-16 h-px bg-[#5a5a56]/30 mx-auto mb-6"></div>
-                    </div>
+        {/* Now both mobile and desktop use the same scrolling layout */}
+        <div className="space-y-0">
+          <div className="bg-eterno-cream">
+            <BoutiqueTailoringSection />
+          </div>
+          <div className="bg-white">
+            <SignatureShirtSection />
+          </div>
+          <div className="bg-eterno-cream">
+            <ProductCarousel products={SHIRT_COLORS} type="shirt" />
+          </div>
+          <div className="bg-white">
+            <SignatureTrouserSection />
+          </div>
+          <div className="bg-eterno-cream">
+            <ProductCarousel products={TROUSER_COLORS} type="trouser" />
+          </div>
+          <div className="bg-white">
+            <StyleCombinationsSection />
+          </div>
+          <div className="bg-eterno-cream">
+            <section className="w-full py-16 md:py-20">
+              <div className="max-w-3xl mx-auto px-4 sm:px-8 text-center">
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4">
+                      Ready to Begin?
+                    </h2>
+                    <div className="w-16 h-px bg-[#5a5a56]/30 mx-auto mb-6"></div>
+                  </div>
 
-                    <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-xl mx-auto">
-                      Contact us directly to discuss your requirements, request additional information, or arrange a
-                      private consultation for your bespoke pieces.
-                    </p>
+                  <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-xl mx-auto">
+                    Contact us directly to discuss your requirements, request additional information, or arrange a
+                    private consultation for your bespoke pieces.
+                  </p>
 
-                    <div className="pt-4">
-                      <SlidingButton
-                        onClick={() => {
-                          const subject = "Boutique Collection Enquiry"
-                          const body = `Hello,
+                  <div className="pt-4">
+                    <SlidingButton
+                      onClick={() => {
+                        const subject = "Boutique Collection Enquiry"
+                        const body = `Hello,
 
 I am interested in learning more about your boutique collection and would like to discuss:
 
@@ -703,133 +707,25 @@ Please contact me to arrange a suitable time to discuss my requirements.
 
 Thank you.`
 
-                          const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(
-                            subject,
-                          )}&body=${encodeURIComponent(body)}`
-                          window.location.href = mailtoLink
-                        }}
-                        variant="dark"
-                        duration={1000}
-                        className="px-8 py-4 text-sm"
-                      >
-                        ENQUIRE NOW
-                      </SlidingButton>
-                    </div>
-
-                    <p className="text-xs text-[#5a5a56]/60 mt-4">Opens your default email application</p>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
-        ) : (
-          <div className="h-screen flex flex-col overflow-hidden">
-            <div className="flex-shrink-0 px-4 py-6 bg-white border-b border-[#e0ddd2]">
-              <div className="flex justify-center">
-                <div className="flex space-x-6">
-                  {["tailoring", "shirts", "trousers", "sets", "enquire"].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab as ViewMode)}
-                      className={`px-4 py-3 text-xs font-light uppercase tracking-wider transition-all duration-300 relative ${
-                        activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
-                      }`}
+                        const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(
+                          subject,
+                        )}&body=${encodeURIComponent(body)}`
+                        window.location.href = mailtoLink
+                      }}
+                      variant="dark"
+                      duration={1000}
+                      className="px-8 py-4 text-sm"
                     >
-                      {tab}
-                      {activeTab === tab && (
-                        <span className="absolute bottom-0 left-0 w-full h-0.5 bg-[#5a5a56] transform -translate-y-px rounded-full"></span>
-                      )}
-                    </button>
-                  ))}
+                      ENQUIRE NOW
+                    </SlidingButton>
+                  </div>
+
+                  <p className="text-xs text-[#5a5a56]/60 mt-4">Opens your default email application</p>
                 </div>
               </div>
-            </div>
-            <div className="flex-1 overflow-y-auto scroll-smooth">
-              {activeTab === "shirts" && (
-                <>
-                  <div className="bg-white">
-                    <SignatureShirtSection />
-                  </div>
-                  <div className="bg-eterno-cream">
-                    <ProductCarousel products={SHIRT_COLORS} type="shirt" />
-                  </div>
-                </>
-              )}
-              {activeTab === "trousers" && (
-                <>
-                  <div className="bg-white">
-                    <SignatureTrouserSection />
-                  </div>
-                  <div className="bg-eterno-cream">
-                    <ProductCarousel products={TROUSER_COLORS} type="trouser" />
-                  </div>
-                </>
-              )}
-              {activeTab === "sets" && (
-                <div className="bg-white">
-                  <StyleCombinationsSection />
-                </div>
-              )}
-              {activeTab === "tailoring" && (
-                <div className="bg-eterno-cream">
-                  <BoutiqueTailoringSection />
-                </div>
-              )}
-              {activeTab === "enquire" && (
-                <div className="bg-white">
-                  <section className="w-full py-12">
-                    <div className="max-w-lg mx-auto px-4 text-center">
-                      <div className="space-y-6">
-                        <div>
-                          <h2 className="text-[#5a5a56] font-normal text-base uppercase tracking-wider mb-4">
-                            Ready to Begin?
-                          </h2>
-                          <div className="w-16 h-px bg-[#5a5a56]/30 mx-auto mb-6"></div>
-                        </div>
-
-                        <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm">
-                          Contact us directly to discuss your requirements or arrange a private consultation.
-                        </p>
-
-                        <div className="pt-4">
-                          <SlidingButton
-                            onClick={() => {
-                              const subject = "Boutique Collection Enquiry"
-                              const body = `Hello,
-
-I am interested in learning more about your boutique collection and would like to discuss:
-
-[ ] Individual pieces
-[ ] Complete sets
-[ ] Bespoke tailoring services
-[ ] Private consultation
-
-Please contact me to arrange a suitable time to discuss my requirements.
-
-Thank you.`
-
-                              const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(
-                                subject,
-                              )}&body=${encodeURIComponent(body)}`
-                              window.location.href = mailtoLink
-                            }}
-                            variant="dark"
-                            duration={1000}
-                            className="w-full py-4 text-sm"
-                          >
-                            ENQUIRE NOW
-                          </SlidingButton>
-                        </div>
-
-                        <p className="text-xs text-[#5a5a56]/60 mt-4">Opens your default email application</p>
-                      </div>
-                    </div>
-                  </section>
-                </div>
-              )}
-            </div>
+            </section>
           </div>
-        )}
+        </div>
       </div>
       <MinimalistFooter />
     </div>
