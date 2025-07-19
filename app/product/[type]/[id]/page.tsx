@@ -34,35 +34,85 @@ export default function ProductPage() {
   const params = useParams()
   const router = useRouter()
   const isMobile = useIsMobile()
+  const [selectedColorIndex, setSelectedColorIndex] = useState(0)
   const [selectedSize, setSelectedSize] = useState("")
   const [imageLoaded, setImageLoaded] = useState(false)
   const [imageError, setImageError] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  const type = params.type as string
-  const id = Number.parseInt(params.id as string)
+  // Safely extract parameters
+  const type = Array.isArray(params.type) ? params.type[0] : params.type
+  const idParam = Array.isArray(params.id) ? params.id[0] : params.id
 
-  // Get product data based on type and id
-  const products = type === "shirt" ? SHIRT_COLORS : TROUSER_COLORS
-  const product = products[id]
+  // Get product data based on type
+  const products = type === "shirt" ? SHIRT_COLORS : type === "trouser" ? TROUSER_COLORS : []
+  const id = Number.parseInt(idParam, 10)
+  const isValidType = type === "shirt" || type === "trouser"
+  const isValidId = !isNaN(id) && id >= 0
+  const isValidProductId = isValidId && id < products.length
 
+  // Initialize component
   useEffect(() => {
-    if (!product) {
+    // Only proceed if we have valid parameters
+    if (!isValidType) {
+      console.warn("Invalid product type, redirecting to shop")
       router.push("/shop")
+      return
     }
-  }, [product, router])
 
-  if (!product) {
-    return null
+    if (!isValidProductId) {
+      console.warn("Invalid product ID, redirecting to first product")
+      router.replace(`/product/${type}/0`)
+      return
+    }
+
+    // Set initial state
+    setSelectedColorIndex(id)
+    setIsInitialized(true)
+  }, [type, id, isValidType, isValidProductId, router])
+
+  // Don't render if not initialized or invalid parameters
+  if (!isInitialized || !isValidType || !isValidProductId) {
+    return (
+      <div className="min-h-screen bg-white font-mulish">
+        <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
+        <div className="pt-[70px]">
+          <div className="flex items-center justify-center min-h-[400px]">
+            <div className="text-center">
+              <div className="w-8 h-8 border-2 border-[#5a5a56]/30 border-t-[#5a5a56] rounded-full animate-spin mx-auto mb-4"></div>
+              <p className="text-[#5a5a56]">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const currentProduct = products[selectedColorIndex]
+
+  // Reset image states when color changes
+  useEffect(() => {
+    setImageLoaded(false)
+    setImageError(false)
+  }, [selectedColorIndex])
+
+  // Handle color selection
+  const handleColorChange = (colorIndex: number) => {
+    setSelectedColorIndex(colorIndex)
+    router.replace(`/product/${type}/${colorIndex}`)
   }
 
   const handleEnquire = () => {
-    const subject = `Enquiry: ${product.name} ${type.charAt(0).toUpperCase() + type.slice(1)}`
+    if (!currentProduct || !type) return
+
+    const productType = type.charAt(0).toUpperCase() + type.slice(1)
+    const subject = `Enquiry: ${currentProduct.name} ${productType}`
     const body = `Hello,
 
 I would like to enquire about the following item:
 
-Product: ${product.name} ${type.charAt(0).toUpperCase() + type.slice(1)}
-Price: £${product.price}
+Product: ${currentProduct.name} ${productType}
+Price: £${currentProduct.price}
 ${selectedSize ? `Size: ${selectedSize}` : "Size: Not selected"}
 
 Please provide more information about availability and ordering.
@@ -91,8 +141,8 @@ Thank you.`
                     }}
                   >
                     <Image
-                      src={product.image || "/placeholder.svg"}
-                      alt={`${product.name} Linen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
+                      src={currentProduct.image || "/placeholder.svg"}
+                      alt={`${currentProduct.name} Linen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
                       fill
                       sizes="(max-width: 768px) 100vw, 50vw"
                       style={{ objectFit: "contain" }}
@@ -129,16 +179,39 @@ Thank you.`
             <div className="flex flex-col justify-center space-y-8">
               <div>
                 <h1 className="text-2xl md:text-3xl font-light text-[#5a5a56] uppercase tracking-wider mb-2">
-                  {product.name}
+                  {currentProduct.name}
                 </h1>
                 <p className="text-sm uppercase tracking-wider text-[#5a5a56]/70 mb-4">
                   Linen {type.charAt(0).toUpperCase() + type.slice(1)}
                 </p>
-                <div className="w-8 h-8 border-2 border-[#5a5a56]/30 mb-6" style={{ backgroundColor: product.color }} />
+              </div>
+
+              {/* Color Selection */}
+              <div>
+                <h3 className="text-sm uppercase tracking-wider text-[#5a5a56] mb-4 font-light">Color</h3>
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="flex gap-3">
+                    {products.map((product, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handleColorChange(index)}
+                        className={`w-8 h-8 rounded-full border-2 transition-all duration-200 ${
+                          selectedColorIndex === index
+                            ? "border-[#5a5a56] ring-2 ring-[#5a5a56]/20 scale-110"
+                            : "border-[#5a5a56]/30 hover:border-[#5a5a56]/50 hover:scale-105"
+                        }`}
+                        style={{ backgroundColor: product.color }}
+                        aria-label={`Select ${product.name} color`}
+                        title={product.name}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-sm text-[#5a5a56] font-light">{currentProduct.name}</span>
+                </div>
               </div>
 
               <div>
-                <p className="text-2xl font-medium text-[#5a5a56] mb-2">£{product.price}</p>
+                <p className="text-2xl font-medium text-[#5a5a56] mb-2">£{currentProduct.price}</p>
                 <p className="text-xs text-[#5a5a56]/70">Handcrafted in Italy</p>
               </div>
 

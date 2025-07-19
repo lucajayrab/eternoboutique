@@ -669,17 +669,70 @@ export default function ShopPage() {
             <div className="bg-white">
               <StyleCombinationsSection />
             </div>
+            <div className="bg-white">
+              <section className="w-full py-16 md:py-20">
+                <div className="max-w-3xl mx-auto px-4 sm:px-8 text-center">
+                  <div className="space-y-6">
+                    <div>
+                      <h2 className="text-[#5a5a56] font-normal text-base md:text-lg uppercase tracking-wider mb-4">
+                        Ready to Begin?
+                      </h2>
+                      <div className="w-16 h-px bg-[#5a5a56]/30 mx-auto mb-6"></div>
+                    </div>
+
+                    <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-xl mx-auto">
+                      Contact us directly to discuss your requirements, request additional information, or arrange a
+                      private consultation for your bespoke pieces.
+                    </p>
+
+                    <div className="pt-4">
+                      <SlidingButton
+                        onClick={() => {
+                          const subject = "Boutique Collection Enquiry"
+                          const body = `Hello,
+
+I am interested in learning more about your boutique collection and would like to discuss:
+
+[ ] Individual pieces
+[ ] Complete sets
+[ ] Bespoke tailoring services
+[ ] Private consultation
+
+Please contact me to arrange a suitable time to discuss my requirements.
+
+Thank you.`
+
+                          const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(
+                            subject,
+                          )}&body=${encodeURIComponent(body)}`
+                          window.location.href = mailtoLink
+                        }}
+                        variant="dark"
+                        duration={1000}
+                        className="px-8 py-4 text-sm"
+                      >
+                        ENQUIRE NOW
+                      </SlidingButton>
+                    </div>
+
+                    <p className="text-xs text-[#5a5a56]/60 mt-4">Opens your default email application</p>
+                  </div>
+                </div>
+              </section>
+            </div>
           </div>
         ) : (
           <div className="h-screen flex flex-col overflow-hidden">
             <div className="flex-shrink-0 px-4 py-6 bg-white border-b border-[#e0ddd2]">
               <div className="flex justify-center">
                 <div className="flex space-x-6">
-                  {["tailoring", "shirts", "trousers", "sets"].map((tab) => (
+                  {["tailoring", "shirts", "trousers", "sets", "enquire"].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab as ViewMode)}
-                      className={`px-4 py-3 text-xs font-light uppercase tracking-wider transition-all duration-300 relative ${activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"}`}
+                      className={`px-4 py-3 text-xs font-light uppercase tracking-wider transition-all duration-300 relative ${
+                        activeTab === tab ? "text-[#5a5a56]" : "text-[#5a5a56]/50 hover:text-[#5a5a56]/70"
+                      }`}
                     >
                       {tab}
                       {activeTab === tab && (
@@ -719,6 +772,58 @@ export default function ShopPage() {
               {activeTab === "tailoring" && (
                 <div className="bg-eterno-cream">
                   <BoutiqueTailoringSection />
+                </div>
+              )}
+              {activeTab === "enquire" && (
+                <div className="bg-white">
+                  <section className="w-full py-12">
+                    <div className="max-w-lg mx-auto px-4 text-center">
+                      <div className="space-y-6">
+                        <div>
+                          <h2 className="text-[#5a5a56] font-normal text-base uppercase tracking-wider mb-4">
+                            Ready to Begin?
+                          </h2>
+                          <div className="w-16 h-px bg-[#5a5a56]/30 mx-auto mb-6"></div>
+                        </div>
+
+                        <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm">
+                          Contact us directly to discuss your requirements or arrange a private consultation.
+                        </p>
+
+                        <div className="pt-4">
+                          <SlidingButton
+                            onClick={() => {
+                              const subject = "Boutique Collection Enquiry"
+                              const body = `Hello,
+
+I am interested in learning more about your boutique collection and would like to discuss:
+
+[ ] Individual pieces
+[ ] Complete sets
+[ ] Bespoke tailoring services
+[ ] Private consultation
+
+Please contact me to arrange a suitable time to discuss my requirements.
+
+Thank you.`
+
+                              const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(
+                                subject,
+                              )}&body=${encodeURIComponent(body)}`
+                              window.location.href = mailtoLink
+                            }}
+                            variant="dark"
+                            duration={1000}
+                            className="w-full py-4 text-sm"
+                          >
+                            ENQUIRE NOW
+                          </SlidingButton>
+                        </div>
+
+                        <p className="text-xs text-[#5a5a56]/60 mt-4">Opens your default email application</p>
+                      </div>
+                    </div>
+                  </section>
                 </div>
               )}
             </div>
