@@ -8,18 +8,12 @@ import { z } from "zod"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import SlidingButton from "./sliding-button"
-import EnhancedPhoneInput from "./enhanced-phone-input"
 
-// Extended schema to match the API
+// Simplified schema with only first name, last name, and email
 const registrationSchema = z.object({
   firstname: z.string().min(2, "First name must be at least 2 characters"),
   lastname: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
-  phonecontact: z.string().min(5, "Please enter a valid phone number"),
-  countrylocation: z.string().min(2, "Country is required"),
-  city: z.string().min(2, "City is required"),
-  industrysector: z.string().optional(),
-  dob: z.string().min(1, "Date of birth is required"),
 })
 
 type RegistrationFormData = z.infer<typeof registrationSchema>
@@ -39,11 +33,6 @@ export default function SectionedRegistrationForm() {
       firstname: "",
       lastname: "",
       email: "",
-      phonecontact: "",
-      countrylocation: "",
-      city: "",
-      industrysector: "",
-      dob: "",
     },
   })
 
@@ -135,83 +124,6 @@ export default function SectionedRegistrationForm() {
                     <Input
                       {...field}
                       type="email"
-                      placeholder=""
-                      className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
-                    />
-                  )}
-                />
-              </FormField>
-              <FormField name="dob" label="Date of Birth">
-                <Controller
-                  name="dob"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="date"
-                      placeholder=""
-                      className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
-                    />
-                  )}
-                />
-              </FormField>
-            </div>
-
-            {/* Contact Information Section */}
-            <div className="space-y-6">
-              <FormField name="phonecontact" label="Phone Number">
-                <Controller
-                  name="phonecontact"
-                  control={control}
-                  render={({ field }) => (
-                    <EnhancedPhoneInput
-                      control={control}
-                      name="phonecontact"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-              </FormField>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <FormField name="countrylocation" label="Country">
-                  <Controller
-                    name="countrylocation"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder=""
-                        className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
-                      />
-                    )}
-                  />
-                </FormField>
-                <FormField name="city" label="City">
-                  <Controller
-                    name="city"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        placeholder=""
-                        className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
-                      />
-                    )}
-                  />
-                </FormField>
-              </div>
-            </div>
-
-            {/* Additional Information Section */}
-            <div className="space-y-6">
-              <FormField name="industrysector" label="Industry (Optional)">
-                <Controller
-                  name="industrysector"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
                       placeholder=""
                       className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
                     />

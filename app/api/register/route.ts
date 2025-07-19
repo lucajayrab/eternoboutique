@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server"
-import type { RegistrationFormData } from "@/lib/form-schema"
 // Import the email utility functions
 import { sendWelcomeEmail, sendNotificationEmail } from "@/lib/sendEmail"
 
@@ -8,8 +7,11 @@ const PORTAL_ID = "145973953"
 const FORM_ID = "87c8ab28-e698-4394-bc1f-c1da5b434622"
 const HUBSPOT_API_URL = `https://api.hsforms.com/submissions/v3/integration/submit/${PORTAL_ID}/${FORM_ID}`
 
-// Make sure the RegistrationRequest interface extends the updated RegistrationFormData
-interface RegistrationRequest extends RegistrationFormData {
+// Simplified registration request interface
+interface RegistrationRequest {
+  firstname: string
+  lastname: string
+  email: string
   hutk?: string
 }
 
@@ -24,25 +26,19 @@ export async function POST(request: Request) {
     // Get IP address from headers or use a fallback
     const ipAddress = request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "127.0.0.1"
 
-    // Format the phone number - ensure it's a string and clean it up
-    const phoneValue = body.phonecontact ? String(body.phonecontact).trim() : ""
-
-    // Ensure dob is provided and not empty
-    const dobValue = body.dob && body.dob.trim() !== "" ? body.dob : "1990-01-01"
-
-    // Create the HubSpot payload with the EXACT field identifiers HubSpot is expecting
+    // Create the HubSpot payload with all required fields (including empty ones for HubSpot requirements)
     const hubspotData = {
       submittedAt: Date.now(), // Add timestamp for tracking
       fields: [
         { name: "email", value: body.email || "" },
         { name: "firstname", value: body.firstname || "" },
-        // HubSpot UI label is 'phone' but the API requires field name "0-2/phone"
-        { name: "phone", value: phoneValue },
         { name: "lastname", value: body.lastname || "" },
-        { name: "countrylocation", value: body.countrylocation || "" },
-        { name: "city", value: body.city || "" },
-        { name: "industrysector", value: body.industrysector || "" },
-        { name: "dob", value: dobValue }, // Always provide a dob value
+        // Include the required fields that HubSpot expects, but with empty/default values
+        { name: "countrylocation", value: "" },
+        { name: "city", value: "" },
+        { name: "dob", value: "1990-01-01" }, // Provide a default date to satisfy HubSpot requirement
+        { name: "phonecontact", value: "" }, // Include phone as empty in case it's also required
+        { name: "industrysector", value: "" }, // Include industry as empty in case it's also required
       ],
       context: {
         pageUri: "https://eternotailoring.com/register",
@@ -127,7 +123,18 @@ export async function POST(request: Request) {
     // Send welcome email to the user and notification to the team
     try {
       await sendWelcomeEmail(body.email, body.firstname)
-      await sendNotificationEmail(body)
+      // Create a simplified user data object for the notification email
+      const userData = {
+        firstname: body.firstname,
+        lastname: body.lastname,
+        email: body.email,
+        phonecontact: "", // Empty since we're not collecting this anymore
+        countrylocation: "", // Empty since we're not collecting this anymore
+        city: "", // Empty since we're not collecting this anymore
+        industrysector: "", // Empty since we're not collecting this anymore
+        dob: "", // Empty since we're not collecting this anymore
+      }
+      await sendNotificationEmail(userData)
       console.log("Registration emails sent successfully")
     } catch (emailError) {
       console.error("Failed to send registration emails:", emailError)
