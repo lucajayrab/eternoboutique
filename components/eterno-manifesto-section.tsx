@@ -28,7 +28,7 @@ export default function EternoManifestoSection() {
   return (
     <section className="w-full bg-transparent" id="manifesto">
       <div className="w-full">
-        <div className="flex flex-col md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
+        <div className="flex flex-col-reverse md:flex-row gap-0 md:gap-0 min-h-[400px] md:min-h-[600px]">
           {/* Image Section - Left on desktop, top on mobile */}
           <div className="w-full md:w-1/2 flex items-center py-4 md:py-16 px-4 sm:px-8 md:px-16 lg:px-20 mb-0 md:mb-0">
             <div className="w-full aspect-[4/3] md:h-full bg-[#f5f5f3] flex items-center justify-center overflow-hidden relative">

@@ -211,12 +211,12 @@ export default function HomePage() {
 
     // For mobile, position the sticky banner just above the "CRAFTED IN ITALY" title
     if (isMobile) {
-      // Find the "CRAFTED IN ITALY" title element
-      const craftedTitle = document.querySelector("#from-the-yarn h2")
+      // Find the "EXCLUSIVE EARLY ACCESS" title element
+      const exclusiveTitle = document.querySelector("#exclusive-access h2")
 
-      if (craftedTitle) {
+      if (exclusiveTitle) {
         // Get the position of the title relative to the document
-        const titleRect = craftedTitle.getBoundingClientRect()
+        const titleRect = exclusiveTitle.getBoundingClientRect()
         const titlePosition = titleRect.top + window.pageYOffset
 
         // Position so the bottom of the sticky banner (70px height) sits just above the title
@@ -228,7 +228,7 @@ export default function HomePage() {
           behavior: "smooth",
         })
       } else {
-        // Fallback if title not found - scroll to approximate position
+        // Fallback if title not found - scroll to approximate position for exclusive access
         const heroHeight = window.innerHeight
         const stickyHeaderHeight = 70
         const approximateOffset = 50 // Small buffer for section padding

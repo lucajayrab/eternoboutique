@@ -267,17 +267,20 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
               )
             })}
           </div>
-          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center space-x-2">
-            {products.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => changeSlide(index)}
-                disabled={isTransitioning}
-                className={`transition-all duration-300 border-0 ${index === currentIndex ? "bg-[#5a5a56] w-8 h-3" : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50 w-3 h-3"} rounded-full`}
-                aria-label={`View ${products[index].name}`}
-              />
-            ))}
-          </div>
+          {/* Only show dots on desktop */}
+          {!isMobile && (
+            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 flex justify-center space-x-2">
+              {products.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => changeSlide(index)}
+                  disabled={isTransitioning}
+                  className={`transition-all duration-300 border-0 ${index === currentIndex ? "bg-[#5a5a56] w-8 h-3" : "bg-[#5a5a56]/30 hover:bg-[#5a5a56]/50 w-3 h-3"} rounded-full`}
+                  aria-label={`View ${products[index].name}`}
+                />
+              ))}
+            </div>
+          )}
           <button
             onClick={() => changeSlide((currentIndex - 1 + products.length) % products.length)}
             disabled={isTransitioning}
@@ -325,13 +328,13 @@ function BoutiqueTailoringSection() {
         </div>
         <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-16 space-y-6 text-center md:text-left">
           <div>
-            <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">IN-PERSON SERVICE</p>
-            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">BOUTIQUE TAILORING</h3>
+            <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">ITALIAN HERITAGE</p>
+            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">MASTER TAILORING</h3>
           </div>
           <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md mx-auto md:mx-0">
-            Our Mayfair showroom offers a refined setting for your personal tailoring experience. We provide in-person
-            appointments for clients who wish to have their items fully tailored, or view our collection before
-            purchasing. Once tailored, you will receive your bespoke garments in 4-6 weeks.
+            Founded on authentic Italian craftsmanship, our atelier operates under the guidance of a master tailor with
+            over three decades of experience in Milan's finest workshops. Each garment is constructed using traditional
+            techniques passed down through generations, ensuring uncompromising quality and precision in every stitch.
           </p>
         </div>
       </div>
@@ -621,7 +624,7 @@ function StyleCombinationsSection() {
 }
 
 export default function ShopPage() {
-  const [activeTab, setActiveTab] = useState<ViewMode>("shirts")
+  const [activeTab, setActiveTab] = useState<ViewMode>("tailoring")
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const isMobile = useIsMobile()
 
@@ -670,7 +673,7 @@ export default function ShopPage() {
             <div className="flex-shrink-0 px-4 py-6 bg-white border-b border-[#e0ddd2]">
               <div className="flex justify-center">
                 <div className="flex space-x-6">
-                  {["shirts", "trousers", "sets", "tailoring"].map((tab) => (
+                  {["tailoring", "shirts", "trousers", "sets"].map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab as ViewMode)}
@@ -685,7 +688,7 @@ export default function ShopPage() {
                 </div>
               </div>
             </div>
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto scroll-smooth">
               {activeTab === "shirts" && (
                 <>
                   <div className="bg-white">
