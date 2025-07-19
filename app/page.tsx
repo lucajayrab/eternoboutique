@@ -290,18 +290,18 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Register Interest Button - Fade in over video */}
+        {/* Register Interest Button - Fade in over video with consistent styling */}
         <div
           className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 transition-all duration-1000 ${
             showRegisterButton ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <div className="text-center">
+          <div className="text-center px-4">
             <SlidingButton
               onClick={() => router.push("/register")}
               variant="light"
               duration={1000}
-              className="px-8 py-4 text-sm"
+              className="px-8 py-4 text-sm whitespace-nowrap min-w-max"
             >
               REGISTER INTEREST
             </SlidingButton>
