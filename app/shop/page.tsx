@@ -148,9 +148,9 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
   const carouselRef = useRef<HTMLDivElement>(null)
   const isMobile = useIsMobile()
 
-  const DESKTOP_SECTION_HEIGHT = 650
+  const DESKTOP_SECTION_HEIGHT = 550 // Reduced from 650
   const ITEM_WIDTH_CENTER = isMobile ? 280 : 420
-  const ITEM_HEIGHT_CENTER = isMobile ? 350 : 500
+  const ITEM_HEIGHT_CENTER = isMobile ? 300 : 420 // Reduced from 500
   const ITEM_WIDTH_SIDE = ITEM_WIDTH_CENTER * (isMobile ? 0.7 : 0.8)
   const ITEM_HEIGHT_SIDE = ITEM_HEIGHT_CENTER * (isMobile ? 0.7 : 0.8)
   const ITEM_GAP = isMobile ? 16 : 32
@@ -195,7 +195,7 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
   }
 
   return (
-    <section className="w-full py-16 border-b border-[#f0f0f0]">
+    <section className="w-full py-12">
       <div className="max-w-7xl mx-auto">
         <div
           className="relative w-full overflow-hidden"
@@ -225,7 +225,7 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
                   className="relative flex-shrink-0 cursor-pointer flex flex-col items-center justify-center transition-all ease-out"
                   style={{
                     width: `${itemWidth}px`,
-                    height: `${itemHeight + 80}px`,
+                    height: `${itemHeight}px`,
                     marginRight: `${ITEM_GAP}px`,
                     transform: `scale(${scale})`,
                     opacity: opacity,
@@ -237,7 +237,7 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
                 >
                   <div
                     className="relative flex flex-col items-center justify-center"
-                    style={{ width: itemWidth, height: itemHeight + 80 }}
+                    style={{ width: itemWidth, height: itemHeight }}
                   >
                     <div
                       className="relative bg-transparent"
@@ -260,15 +260,6 @@ function ProductCarousel({ products, type }: ProductCarouselProps) {
                         className="transition-none"
                         priority={isCenter || distance <= 1}
                         sizes={`(max-width: 768px) 100vw, ${itemWidth}px`}
-                      />
-                    </div>
-                    <div className="mt-6 text-center">
-                      <h3 className="text-[#5a5a56] font-normal text-sm uppercase tracking-wider mb-1">
-                        {product.name}
-                      </h3>
-                      <div
-                        className="w-4 h-4 border border-[#ddd] mx-auto mt-2"
-                        style={{ backgroundColor: product.color }}
                       />
                     </div>
                   </div>
@@ -642,11 +633,10 @@ export default function ShopPage() {
     <div className="min-h-screen bg-white font-mulish">
       <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
       <div className="pt-[70px]">
-        <div className="text-center py-12 bg-white border-b border-[#e0ddd2]">
+        <div className="text-center py-12 bg-white">
           <h1 className="text-[#5a5a56] font-normal text-xl md:text-2xl uppercase tracking-wider mb-3">
-            Private Boutique Collection
+            Boutique Tailoring
           </h1>
-          <p className="text-xs uppercase tracking-wider text-[#5a5a56]/70 mb-4">By Invitation Only</p>
           <div className="w-24 h-px bg-[#5a5a56]/30 mx-auto"></div>
           <p className="font-mulish font-light text-[#5a5a56]/70 text-sm max-w-3xl mx-auto mt-6 px-4">
             Explore our exclusive collection of handcrafted Italian linen pieces. Each garment represents the pinnacle
