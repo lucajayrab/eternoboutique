@@ -19,7 +19,7 @@ const registrationSchema = z.object({
   countrylocation: z.string().min(2, "Country is required"),
   city: z.string().min(2, "City is required"),
   industrysector: z.string().optional(),
-  dob: z.string().optional(),
+  dob: z.string().min(1, "Date of birth is required"),
 })
 
 type RegistrationFormData = z.infer<typeof registrationSchema>
@@ -63,8 +63,8 @@ export default function SectionedRegistrationForm() {
         throw new Error(errorData.message || "An unexpected error occurred.")
       }
 
-      // On success, redirect to confirmation page
-      router.push("/confirmation")
+      // On success, redirect to thank you page
+      router.push("/thank-you")
     } catch (error) {
       console.error("Registration error:", error)
       setSubmitError(error instanceof Error ? error.message : "Registration failed. Please try again.")
@@ -73,7 +73,7 @@ export default function SectionedRegistrationForm() {
     }
   }
 
-  const FormField = ({ name, label, placeholder, children }: any) => (
+  const FormField = ({ name, label, children }: any) => (
     <div className="space-y-2">
       <Label htmlFor={name} className="text-xs font-light uppercase tracking-wider text-[#5a5a56]/90">
         {label}
@@ -141,12 +141,37 @@ export default function SectionedRegistrationForm() {
                   )}
                 />
               </FormField>
+              <FormField name="dob" label="Date of Birth">
+                <Controller
+                  name="dob"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      {...field}
+                      type="date"
+                      placeholder=""
+                      className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
+                    />
+                  )}
+                />
+              </FormField>
             </div>
 
             {/* Contact Information Section */}
             <div className="space-y-6">
               <FormField name="phonecontact" label="Phone Number">
-                <EnhancedPhoneInput control={control} name="phonecontact" />
+                <Controller
+                  name="phonecontact"
+                  control={control}
+                  render={({ field }) => (
+                    <EnhancedPhoneInput
+                      control={control}
+                      name="phonecontact"
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
               </FormField>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField name="countrylocation" label="Country">
@@ -205,7 +230,7 @@ export default function SectionedRegistrationForm() {
                 className="w-full py-4 text-sm"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Submitting..." : "Register Interest"}
+                {isSubmitting ? "Submitting..." : "SUBMIT"}
               </SlidingButton>
             </div>
 

@@ -335,7 +335,7 @@ export default function HomePage() {
             <div className="text-center">
               <div className="mb-6">
                 <h2 className="text-[#5a5a56] font-normal text-sm sm:text-base md:text-lg uppercase tracking-wider mb-4">
-                  Exclusive Early Access — 2026 Collection
+                  Exclusive Early Access
                 </h2>
                 <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-xs sm:text-sm max-w-2xl mx-auto mb-8">
                   Register your interest for exclusive access to our early public sale of the Black & White monochrome

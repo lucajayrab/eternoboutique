@@ -27,6 +27,9 @@ export async function POST(request: Request) {
     // Format the phone number - ensure it's a string and clean it up
     const phoneValue = body.phonecontact ? String(body.phonecontact).trim() : ""
 
+    // Ensure dob is provided and not empty
+    const dobValue = body.dob && body.dob.trim() !== "" ? body.dob : "1990-01-01"
+
     // Create the HubSpot payload with the EXACT field identifiers HubSpot is expecting
     const hubspotData = {
       submittedAt: Date.now(), // Add timestamp for tracking
@@ -39,7 +42,7 @@ export async function POST(request: Request) {
         { name: "countrylocation", value: body.countrylocation || "" },
         { name: "city", value: body.city || "" },
         { name: "industrysector", value: body.industrysector || "" },
-        ...(body.dob ? [{ name: "dob", value: body.dob }] : []), // Using the field name confirmed by the user
+        { name: "dob", value: dobValue }, // Always provide a dob value
       ],
       context: {
         pageUri: "https://eternotailoring.com/register",

@@ -7,3 +7,15 @@ export const formSchema = z.object({
 })
 
 export type FormData = z.infer<typeof formSchema>
+
+// Extended registration form data type
+export interface RegistrationFormData {
+  firstname: string
+  lastname: string
+  email: string
+  phonecontact: string
+  countrylocation: string
+  city: string
+  industrysector?: string
+  dob: string
+}
