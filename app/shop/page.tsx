@@ -719,8 +719,6 @@ Thank you.`
                       ENQUIRE NOW
                     </SlidingButton>
                   </div>
-
-                  <p className="text-xs text-[#5a5a56]/60 mt-4">Opens your default email application</p>
                 </div>
               </div>
             </section>
