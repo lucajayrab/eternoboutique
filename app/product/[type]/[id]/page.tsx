@@ -51,6 +51,14 @@ export default function ProductPage() {
   const isValidId = !isNaN(id) && id >= 0
   const isValidProductId = isValidId && id < products.length
 
+  const currentProduct = products[selectedColorIndex]
+
+  // Reset image states when color changes
+  useEffect(() => {
+    setImageLoaded(false)
+    setImageError(false)
+  }, [selectedColorIndex])
+
   // Initialize component
   useEffect(() => {
     // Only proceed if we have valid parameters
@@ -88,18 +96,10 @@ export default function ProductPage() {
     )
   }
 
-  const currentProduct = products[selectedColorIndex]
-
-  // Reset image states when color changes
-  useEffect(() => {
-    setImageLoaded(false)
-    setImageError(false)
-  }, [selectedColorIndex])
-
   // Handle color selection
   const handleColorChange = (colorIndex: number) => {
     setSelectedColorIndex(colorIndex)
-    router.replace(`/product/${type}/${colorIndex}`)
+    router.replace(`/product/${type}/${colorIndex}`, { scroll: false })
   }
 
   const handleEnquire = () => {
@@ -121,6 +121,10 @@ Thank you.`
 
     const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     window.location.href = mailtoLink
+  }
+
+  const handleBackToShop = () => {
+    router.push("/shop")
   }
 
   return (
@@ -257,7 +261,7 @@ Thank you.`
               {/* Back to Collection */}
               <div className="pt-4 border-t border-[#e0ddd2]">
                 <button
-                  onClick={() => router.push("/shop")}
+                  onClick={handleBackToShop}
                   className="text-xs uppercase tracking-wider text-[#5a5a56]/70 hover:text-[#5a5a56] transition-colors duration-200"
                 >
                   ← Back to Collection

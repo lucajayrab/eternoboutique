@@ -42,7 +42,7 @@ const SUGGESTED_COMBINATIONS = [
   { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
 
-type ViewMode = "sets" | "shirts" | "trousers" | "tailoring"
+type ViewMode = "sets" | "shirts" | "trousers" | "tailoring" | "enquire"
 
 // Password Protection Component
 function PasswordProtection({ onAuthenticated }: { onAuthenticated: () => void }) {
@@ -82,6 +82,7 @@ function PasswordProtection({ onAuthenticated }: { onAuthenticated: () => void }
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               className="h-12 border-[#5a5a56]/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-[#5a5a56]/50 rounded-none text-center"
+              autoComplete="current-password"
             />
           </div>
 

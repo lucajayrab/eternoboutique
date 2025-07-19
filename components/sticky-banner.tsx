@@ -1,8 +1,9 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect } from "react"
 import { usePathname } from "next/navigation"
-import Link from "next/link"
 import EternoLogo from "./eterno-logo"
 import { Menu } from "lucide-react"
 
@@ -60,6 +61,22 @@ export default function StickyBanner({
   // Mobile-optimized logo size
   const mobileLogoWidth = "28mm"
 
+  const handleMenuClick = () => {
+    if (onMenuClick) {
+      onMenuClick()
+    }
+  }
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    // Smooth scroll to top if on homepage, otherwise navigate
+    if (isHomePage) {
+      window.scrollTo({ top: 0, behavior: "smooth" })
+    } else {
+      window.location.href = "/"
+    }
+  }
+
   return (
     <div
       className={`fixed top-0 left-0 right-0 z-50 h-[50px] md:h-[60px] flex items-center justify-between px-3 md:px-6 transition-all duration-500 ${
@@ -71,19 +88,19 @@ export default function StickyBanner({
 
       {/* Centered Logo */}
       <div className="flex-1 flex justify-center">
-        <Link href="/" className="flex items-center justify-center">
+        <a href="/" onClick={handleLogoClick} className="flex items-center justify-center">
           <EternoLogo
             width={isMobile ? mobileLogoWidth : logoWidth}
             inverted={false}
             className="hover:opacity-80 transition-opacity duration-300 cursor-pointer"
             fixedSize={true}
           />
-        </Link>
+        </a>
       </div>
 
       {/* Menu Button - Mobile optimized */}
       <button
-        onClick={onMenuClick}
+        onClick={handleMenuClick}
         className="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center hover:bg-black/5 rounded transition-colors touch-manipulation"
         aria-label="Open menu"
         style={{ touchAction: "manipulation" }}

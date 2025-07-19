@@ -23,18 +23,21 @@ export default function DesktopNavigation() {
       // Handle anchor links for homepage
       if (pathname !== "/") {
         router.push(`/${href}`)
-      } else {
-        const targetElement = document.getElementById(href.replace("#", ""))
-        if (targetElement) {
-          const stickyHeaderHeight = 60
-          const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
-          const scrollOffset = stickyHeaderHeight
+        return
+      }
 
-          window.scrollTo({
-            top: offsetTop - scrollOffset,
-            behavior: "smooth",
-          })
-        }
+      const sectionId = href.replace("#", "")
+      const targetElement = document.getElementById(sectionId)
+
+      if (targetElement) {
+        const stickyHeaderHeight = 60
+        const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
+        const scrollOffset = stickyHeaderHeight
+
+        window.scrollTo({
+          top: offsetTop - scrollOffset,
+          behavior: "smooth",
+        })
       }
     } else {
       router.push(href)

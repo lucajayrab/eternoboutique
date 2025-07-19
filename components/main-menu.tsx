@@ -85,34 +85,54 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
         return
       }
 
-      const targetElement = document.getElementById(targetId)
-      if (targetElement) {
-        // For mobile, add section-specific offset
-        const stickyHeaderHeight = 70 // Height of sticky banner
-        const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
-
-        // Section-specific offsets
-        let scrollOffset = 0
-
-        if (targetId === "from-the-yarn") {
-          // For "From The Yarn" section, make sure the sticky banner is visible
-          // and positioned at the top of the section content
-          scrollOffset = stickyHeaderHeight
-        } else {
-          // For other sections, position the sticky banner to cover the color transition
-          // This places the sticky banner on top of the added margin (pt-6 = 24px)
-          scrollOffset = stickyHeaderHeight + 12 // Half of the padding to position banner in the middle
+      // Wait for menu close animation
+      setTimeout(() => {
+        if (href === "/shop") {
+          router.push("/shop")
+          return
         }
 
-        // Scroll with calculated offset
-        window.scrollTo({
-          top: offsetTop - scrollOffset,
-          behavior: "smooth",
-        })
-      } else {
-        // If element not found, just navigate to the href
-        router.push(href)
-      }
+        if (pathname !== "/" && href.startsWith("#")) {
+          router.push(`/${href}`)
+          return
+        }
+
+        const targetElement = document.getElementById(targetId)
+        if (targetElement) {
+          // For mobile, add section-specific offset
+          const isMobile = window.innerWidth < 768
+
+          if (isMobile) {
+            const stickyHeaderHeight = 70 // Height of sticky banner
+            const offsetTop = targetElement.getBoundingClientRect().top + window.pageYOffset
+
+            // Section-specific offsets
+            let scrollOffset = 0
+
+            if (targetId === "from-the-yarn") {
+              // For "From The Yarn" section, make sure the sticky banner is visible
+              // and positioned at the top of the section content
+              scrollOffset = stickyHeaderHeight
+            } else {
+              // For other sections, position the sticky banner to cover the color transition
+              // This places the sticky banner on top of the added margin (pt-6 = 24px)
+              scrollOffset = stickyHeaderHeight + 12 // Half of the padding to position banner in the middle
+            }
+
+            // Scroll with calculated offset
+            window.scrollTo({
+              top: offsetTop - scrollOffset,
+              behavior: "smooth",
+            })
+          } else {
+            // Desktop behavior
+            targetElement.scrollIntoView({ behavior: "smooth" })
+          }
+        } else {
+          // If element not found, just navigate to the href
+          router.push(href)
+        }
+      }, 300) // Wait for menu close animation
     }
 
     return (
@@ -143,7 +163,7 @@ export default function MobileMenu({ logoWidth = "40mm" }: MobileMenuProps) {
 
       {/* Menu Overlay */}
       <div
-        className={`md:hidden fixed inset-0 bg-eterno-sand z-40 transition-transform duration-300 ease-in-out ${
+        className={`md:hidden fixed inset-0 bg-[#5a5a56] z-40 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         } pt-[70px]`}
       >

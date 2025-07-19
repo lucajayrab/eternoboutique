@@ -12,7 +12,15 @@ export default function MinimalistFooter() {
     } else {
       const element = document.getElementById(sectionId)
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" })
+        const stickyHeaderHeight = 70
+        const elementRect = element.getBoundingClientRect()
+        const elementPosition = elementRect.top + window.pageYOffset
+        const targetScrollPosition = elementPosition - stickyHeaderHeight
+
+        window.scrollTo({
+          top: targetScrollPosition,
+          behavior: "smooth",
+        })
       }
     }
   }
@@ -22,8 +30,8 @@ export default function MinimalistFooter() {
   }
 
   return (
-    <footer className="bg-[#d8d3c2] py-12 md:py-16 font-mulish">
-      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
+    <footer className="bg-[#d8d3c2] font-mulish">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           {/* Navigation Section - Left */}
           <div className="space-y-4">
@@ -48,7 +56,7 @@ export default function MinimalistFooter() {
                 From the Yarn
               </button>
               <button
-                onClick={() => scrollToSection("philosophy")}
+                onClick={() => scrollToSection("manifesto")}
                 className="block text-sm font-light text-[#5a5a56]/80 hover:text-[#5a5a56] transition-colors duration-200 text-left"
               >
                 Philosophy
@@ -78,7 +86,7 @@ export default function MinimalistFooter() {
               {/* Register Interest Button */}
               <div className="w-full md:w-auto">
                 <SlidingButton
-                  onClick={() => router.push("/register")}
+                  onClick={handleRegisterClick}
                   variant="dark"
                   duration={1000}
                   className="px-6 py-3 text-sm"

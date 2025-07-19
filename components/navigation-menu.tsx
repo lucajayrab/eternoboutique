@@ -39,9 +39,13 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
       // Handle anchor links with precise positioning
       if (pathname !== "/") {
         router.push(`/${href}`)
-      } else {
-        const sectionId = href.replace("#", "")
+        return
+      }
 
+      const sectionId = href.replace("#", "")
+
+      // Wait for menu close animation before scrolling
+      setTimeout(() => {
         // Special handling for collection to match hero arrow behavior
         if (sectionId === "collection") {
           // For mobile, position the sticky banner just above the "EXCLUSIVE EARLY ACCESS" title
@@ -103,7 +107,7 @@ export default function NavigationMenu({ logoWidth = "45mm" }: NavigationMenuPro
             })
           }
         }
-      }
+      }, 300) // Wait for menu close animation
     } else {
       router.push(href)
     }
