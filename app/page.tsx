@@ -29,6 +29,7 @@ export default function HomePage() {
   const [hasAutoScrolled, setHasAutoScrolled] = useState(false)
   const [userHasInteracted, setUserHasInteracted] = useState(false)
   const [showRegisterButton, setShowRegisterButton] = useState(false)
+  const [videoInitialized, setVideoInitialized] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
   const heroSectionRef = useRef<HTMLElement>(null)
@@ -87,10 +88,10 @@ export default function HomePage() {
     }
   }, [])
 
-  // Video loading and playback logic
+  // Enhanced video loading and playback logic for mobile
   const attemptVideoPlay = useCallback(async () => {
     const video = videoRef.current
-    if (!video || isVideoError || videoAttempts > 3) return
+    if (!video || isVideoError || videoAttempts > 3 || videoInitialized) return
 
     try {
       // Set video properties for mobile optimization
@@ -98,61 +99,114 @@ export default function HomePage() {
       video.playsInline = true
       video.autoplay = true
       video.loop = true
-      video.preload = "auto"
+      video.preload = "metadata" // Changed from "auto" to reduce initial load
 
-      // Mobile-specific attributes
+      // Mobile-specific attributes to prevent flashing
       if (isMobile) {
         video.setAttribute("playsinline", "")
         video.setAttribute("webkit-playsinline", "")
         video.setAttribute("x5-playsinline", "")
+        video.setAttribute("x5-video-player-type", "h5")
+        video.setAttribute("x5-video-player-fullscreen", "true")
+
+        // Prevent video from showing controls or poster flashing
+        video.controls = false
+        video.poster = ""
+
+        // Set initial opacity to prevent flash
+        video.style.opacity = "0"
+        video.style.transition = "opacity 0.5s ease-in-out"
       }
 
-      // Load the appropriate video source immediately
+      // Load the appropriate video source
       const videoUrl = isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL
-      video.src = videoUrl
+
+      // Only set src if it's different to prevent reloading
+      if (video.src !== videoUrl) {
+        video.src = videoUrl
+      }
+
+      setVideoInitialized(true)
+
+      // Load the video
       video.load()
 
-      // Attempt to play immediately
+      // Wait for the video to be ready before attempting to play
+      await new Promise((resolve, reject) => {
+        const handleCanPlay = () => {
+          video.removeEventListener("canplay", handleCanPlay)
+          video.removeEventListener("error", handleError)
+          resolve(true)
+        }
+
+        const handleError = (e: any) => {
+          video.removeEventListener("canplay", handleCanPlay)
+          video.removeEventListener("error", handleError)
+          reject(e)
+        }
+
+        video.addEventListener("canplay", handleCanPlay, { once: true })
+        video.addEventListener("error", handleError, { once: true })
+      })
+
+      // Attempt to play
       const playPromise = video.play()
       if (playPromise !== undefined) {
         await playPromise
+
+        // Fade in the video smoothly on mobile
+        if (isMobile) {
+          video.style.opacity = "0.7" // Match the filter brightness
+        }
+
         setIsVideoLoaded(true)
+        setIsVideoError(false)
       }
     } catch (error) {
       console.warn("Video play attempt failed:", error)
       setVideoAttempts((prev) => prev + 1)
 
-      // Retry with exponential backoff
-      if (videoAttempts < 3) {
-        setTimeout(attemptVideoPlay, 500 * Math.pow(2, videoAttempts))
+      // Retry with exponential backoff, but fewer attempts on mobile
+      const maxAttempts = isMobile ? 2 : 3
+      if (videoAttempts < maxAttempts) {
+        setTimeout(attemptVideoPlay, 1000 * Math.pow(2, videoAttempts))
       } else {
         setIsVideoError(true)
+        // On mobile, hide the video element to prevent flashing
+        if (isMobile && video) {
+          video.style.display = "none"
+        }
       }
     }
-  }, [isMobile, isVideoError, videoAttempts])
+  }, [isMobile, isVideoError, videoAttempts, videoInitialized])
 
-  // Initialize video on mount
+  // Initialize video on mount with mobile-specific handling
   useEffect(() => {
     setIsMounted(true)
 
-    // Small delay to ensure DOM is ready
-    const timer = setTimeout(() => {
-      attemptVideoPlay()
-    }, 100)
+    // Longer delay for mobile to ensure DOM is fully ready
+    const timer = setTimeout(
+      () => {
+        attemptVideoPlay()
+      },
+      isMobile ? 300 : 100,
+    )
 
     return () => clearTimeout(timer)
-  }, [attemptVideoPlay])
+  }, [attemptVideoPlay, isMobile])
 
   // Handle user interactions for mobile autoplay restrictions
   useEffect(() => {
-    if (!isMobile || isVideoLoaded) return
+    if (!isMobile || isVideoLoaded || videoInitialized) return
 
     const handleUserInteraction = () => {
-      attemptVideoPlay()
+      if (!videoInitialized) {
+        attemptVideoPlay()
+      }
     }
 
     // Add event listeners for user interaction
-    const events = ["touchstart", "touchend", "click", "scroll"]
+    const events = ["touchstart", "touchend", "click"]
     events.forEach((event) => {
       document.addEventListener(event, handleUserInteraction, { once: true, passive: true })
     })
@@ -162,7 +216,7 @@ export default function HomePage() {
         document.removeEventListener(event, handleUserInteraction)
       })
     }
-  }, [isMobile, isVideoLoaded, attemptVideoPlay])
+  }, [isMobile, isVideoLoaded, attemptVideoPlay, videoInitialized])
 
   // Auto-scroll functionality when video loop completes
   useEffect(() => {
@@ -191,13 +245,23 @@ export default function HomePage() {
   const handleVideoLoaded = useCallback(() => {
     setIsVideoLoaded(true)
     setIsVideoError(false)
-  }, [])
+
+    // Ensure smooth fade-in on mobile
+    if (isMobile && videoRef.current) {
+      videoRef.current.style.opacity = "0.7"
+    }
+  }, [isMobile])
 
   const handleVideoError = useCallback(() => {
     console.error("Video failed to load")
     setIsVideoError(true)
     setIsVideoLoaded(false)
-  }, [])
+
+    // Hide video element on mobile to prevent flashing
+    if (isMobile && videoRef.current) {
+      videoRef.current.style.display = "none"
+    }
+  }, [isMobile])
 
   const handleScrollDown = useCallback(() => {
     setIsArrowClicked(true)
@@ -261,26 +325,47 @@ export default function HomePage() {
 
       {/* HERO SECTION - Video Background */}
       <section ref={heroSectionRef} className="relative h-screen w-screen overflow-hidden bg-black" id="home">
-        {/* Background Video - Always visible */}
+        {/* Static background to prevent flashing */}
+        <div className="absolute inset-0 bg-black z-5"></div>
+
+        {/* Background Video - Enhanced mobile handling */}
         <video
           ref={videoRef}
           muted
           loop
           playsInline
           autoPlay
-          preload="auto"
+          preload={isMobile ? "metadata" : "auto"}
           disablePictureInPicture
           className="absolute inset-0 w-full h-full object-cover z-10"
-          style={{ objectFit: "cover", filter: "brightness(0.7)" }}
+          style={{
+            objectFit: "cover",
+            filter: "brightness(0.7)",
+            opacity: isMobile ? "0" : "0.7", // Start transparent on mobile
+            transition: isMobile ? "opacity 0.5s ease-in-out" : "none",
+          }}
           onLoadedData={handleVideoLoaded}
           onCanPlay={handleVideoLoaded}
           onError={handleVideoError}
+          poster="" // Remove poster to prevent flashing
+          controls={false}
         >
           <source src={isMobile ? MOBILE_VIDEO_URL : DESKTOP_VIDEO_URL} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
-        {/* Only show loading on mobile if video hasn't loaded yet */}
+        {/* Fallback background image for when video fails */}
+        {isVideoError && (
+          <div
+            className="absolute inset-0 z-15 bg-cover bg-center"
+            style={{
+              backgroundImage: `url(${FALLBACK_IMAGE})`,
+              filter: "brightness(0.7)",
+            }}
+          />
+        )}
+
+        {/* Loading state - only show on mobile if video hasn't loaded and no error */}
         {isMobile && !isVideoLoaded && !isVideoError && (
           <div className="absolute inset-0 z-20 bg-black flex items-center justify-center">
             <div className="text-white/70 text-center">
