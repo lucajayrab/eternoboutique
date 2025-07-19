@@ -329,12 +329,14 @@ function BoutiqueTailoringSection() {
         <div className="w-full md:w-1/2 flex flex-col justify-center p-8 md:p-16 space-y-6 text-center md:text-left">
           <div>
             <p className="text-[10px] uppercase tracking-wider text-[#5a5a56]/70 mb-2">ITALIAN HERITAGE</p>
-            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">MASTER TAILORING</h3>
+            <h3 className="text-[#5a5a56] font-normal text-lg uppercase tracking-wider">BESPOKE EXPERIENCE</h3>
           </div>
           <p className="font-mulish font-light text-[#5a5a56]/80 leading-relaxed text-sm max-w-md mx-auto md:mx-0">
             Founded on authentic Italian craftsmanship, our atelier operates under the guidance of a master tailor with
-            over three decades of experience in Milan's finest workshops. Each garment is constructed using traditional
+            over a decade of experience in Milan's finest workshops. Each garment is constructed using traditional
             techniques passed down through generations, ensuring uncompromising quality and precision in every stitch.
+            Experience our bespoke service through private consultations in our Mayfair fitting room, where every detail
+            is tailored to your personal style and measurements.
           </p>
         </div>
       </div>
@@ -637,7 +639,7 @@ export default function ShopPage() {
       <NavigationMenu logoWidth={isMobile ? "35mm" : "45mm"} />
       <div className="pt-[70px]">
         <div className="text-center py-12 bg-white">
-          <h1 className="text-[#5a5a56] font-normal text-xl md:text-2xl uppercase tracking-wider mb-3">
+          <h1 className="text-[#5a5a56] font-normal text-lg md:text-xl uppercase tracking-wider mb-3">
             Boutique Tailoring
           </h1>
           <div className="w-24 h-px bg-[#5a5a56]/30 mx-auto"></div>
