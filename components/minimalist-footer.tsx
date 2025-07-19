@@ -23,7 +23,7 @@ export default function MinimalistFooter() {
 
   return (
     <footer className="bg-[#d8d3c2] py-12 md:py-16 font-mulish">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           {/* Navigation Section - Left */}
           <div className="space-y-4">
