@@ -6,7 +6,6 @@ import Image from "next/image"
 import StickyBanner from "@/components/sticky-banner"
 import MobileMenu from "@/components/main-menu"
 import DesktopNavigation from "@/components/desktop-navigation"
-import SlidingButton from "@/components/sliding-button"
 
 type EmbroideryPosition = "left-collar" | "right-collar" | "left-cuff" | "right-cuff" | null
 type CuffPosition = "inside" | "outside" | null
@@ -413,60 +412,4 @@ export default function CustomizeShirtPage() {
               )}
 
               <div className="bg-[#f9f8f5] rounded-lg p-6">
-                <h4 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-4">
-                  Order Summary
-                </h4>
-
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center py-2 border-b border-[#5a5a56]/10">
-                    <span className="text-[#5a5a56]">
-                      {pendingCustomization.type === "set"
-                        ? `Complete Set (${currentShirt.name} Shirt)`
-                        : `${currentShirt.name} Shirt`}
-                    </span>
-                    <span className="text-[#5a5a56]">£{pendingCustomization.type === "set" ? "600" : "325"}</span>
-                  </div>
-
-                  {embroideryPosition && embroideryText && isCustomizationComplete() && (
-                    <div className="flex justify-between items-center py-2 border-b border-[#5a5a56]/10">
-                      <span className="text-[#5a5a56]">
-                        Embroidery ({getPositionLabel(embroideryPosition)}: "{embroideryText}")
-                      </span>
-                      <span className="text-[#5a5a56]">£25</span>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center pt-4 font-medium">
-                    <span className="text-[#5a5a56]">Total</span>
-                    <span className="text-lg text-[#5a5a56]">
-                      £{(pendingCustomization.type === "set" ? 600 : 325) + (isCustomizationComplete() ? 25 : 0)}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <SlidingButton
-                  onClick={proceedWithCustomization}
-                  variant="dark"
-                  duration={800}
-                  className="w-full py-3 text-sm"
-                  disabled={embroideryPosition && !isCustomizationComplete()}
-                >
-                  {isCustomizationComplete() ? "Add with Embroidery" : "Continue to Cart"}
-                </SlidingButton>
-
-                <button
-                  onClick={skipCustomization}
-                  className="w-full py-3 text-sm font-light tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors duration-200"
-                >
-                  Skip Personalisation
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+                <h4 className="font-mulish text-lg font-light tracking\
