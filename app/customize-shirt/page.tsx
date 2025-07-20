@@ -6,19 +6,22 @@ import Image from "next/image"
 import StickyBanner from "@/components/sticky-banner"
 import MobileMenu from "@/components/main-menu"
 import DesktopNavigation from "@/components/desktop-navigation"
+import SlidingButton from "@/components/sliding-button"
 
 type EmbroideryPosition = "left-collar" | "right-collar" | "left-cuff" | "right-cuff" | null
 type CuffPosition = "inside" | "outside" | null
 type EmbroideryColor = "navy" | "black" | "white" | "gold"
 
 const SHIRT_COLORS = [
-  { name: "White", color: "#f5f5f5", image: "/images/shirts/new-white-linen-shirt.png", price: 325 },
-  { name: "Black", color: "#2a2a33", image: "/images/shirts/new-black-linen-shirt.png", price: 325 },
-  { name: "Navy", color: "#2d2a3e", image: "/images/shirts/new-navy-linen-shirt.png", price: 325 },
-  { name: "Sky Blue", color: "#c9d7e8", image: "/images/shirts/new-sky-blue-linen-shirt.png", price: 325 },
-  { name: "Pink", color: "#e7d0d3", image: "/images/shirts/new-pink-linen-shirt.png", price: 325 },
-  { name: "Sage", color: "#9ca594", image: "/images/shirts/new-sage-linen-shirt.png", price: 325 },
+  { name: "White", value: "white", image: "/white-linen-shirt-new.png" },
+  { name: "Black", value: "black", image: "/black-linen-shirt-new.png" },
+  { name: "Navy", value: "navy", image: "/navy-linen-shirt-new.png" },
+  { name: "Pink", value: "pink", image: "/pink-linen-shirt-new.png" },
+  { name: "Sage", value: "sage", image: "/sage-linen-shirt-new.png" },
+  { name: "Sky Blue", value: "sky-blue", image: "/sky-blue-linen-shirt-new.png" },
 ]
+
+const SHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"]
 
 export default function CustomizeShirtPage() {
   const router = useRouter()
@@ -29,6 +32,11 @@ export default function CustomizeShirtPage() {
   const [embroideryText, setEmbroideryText] = useState("")
   const [embroideryColor, setEmbroideryColor] = useState<EmbroideryColor>("navy")
   const [hoveredArea, setHoveredArea] = useState<EmbroideryPosition>(null)
+  const [selectedColor, setSelectedColor] = useState("white")
+  const [selectedSize, setSelectedSize] = useState("M")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const selectedShirt = SHIRT_COLORS.find((shirt) => shirt.value === selectedColor)
 
   useEffect(() => {
     const pending = localStorage.getItem("pendingShirtCustomization")
@@ -76,6 +84,16 @@ export default function CustomizeShirtPage() {
 
     localStorage.removeItem("pendingShirtCustomization")
     router.push("/shop")
+  }
+
+  const handleAddToCart = async () => {
+    setIsLoading(true)
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+
+    // Navigate to checkout with selected options
+    router.push(`/checkout?item=shirt&color=${selectedColor}&size=${selectedSize}`)
   }
 
   const getPositionLabel = (position: EmbroideryPosition) => {
@@ -412,4 +430,83 @@ export default function CustomizeShirtPage() {
               )}
 
               <div className="bg-[#f9f8f5] rounded-lg p-6">
-                <h4 className="font-mulish text-lg font-light tracking\
+                <h4 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-4">
+                  Order Summary
+                </h4>
+
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center py-2 border-b border-[#5a5a56]/10">
+                    <span className="text-[#5a5a56]">
+                      {pendingCustomization.type === "set"
+                        ? `Complete Set (${currentShirt.name} Shirt)`
+                        : `${currentShirt.name} Shirt`}
+                    </span>
+                    <span className="text-[#5a5a56]">£{pendingCustomization.type === "set" ? "600" : "325"}</span>
+                  </div>
+
+                  {embroideryPosition && embroideryText && isCustomizationComplete() && (
+                    <div className="flex justify-between items-center py-2 border-b border-[#5a5a56]/10">
+                      <span className="text-[#5a5a56]">
+                        Embroidery ({getPositionLabel(embroideryPosition)}: "{embroideryText}")
+                      </span>
+                      <span className="text-[#5a5a56]">£25</span>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center pt-4 font-medium">
+                    <span className="text-[#5a5a56]">Total</span>
+                    <span className="text-lg text-[#5a5a56]">
+                      £{(pendingCustomization.type === "set" ? 600 : 325) + (isCustomizationComplete() ? 25 : 0)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <SlidingButton
+                  onClick={proceedWithCustomization}
+                  variant="dark"
+                  duration={800}
+                  className="w-full py-3 text-sm"
+                  disabled={embroideryPosition && !isCustomizationComplete()}
+                >
+                  {isCustomizationComplete() ? "Add with Embroidery" : "Continue to Cart"}
+                </SlidingButton>
+
+                <button
+                  onClick={skipCustomization}
+                  className="w-full py-3 text-sm font-light tracking-wider text-[#5a5a56] hover:text-[#5a5a56]/70 transition-colors duration-200"
+                >
+                  Skip Personalisation
+                </button>
+              </div>
+
+              {/* Product Details */}
+              <div className="pt-6 border-t border-gray-200">
+                <h4 className="text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-4">Details</h4>
+                <div className="space-y-3 text-sm font-light text-[#5a5a56]/80">
+                  <p>• 100% Premium Italian Linen</p>
+                  <p>• Classic fit with modern tailoring</p>
+                  <p>• Mother-of-pearl buttons</p>
+                  <p>• French seams for durability</p>
+                  <p>• Made in Italy</p>
+                </div>
+              </div>
+
+              {/* Care Instructions */}
+              <div className="pt-6 border-t border-gray-200">
+                <h4 className="text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-4">Care</h4>
+                <div className="space-y-3 text-sm font-light text-[#5a5a56]/80">
+                  <p>• Machine wash cold</p>
+                  <p>• Hang dry or tumble dry low</p>
+                  <p>• Iron while slightly damp</p>
+                  <p>• Dry clean for best results</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
