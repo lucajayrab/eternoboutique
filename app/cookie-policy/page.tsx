@@ -13,7 +13,6 @@ export default function CookiePolicyPage() {
 
   return (
     <div className="bg-[#f5f4f1] min-h-screen pt-28 pb-20">
-      {/* Add StickyBanner with alwaysVisible prop */}
       <StickyBanner alwaysVisible={true} />
 
       <div className="container mx-auto px-6 md:px-8 max-w-4xl">

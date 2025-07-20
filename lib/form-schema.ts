@@ -8,7 +8,6 @@ export const formSchema = z.object({
 
 export type FormData = z.infer<typeof formSchema>
 
-// Simplified registration form data type
 export interface RegistrationFormData {
   firstname: string
   lastname: string

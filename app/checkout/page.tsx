@@ -18,7 +18,6 @@ export default function CheckoutPage() {
       try {
         setOrderData(JSON.parse(savedOrder))
       } catch (e) {
-        console.error("Failed to parse saved order", e)
         router.push("/shop")
       }
     } else {
@@ -29,12 +28,9 @@ export default function CheckoutPage() {
   const handleShopifyCheckout = async () => {
     setIsProcessing(true)
 
-    // Here you would integrate with Shopify
-    // For now, we'll simulate the process
     setTimeout(() => {
       alert("Order submitted successfully! You will be redirected to payment.")
       setIsProcessing(false)
-      // Clear the cart and order data
       localStorage.removeItem("eternoCart")
       localStorage.removeItem("eternoOrder")
       router.push("/")
@@ -54,19 +50,12 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Sticky Banner */}
       <StickyBanner logoWidth="45mm" />
-
-      {/* Mobile Menu */}
       <MobileMenu />
-
-      {/* Desktop Navigation */}
       <DesktopNavigation />
 
-      {/* Main Content */}
       <div className="pt-[70px]">
         <div className="container mx-auto px-8 sm:px-12 md:px-16 lg:px-20 max-w-4xl py-12">
-          {/* Header */}
           <div className="text-center mb-12">
             <h1 className="font-mulish text-2xl md:text-3xl font-light tracking-widest uppercase text-[#5a5a56] mb-4">
               Complete Your Order
@@ -77,18 +66,15 @@ export default function CheckoutPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Order Details */}
             <div className="bg-[#f9f8f5] rounded-lg p-6">
               <h3 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-6">
                 Order Details
               </h3>
 
-              {/* Cart Items */}
               <div className="space-y-4 mb-6">
                 {orderData.cart.map((item: any, index: number) => (
                   <div key={index} className="flex items-center space-x-4 p-4 bg-white rounded-lg">
                     <div className="w-16 h-16 bg-[#f9f8f5] rounded flex-shrink-0">
-                      {/* You would show actual product images here */}
                       <div className="w-full h-full bg-[#5a5a56]/10 rounded flex items-center justify-center">
                         <span className="text-xs text-[#5a5a56]">
                           {item.type === "set" ? "SET" : item.type.toUpperCase()}
@@ -112,7 +98,6 @@ export default function CheckoutPage() {
                 ))}
               </div>
 
-              {/* Embroidery Details */}
               {orderData.embroidery && (
                 <div className="p-4 bg-white rounded-lg mb-6">
                   <h4 className="font-medium text-[#5a5a56] mb-2">Custom Embroidery</h4>
@@ -135,7 +120,6 @@ export default function CheckoutPage() {
                 </div>
               )}
 
-              {/* Total */}
               <div className="border-t border-[#5a5a56]/20 pt-4">
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-medium text-[#5a5a56]">Total</span>
@@ -144,7 +128,6 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            {/* Payment Section */}
             <div className="bg-[#f9f8f5] rounded-lg p-6">
               <h3 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-6">
                 Secure Payment

@@ -39,7 +39,6 @@ export default function CustomizeShirtPage() {
         setPendingCustomization(data)
         setCurrentShirt(SHIRT_COLORS[data.shirtIndex])
       } catch (e) {
-        console.error("Failed to parse pending customization", e)
         router.push("/shop")
       }
     } else {
@@ -49,21 +48,18 @@ export default function CustomizeShirtPage() {
 
   const handleEmbroideryPositionClick = (position: EmbroideryPosition) => {
     setEmbroideryPosition(position)
-    // Reset cuff position when changing embroidery position
     if (!position?.includes("cuff")) {
       setCuffPosition(null)
     }
   }
 
   const skipCustomization = () => {
-    // Clear pending customization and go to cart
     localStorage.removeItem("pendingShirtCustomization")
     router.push("/shop")
   }
 
   const proceedWithCustomization = () => {
     if (embroideryPosition && embroideryText) {
-      // Save embroidery details to the cart item
       const cart = JSON.parse(localStorage.getItem("eternoCart") || "[]")
       const lastItem = cart[cart.length - 1]
 
@@ -79,7 +75,6 @@ export default function CustomizeShirtPage() {
       }
     }
 
-    // Clear pending customization and proceed
     localStorage.removeItem("pendingShirtCustomization")
     router.push("/shop")
   }
@@ -118,19 +113,12 @@ export default function CustomizeShirtPage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Sticky Banner */}
       <StickyBanner logoWidth="45mm" />
-
-      {/* Mobile Menu */}
       <MobileMenu />
-
-      {/* Desktop Navigation */}
       <DesktopNavigation />
 
-      {/* Main Content */}
       <div className="pt-[70px]">
         <div className="container mx-auto px-4 sm:px-8 md:px-12 lg:px-16 max-w-full py-12">
-          {/* Header - Consistent with other pages */}
           <div className="text-center mb-12">
             <h1 className="text-lg sm:text-xl md:text-2xl font-light tracking-[0.15em] uppercase text-[#5a5a56] mb-2">
               CUSTOMISE
@@ -142,14 +130,12 @@ export default function CustomizeShirtPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Interactive Shirt Preview - Use Selected Shirt Color */}
             <div className="bg-[#f9f8f5] rounded-lg p-8">
               <h3 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-6 text-center">
                 Select Embroidery Position
               </h3>
 
               <div className="relative aspect-square max-w-md mx-auto">
-                {/* Selected Shirt Image for Customization */}
                 <Image
                   src={currentShirt.image || "/placeholder.svg"}
                   alt={`${currentShirt.name} Linen Shirt for Customization`}
@@ -159,8 +145,6 @@ export default function CustomizeShirtPage() {
                   priority
                 />
 
-                {/* Clickable Areas with Enhanced Visibility */}
-                {/* Left Collar Area (appears on right side from our viewing angle) */}
                 <button
                   onClick={() => handleEmbroideryPositionClick("left-collar")}
                   onMouseEnter={() => setHoveredArea("left-collar")}
@@ -175,7 +159,6 @@ export default function CustomizeShirtPage() {
                   aria-label="Select left collar for embroidery"
                 />
 
-                {/* Right Collar Area (appears on left side from our viewing angle) */}
                 <button
                   onClick={() => handleEmbroideryPositionClick("right-collar")}
                   onMouseEnter={() => setHoveredArea("right-collar")}
@@ -190,7 +173,6 @@ export default function CustomizeShirtPage() {
                   aria-label="Select right collar for embroidery"
                 />
 
-                {/* Left Cuff Area (on the right arm from our viewing angle) */}
                 <button
                   onClick={() => handleEmbroideryPositionClick("left-cuff")}
                   onMouseEnter={() => setHoveredArea("left-cuff")}
@@ -205,7 +187,6 @@ export default function CustomizeShirtPage() {
                   aria-label="Select left cuff for embroidery"
                 />
 
-                {/* Right Cuff Area (on the left arm from our viewing angle) */}
                 <button
                   onClick={() => handleEmbroideryPositionClick("right-cuff")}
                   onMouseEnter={() => setHoveredArea("right-cuff")}
@@ -220,7 +201,6 @@ export default function CustomizeShirtPage() {
                   aria-label="Select right cuff for embroidery"
                 />
 
-                {/* Enhanced Hover Labels */}
                 {hoveredArea === "left-collar" && (
                   <div className="absolute top-[8%] right-[38%] transform translate-x-1/2 -translate-y-full">
                     <div className="bg-[#5a5a56] text-white px-3 py-2 rounded-md text-sm font-light shadow-lg">
@@ -257,7 +237,6 @@ export default function CustomizeShirtPage() {
                   </div>
                 )}
 
-                {/* Visual Preview of Embroidery */}
                 {embroideryPosition === "left-collar" && embroideryText && (
                   <div className="absolute top-[14%] right-[38%] transform translate-x-1/2 -translate-y-1/2 pointer-events-none">
                     <span
@@ -348,16 +327,13 @@ export default function CustomizeShirtPage() {
               </div>
             </div>
 
-            {/* Customization Options */}
             <div className="space-y-6">
-              {/* Embroidery Options */}
               {embroideryPosition && (
                 <div className="bg-[#f9f8f5] rounded-lg p-6 animate-in slide-in-from-right duration-300">
                   <h4 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-4">
                     Embroidery Details
                   </h4>
 
-                  {/* Cuff Position Selection (only show if cuff is selected) */}
                   {embroideryPosition?.includes("cuff") && (
                     <div className="mb-6">
                       <label className="block text-sm font-medium text-[#5a5a56] mb-3">Cuff Position</label>
@@ -389,7 +365,6 @@ export default function CustomizeShirtPage() {
                     </div>
                   )}
 
-                  {/* Text Input */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-[#5a5a56] mb-2">Initials (max 3 characters)</label>
                     <input
@@ -402,7 +377,6 @@ export default function CustomizeShirtPage() {
                     <p className="text-xs text-[#5a5a56]/60 mt-1">Hand-embroidered in refined script style</p>
                   </div>
 
-                  {/* Color Selection */}
                   <div className="mb-6">
                     <label className="block text-sm font-medium text-[#5a5a56] mb-3">Thread Colour</label>
                     <div className="flex gap-4">
@@ -438,7 +412,6 @@ export default function CustomizeShirtPage() {
                 </div>
               )}
 
-              {/* Order Summary */}
               <div className="bg-[#f9f8f5] rounded-lg p-6">
                 <h4 className="font-mulish text-lg font-light tracking-wider uppercase text-[#5a5a56] mb-4">
                   Order Summary
@@ -472,7 +445,6 @@ export default function CustomizeShirtPage() {
                 </div>
               </div>
 
-              {/* Action Buttons */}
               <div className="space-y-3">
                 <SlidingButton
                   onClick={proceedWithCustomization}

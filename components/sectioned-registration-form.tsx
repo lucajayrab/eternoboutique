@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useForm, Controller } from "react-hook-form"
@@ -9,7 +11,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import SlidingButton from "./sliding-button"
 
-// Simplified schema with only first name, last name, and email
 const registrationSchema = z.object({
   firstname: z.string().min(2, "First name must be at least 2 characters"),
   lastname: z.string().min(2, "Last name must be at least 2 characters"),
@@ -52,17 +53,19 @@ export default function SectionedRegistrationForm() {
         throw new Error(errorData.message || "An unexpected error occurred.")
       }
 
-      // On success, redirect to thank you page
       router.push("/thank-you")
     } catch (error) {
-      console.error("Registration error:", error)
       setSubmitError(error instanceof Error ? error.message : "Registration failed. Please try again.")
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const FormField = ({ name, label, children }: any) => (
+  const FormField = ({
+    name,
+    label,
+    children,
+  }: { name: keyof RegistrationFormData; label: string; children: React.ReactNode }) => (
     <div className="space-y-2">
       <Label htmlFor={name} className="text-xs font-light uppercase tracking-wider text-[#5a5a56]/90">
         {label}
@@ -86,7 +89,6 @@ export default function SectionedRegistrationForm() {
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-            {/* Personal Details Section */}
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <FormField name="firstname" label="First Name">
@@ -96,7 +98,6 @@ export default function SectionedRegistrationForm() {
                     render={({ field }) => (
                       <Input
                         {...field}
-                        placeholder=""
                         className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
                       />
                     )}
@@ -109,7 +110,6 @@ export default function SectionedRegistrationForm() {
                     render={({ field }) => (
                       <Input
                         {...field}
-                        placeholder=""
                         className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
                       />
                     )}
@@ -124,7 +124,6 @@ export default function SectionedRegistrationForm() {
                     <Input
                       {...field}
                       type="email"
-                      placeholder=""
                       className="h-10 border-eterno-text/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-eterno-text/50 rounded-none"
                     />
                   )}

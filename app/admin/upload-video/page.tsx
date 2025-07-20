@@ -28,11 +28,6 @@ export default function UploadVideoPage() {
       setUploading(true)
       setError("")
 
-      // Create a FormData object
-      const formData = new FormData()
-      formData.append("file", file)
-
-      // Upload to Vercel Blob via API route
       const response = await fetch(`/api/upload-video?filename=${encodeURIComponent(file.name)}`, {
         method: "POST",
         body: file,
@@ -45,7 +40,6 @@ export default function UploadVideoPage() {
       const data = await response.json()
       setUploadedUrl(data.url)
     } catch (err) {
-      console.error("Upload error:", err)
       setError(err instanceof Error ? err.message : "Upload failed")
     } finally {
       setUploading(false)
