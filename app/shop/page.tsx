@@ -651,9 +651,7 @@ Please contact me to arrange a suitable time to discuss my requirements.
 
 Thank you.`
 
-                        const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(
-                          subject,
-                        )}&body=${encodeURIComponent(body)}`
+                        const mailtoLink = `mailto:enquiries@eternotailoring.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
                         window.location.href = mailtoLink
                       }}
                       variant="dark"
