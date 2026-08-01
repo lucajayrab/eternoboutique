@@ -8,7 +8,6 @@ import Image from "next/image"
 import NavigationMenu from "@/components/navigation-menu"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Input } from "@/components/ui/input"
 import SlidingButton from "@/components/sliding-button"
 import MinimalistFooter from "@/components/minimalist-footer"
 
@@ -41,65 +40,6 @@ const SUGGESTED_COMBINATIONS = [
   { id: "combo-4", shirt: 4, trouser: 0, name: "Sunset", price: SET_PRICE },
   { id: "combo-5", shirt: 5, trouser: 3, name: "Earth Tones", price: SET_PRICE },
 ]
-
-// Password Protection Component
-function PasswordProtection({ onAuthenticated }: { onAuthenticated: () => void }) {
-  const [password, setPassword] = useState("")
-  const [error, setError] = useState("")
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setError("")
-
-    // Check password
-    if (password === "eterno2026") {
-      onAuthenticated()
-    } else {
-      setError("Incorrect password")
-    }
-    setIsSubmitting(false)
-  }
-
-  return (
-    <div className="min-h-screen bg-white font-mulish flex items-center justify-center">
-      <div className="w-full max-w-md p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-xl md:text-2xl font-light text-[#5a5a56] uppercase tracking-widest mb-3">
-            Private Boutique
-          </h1>
-          <p className="text-xs text-[#5a5a56]/70">Enter password to access exclusive collection</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <Input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="h-12 border-[#5a5a56]/20 border-0 border-b bg-transparent px-0 py-1 text-sm font-light focus:outline-none focus:border-[#5a5a56]/50 rounded-none text-center"
-              autoComplete="current-password"
-            />
-          </div>
-
-          {error && <p className="text-xs text-red-600 text-center">{error}</p>}
-
-          <SlidingButton
-            type="submit"
-            variant="dark"
-            duration={800}
-            className="w-full py-4 text-sm"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Checking..." : "Enter"}
-          </SlidingButton>
-        </form>
-      </div>
-    </div>
-  )
-}
 
 function SignatureShirtSection() {
   return (
@@ -632,12 +572,7 @@ function StyleCombinationsSection() {
 }
 
 export default function ShopPage() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const isMobile = useIsMobile()
-
-  if (!isAuthenticated) {
-    return <PasswordProtection onAuthenticated={() => setIsAuthenticated(true)} />
-  }
 
   return (
     <div className="min-h-screen bg-white font-mulish">
