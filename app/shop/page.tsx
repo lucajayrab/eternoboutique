@@ -12,9 +12,10 @@ import SlidingButton from "@/components/sliding-button"
 import MinimalistFooter from "@/components/minimalist-footer"
 
 // Product data
-const SHIRT_PRICE = 325
-const TROUSER_PRICE = 325
-const SET_PRICE = 600
+const SHIRT_PRICE = 250
+const TROUSER_PRICE = 275
+// Shirt and trouser ordered together, with a marginal set saving
+const SET_PRICE = 495
 
 const SHIRT_COLORS = [
   { name: "White", color: "#f5f5f5", image: "/images/shirts/new-white-linen-shirt.png", price: SHIRT_PRICE },
@@ -481,7 +482,15 @@ function StyleCombinationsSection() {
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-[#e0ddd2] text-center">
-                  <p className="text-lg font-medium text-[#5a5a56]">Complete Set: £{SET_PRICE}</p>
+                  <p className="text-xs text-[#5a5a56]/70">
+                    Shirt £{SHIRT_PRICE} &middot; Trousers £{TROUSER_PRICE}
+                  </p>
+                  <p className="text-lg font-medium text-[#5a5a56] mt-2">
+                    Complete Set: £{SET_PRICE}{" "}
+                    <span className="text-sm font-light text-[#5a5a56]/50 line-through">
+                      £{SHIRT_PRICE + TROUSER_PRICE}
+                    </span>
+                  </p>
                   <p className="text-xs text-[#5a5a56]/70 mt-1">
                     Save £{SHIRT_PRICE + TROUSER_PRICE - SET_PRICE} when ordering both pieces together
                   </p>
