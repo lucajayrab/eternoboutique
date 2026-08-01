@@ -11,11 +11,13 @@ import MinimalistFooter from "@/components/minimalist-footer"
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
 
-// Video URLs - reverted to the original Croatia boat sailing video for both desktop and mobile
-const DESKTOP_VIDEO_URL =
+// Hero video - defaults to the Croatia boat sailing clip. Set
+// NEXT_PUBLIC_HERO_VIDEO_URL to a Blob URL (see /admin/upload-video) to replace it.
+const DEFAULT_HERO_VIDEO_URL =
   "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_HD-K76mJKem8ZBUjscwppFegs0RJxNhwO.mp4"
-const MOBILE_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_HD-K76mJKem8ZBUjscwppFegs0RJxNhwO.mp4"
+const HERO_VIDEO_URL = process.env.NEXT_PUBLIC_HERO_VIDEO_URL || DEFAULT_HERO_VIDEO_URL
+const DESKTOP_VIDEO_URL = HERO_VIDEO_URL
+const MOBILE_VIDEO_URL = HERO_VIDEO_URL
 const FALLBACK_IMAGE = "/images/hero.jpg"
 
 export default function HomePage() {
