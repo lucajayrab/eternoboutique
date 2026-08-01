@@ -30,7 +30,6 @@ export default function HomePage() {
   const [videoAttempts, setVideoAttempts] = useState(0)
   const [hasAutoScrolled, setHasAutoScrolled] = useState(false)
   const [userHasInteracted, setUserHasInteracted] = useState(false)
-  const [showRegisterButton, setShowRegisterButton] = useState(false)
   const [videoInitialized, setVideoInitialized] = useState(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
@@ -51,16 +50,6 @@ export default function HomePage() {
     window.addEventListener("resize", checkMobile)
     return () => window.removeEventListener("resize", checkMobile)
   }, [checkMobile])
-
-  // Show register button after video loads with delay
-  useEffect(() => {
-    if (isVideoLoaded) {
-      const timer = setTimeout(() => {
-        setShowRegisterButton(true)
-      }, 2000) // 2 second delay after video loads
-      return () => clearTimeout(timer)
-    }
-  }, [isVideoLoaded])
 
   // Track user interactions to prevent auto-scroll if user is actively engaging
   useEffect(() => {
@@ -376,24 +365,6 @@ export default function HomePage() {
             </div>
           </div>
         )}
-
-        {/* Register Interest Button - Fade in over video with consistent styling */}
-        <div
-          className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-30 transition-all duration-1000 ${
-            showRegisterButton ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-          }`}
-        >
-          <div className="text-center px-4">
-            <SlidingButton
-              onClick={() => router.push("/register")}
-              variant="light"
-              duration={1000}
-              className="px-8 py-4 text-sm whitespace-nowrap min-w-max"
-            >
-              REGISTER INTEREST
-            </SlidingButton>
-          </div>
-        </div>
 
         {/* Down Arrow Button - Higher position on mobile with black arrow */}
         <div className={`absolute ${isMobile ? "bottom-20" : "bottom-8"} left-1/2 transform -translate-x-1/2 z-30`}>
