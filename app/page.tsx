@@ -11,11 +11,11 @@ import MinimalistFooter from "@/components/minimalist-footer"
 // Define a consistent logo size
 const LOGO_SIZE = "45mm"
 
-// Video URLs - using the new yacht circling video for both desktop and mobile
+// Video URLs - reverted to the original Croatia boat sailing video for both desktop and mobile
 const DESKTOP_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/575786_Yacht_Boat_Foam_Circling_By_Feelm_Artlist_HD.mp4"
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_HD-K76mJKem8ZBUjscwppFegs0RJxNhwO.mp4"
 const MOBILE_VIDEO_URL =
-  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/575786_Yacht_Boat_Foam_Circling_By_Feelm_Artlist_HD.mp4"
+  "https://hbnpsgpm7ka33yva.public.blob.vercel-storage.com/436923_Croatia_Boat_Sea_Sailing_By_Denys_Hrishyn_Artlist_HD-K76mJKem8ZBUjscwppFegs0RJxNhwO.mp4"
 const FALLBACK_IMAGE = "/images/hero.jpg"
 
 export default function HomePage() {
