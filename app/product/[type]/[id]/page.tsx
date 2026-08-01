@@ -9,8 +9,8 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import MinimalistFooter from "@/components/minimalist-footer"
 
 // Product data
-const SHIRT_PRICE = 325
-const TROUSER_PRICE = 325
+const SHIRT_PRICE = 250
+const TROUSER_PRICE = 275
 
 const SHIRT_COLORS = [
   { name: "White", color: "#f5f5f5", image: "/images/shirts/new-white-linen-shirt.png", price: SHIRT_PRICE },

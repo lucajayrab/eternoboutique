@@ -1,26 +1,28 @@
-import { put } from "@vercel/blob"
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client"
 import { NextResponse } from "next/server"
 
-export async function POST(request: Request) {
+// This route no longer receives the file itself. It only issues a short-lived
+// token so the browser can upload directly to Vercel Blob, which bypasses the
+// serverless request body size limit and supports very large video files.
+export async function POST(request: Request): Promise<NextResponse> {
+  const body = (await request.json()) as HandleUploadBody
+
   try {
-    const { searchParams } = new URL(request.url)
-    const filename = searchParams.get("filename") || "video.mp4"
-    const file = await request.blob()
-
-    const maxSize = 500 * 1024 * 1024
-    if (file.size > maxSize) {
-      return NextResponse.json(
-        { error: `File size exceeds the 500MB limit (${(file.size / (1024 * 1024)).toFixed(2)}MB)` },
-        { status: 413 },
-      )
-    }
-
-    const blob = await put(filename, file, {
-      access: "public",
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async () => ({
+        allowedContentTypes: ["video/mp4", "video/quicktime", "video/webm", "video/x-m4v"],
+        maximumSizeInBytes: 1024 * 1024 * 1024, // 1GB
+        addRandomSuffix: true,
+      }),
+      onUploadCompleted: async ({ blob }) => {
+        console.log("[v0] Hero video uploaded to blob:", blob.url)
+      },
     })
 
-    return NextResponse.json(blob)
+    return NextResponse.json(jsonResponse)
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Upload failed" }, { status: 500 })
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Upload failed" }, { status: 400 })
   }
 }
